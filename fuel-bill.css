@@ -1,0 +1,417 @@
+/* Fuel Bill Form Styles */
+.fuel-bill-container {
+    max-width: 1400px;
+    margin: 80px auto 0;
+    padding: 2rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+}
+
+.title .highlight {
+    color: #ff6b6b;
+    text-decoration: underline;
+    text-decoration-color: #ff6b6b;
+    text-underline-offset: 8px;
+}
+
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: rgba(17, 34, 64, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Input Form Styles */
+.input-form {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+}
+
+.form-section h3 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e1e1e1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #333;
+    background: #fff;
+}
+
+.input-group textarea {
+    height: 100px;
+    resize: none;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Template Selector */
+.template-selector {
+    margin-bottom: 2rem;
+}
+
+.template-options,
+.tax-options,
+.logo-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.radio-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Checkbox Styles */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-text {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* File Details */
+.file-note {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.5rem;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn i {
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #e1e1e1;
+}
+
+.credit-note {
+    font-size: 0.8rem;
+    color: #888;
+    font-style: italic;
+}
+
+/* Preview Styles */
+.preview-container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.preview-container h2 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.preview-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.preview-content {
+    padding: 2rem;
+    background: white;
+    min-height: 100%;
+}
+
+.title-section {
+    margin-bottom: 2rem;
+}
+
+.title-section h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    color: #333;
+    font-weight: 500;
+}
+
+.title-divider {
+    border: none;
+    height: 2px;
+    background: #333;
+    margin: 0;
+    width: 100%;
+    opacity: 1;
+}
+
+.preview-content h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 2.5rem;
+    text-align: left;
+    font-weight: 500;
+}
+
+.receipt-header {
+    margin-bottom: 1rem;
+    text-align: right;
+}
+
+.receipt-info p {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    text-align: right;
+    line-height: 1.4;
+}
+
+.receipt-section {
+    margin-bottom: 1rem;
+}
+
+.receipt-section h3 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    margin: 2rem 0;
+    padding: 0 1rem;
+}
+
+.billed-to,
+.station-details {
+    padding-right: 2rem;
+}
+
+.billed-to h3,
+.station-details h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.billed-to p,
+.station-details p {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.details-grid p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: #f8f9fa;
+}
+
+.summary-table th,
+.summary-table td {
+    padding: 1rem;
+    text-align: left;
+    font-size: 1rem;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.summary-table th {
+    background: #f1f3f5;
+    color: #333;
+    font-weight: 500;
+}
+
+.summary-table td:first-child,
+.summary-table td:last-child {
+    white-space: nowrap;
+}
+
+.summary-table td:nth-child(2) {
+    text-align: center;
+}
+
+.summary-table th {
+    color: #333;
+    font-weight: 600;
+}
+
+.summary-table td {
+    color: #666;
+}
+
+.total {
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+    margin-top: 1rem;
+}
+
+.receipt-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem 0 2rem;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.thank-you {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.footer-note,
+.footer-slogan {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.footer-time {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.footer-note,
+.footer-slogan {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.footer-time {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 1rem;
+}
+
+.watermark {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 2rem;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .form-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .input-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .template-options,
+    .tax-options,
+    .logo-options {
+        flex-wrap: wrap;
+    }
+}

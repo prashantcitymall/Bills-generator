@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Bill Generator - BillGen Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fuel-bill.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-design">
+        <div class="floating-elements">
+            <i class="fas fa-file-invoice"></i>
+            <i class="fas fa-receipt"></i>
+            <i class="fas fa-calculator"></i>
+            <i class="fas fa-coins"></i>
+            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-dollar-sign"></i>
+            <i class="fas fa-percentage"></i>
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div class="gradient-overlay"></div>
+    </div>
+
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                <span class="brand">BillGen Pro</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#" class="active">Fuel Bill</a>
+                <a href="#">Templates</a>
+                <a href="#">Pricing</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="fuel-bill-container">
+        <h1 class="title">Generate <span class="highlight">Fuel Receipt</span></h1>
+
+        <div class="form-container">
+            <div class="input-form">
+                <div class="form-section">
+                    <h3>Fuel Station Details</h3>
+                    <div class="template-options">
+                        <label class="radio-label">
+                            <input type="radio" name="template" value="1" checked>
+                            <span class="radio-text">Template 1</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="template" value="2">
+                            <span class="radio-text">Template 2</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="template" value="3">
+                            <span class="radio-text">Template 3</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="template" value="4">
+                            <span class="radio-text">Template 4</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Fuel Station Details</h3>
+                    <div class="input-group">
+                        <label>Fuel Station Name</label>
+                        <input type="text" id="stationName" placeholder="Fuel Station Name">
+                    </div>
+                    <div class="input-group">
+                        <label>Fuel Station Address</label>
+                        <textarea id="stationAddress" placeholder="Fuel Station Address..."></textarea>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Payment Method</label>
+                            <select id="paymentMethod">
+                                <option value="">Select One</option>
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
+                                <option value="upi">UPI</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Invoice Number</label>
+                            <input type="text" id="invoiceNumber" placeholder="6524">
+                        </div>
+                    </div>
+                    <div class="tax-options">
+                        <label class="radio-label">
+                            <input type="radio" name="tax" value="none" checked>
+                            <span class="radio-text">None</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="tax" value="cst">
+                            <span class="radio-text">CST TIN</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="tax" value="gst">
+                            <span class="radio-text">GST TIN</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="tax" value="txn">
+                            <span class="radio-text">TXN NO</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Payment Details</h3>
+                    <div class="input-group">
+                        <label>Currency</label>
+                        <select id="currency">
+                            <option value="INR">Indian Rupee - ₹</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Fuel Rate</label>
+                            <input type="number" id="fuelRate" placeholder="Fuel Rate">
+                        </div>
+                        <div class="input-group">
+                            <label>Total Amount</label>
+                            <input type="number" id="totalAmount" placeholder="Total Amount">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Fuel Bill Date</label>
+                            <input type="date" id="billDate">
+                        </div>
+                        <div class="input-group">
+                            <label>Fuel Bill Time</label>
+                            <input type="time" id="billTime">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Customer Details</h3>
+                    <div class="input-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="customerName" placeholder="Enter Customer Name">
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Vehicle Number</label>
+                            <input type="text" id="vehicleNumber" placeholder="Vehicle Number">
+                        </div>
+                        <div class="input-group">
+                            <label>Vehicle Type</label>
+                            <select id="vehicleType">
+                                <option value="">Select One</option>
+                                <option value="2wheeler">Two Wheeler</option>
+                                <option value="4wheeler">Four Wheeler</option>
+                                <option value="commercial">Commercial</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Logo Details</h3>
+                    <div class="logo-options">
+                        <label class="radio-label">
+                            <input type="radio" name="logo" value="url" checked>
+                            <span class="radio-text">URL</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="logo" value="upload">
+                            <span class="radio-text">Upload From Device</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="logo" value="gallery">
+                            <span class="radio-text">Gallery</span>
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="logoUrl" placeholder="Please enter a valid image URL">
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="logoAuth">
+                            <span class="checkbox-text">I am authorized to use the logo for generating this bill.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>File Details</h3>
+                    <div class="input-group">
+                        <label>Download File Name</label>
+                        <input type="text" id="fileName" value="Fuel Bill Template 1">
+                    </div>
+                    <p class="file-note">This will be used as name of the generated PDF file</p>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="downloadBtn">
+                        Download <i class="fas fa-download"></i>
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        Clear <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="credit-note">This bill generation will require 5 credit.</p>
+            </div>
+
+            <div class="preview-container">
+                <h2>Live Preview</h2>
+                <div class="preview-card">
+                    <div class="preview-content">
+                        <div class="title-section">
+                            <h1>Fuel Receipt</h1>
+                            <hr class="title-divider">
+                        </div>
+                        <div class="receipt-header">
+                            <div class="receipt-info">
+                                <p>Receipt Number: <span id="previewReceiptNumber">RP-6524</span></p>
+                                <p>Date: <span id="previewDate">23 Feb 2025</span></p>
+                                <p>Time: <span id="previewTime">13:11</span></p>
+                            </div>
+                        </div>
+
+                        <div class="details-grid">
+                            <div class="billed-to">
+                                <h3>Billed To</h3>
+                                <p>Customer Name: <span id="previewCustomerName"></span></p>
+                                <p>Vehicle Number: <span id="previewVehicleNumber"></span></p>
+                                <p>Vehicle Type: <span id="previewVehicleType"></span></p>
+                            </div>
+
+                            <div class="station-details">
+                                <h3>Fuel Station Details</h3>
+                                <p>Fuel Station Name: <span id="previewStationName"></span></p>
+                                <p>Fuel Station Address: <span id="previewStationAddress"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="receipt-section">
+                            <h3>Payment Method</h3>
+                            <p id="previewPaymentMethod"></p>
+                        </div>
+
+                        <div class="receipt-section">
+                            <h3>Receipt Summary</h3>
+                            <table class="summary-table">
+                                <tr>
+                                    <th>Fuel Rate</th>
+                                    <th>Quantity</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                                <tr>
+                                    <td>₹ <span id="previewFuelRate"></span></td>
+                                    <td><span id="previewQuantity">1L</span></td>
+                                    <td>₹ <span id="previewTotalAmount"></span></td>
+                                </tr>
+                            </table>
+                            <p class="total">Total: ₹ <span id="previewGrandTotal"></span></p>
+                        </div>
+
+                        <div class="receipt-footer">
+                            <p class="thank-you">THANK YOU ! FOR FUELLING WITH US !</p>
+                            <p class="footer-note">FOR ANY QUERIES AND COMPLAINT VISIT OUR<br>CUSTOMER CARE</p>
+                            <p class="footer-slogan">SAVE FUEL, SECURE THE FUTURE!</p>
+                            <p class="footer-time">TIME: <span id="previewFooterTime">13:11</span></p>
+                        </div>
+
+                        <div class="watermark">Watermark will be removed from actual pdf</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="fuel-bill.js"></script>
+</body>
+</html>
