@@ -41,8 +41,9 @@
 .form-section {
     margin-bottom: 2rem;
     padding: 1.5rem;
-    border: 1px solid #e1e1e1;
+    border: 2px solid #666;
     border-radius: 8px;
+    background: #fff;
 }
 
 .form-section h3 {
@@ -68,11 +69,19 @@
 .input-group textarea {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #e1e1e1;
+    border: 2px solid #666;
     border-radius: 6px;
     font-size: 0.9rem;
     color: #333;
     background: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #333;
 }
 
 .input-group textarea {
