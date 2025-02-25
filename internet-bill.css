@@ -1,17 +1,33 @@
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 1400px;
+    margin: 80px auto 0;
+    padding: 2rem;
+}
+
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: rgba(17, 34, 64, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
     text-align: center;
-    margin-bottom: 30px;
-    color: #000;
 }
 
 .highlight {
-    color: #ff7043;
+    color: #ff6b6b;
+    text-decoration: underline;
+    text-decoration-color: #ff6b6b;
+    text-underline-offset: 8px;
 }
 
 .form-container {
@@ -21,27 +37,27 @@ h1 {
 }
 
 .input-section {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .preview-section {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     position: sticky;
-    top: 0;
-    margin-top: -10px;
+    top: 20px;
 }
 
 .form-section {
-    margin-bottom: 25px;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 2px solid #666;
+    border-radius: 8px;
+    background: #fff;
 }
 
 .form-section h3 {

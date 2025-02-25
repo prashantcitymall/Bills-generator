@@ -3,13 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internet Bill Generator</title>
-    <link rel="stylesheet" href="internet-bill.css">
+    <title>Internet Bill Generator - BillGen Pro</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="internet-bill.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1><span class="highlight">Internet</span> Invoice</h1>
+    <div class="background-design">
+        <div class="floating-elements">
+            <i class="fas fa-file-invoice"></i>
+            <i class="fas fa-receipt"></i>
+            <i class="fas fa-calculator"></i>
+            <i class="fas fa-coins"></i>
+            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-dollar-sign"></i>
+            <i class="fas fa-percentage"></i>
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div class="gradient-overlay"></div>
+    </div>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                <span class="brand">BillGen Pro</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#">Fuel Bill</a>
+                <a href="#">Templates</a>
+                <a href="#">Pricing</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="auth-buttons">
+                <button class="btn btn-secondary">Sign Up</button>
+                <button class="btn btn-primary">Login</button>
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        <h1 class="title">Generate <span class="highlight">Internet Bill</span></h1>
         
         <div class="form-container">
             <div class="input-section">
@@ -182,7 +216,7 @@
                 <small>Watermark will be removed from actual pdf</small>
             </div>
         </div>
-    </div>
+    </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="internet-bill.js"></script>
