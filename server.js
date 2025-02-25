@@ -11,9 +11,34 @@ app.use(cors());
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 
-// Handle all routes by serving index.html
-app.get('*', (req, res) => {
+// Handle specific routes
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/internet-bill', (req, res) => {
+    res.sendFile(path.join(__dirname, 'internet-bill.html'));
+});
+
+app.get('/fuel-bill', (req, res) => {
+    res.sendFile(path.join(__dirname, 'fuel-bill.html'));
+});
+
+app.get('/rent-receipt', (req, res) => {
+    res.sendFile(path.join(__dirname, 'rent-receipt.html'));
+});
+
+app.get('/book-invoice', (req, res) => {
+    res.sendFile(path.join(__dirname, 'book-invoice.html'));
+});
+
+app.get('/driver-salary', (req, res) => {
+    res.sendFile(path.join(__dirname, 'driver-salary.html'));
+});
+
+// Fallback route
+app.get('*', (req, res) => {
+    res.redirect('/');
 });
 
 app.listen(PORT, () => {

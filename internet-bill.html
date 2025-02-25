@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Bill Generator</title>
+    <link rel="stylesheet" href="internet-bill.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1><span class="highlight">Internet</span> Invoice</h1>
+        
+        <div class="form-container">
+            <div class="input-section">
+                <div class="template-selection">
+                    <h3>Select Template</h3>
+                    <div class="radio-group">
+                        <input type="radio" id="template1" name="template" value="1" checked>
+                        <label for="template1">Template 1</label>
+                        <input type="radio" id="template2" name="template" value="2">
+                        <label for="template2">Template 2</label>
+                        <input type="radio" id="template3" name="template" value="3">
+                        <label for="template3">Template 3</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Internet Provider Details</h3>
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label>Internet Service Provider Name</label>
+                            <input type="text" id="providerName" placeholder="Internet Service Provider Name">
+                        </div>
+                        <div class="input-field">
+                            <label>Internet Service Provider Address</label>
+                            <input type="text" id="providerAddress" placeholder="Provider Address">
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <label>Description</label>
+                        <input type="text" id="description" placeholder="Internet Description">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label>Bill Account Number</label>
+                            <input type="text" id="accountNumber" placeholder="Bill Account Number">
+                        </div>
+                        <div class="input-field">
+                            <label>Billing Date</label>
+                            <input type="date" id="billingDate">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Customer Details</h3>
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label>Customer Name</label>
+                            <input type="text" id="customerName" placeholder="Enter Customer Name">
+                        </div>
+                        <div class="input-field">
+                            <label>Customer Address</label>
+                            <input type="text" id="customerAddress" placeholder="Customer Address">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Plan Details</h3>
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label>Tarrif Plan Speed</label>
+                            <select id="planSpeed">
+                                <option value="">Select One</option>
+                                <option value="30Mbps">30 Mbps</option>
+                                <option value="50Mbps">50 Mbps</option>
+                                <option value="100Mbps">100 Mbps</option>
+                                <option value="200Mbps">200 Mbps</option>
+                                <option value="300Mbps">300 Mbps</option>
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <label>Tarrif Plan Package</label>
+                            <select id="planPackage">
+                                <option value="">Select One</option>
+                                <option value="Basic">Basic</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Premium">Premium</option>
+                                <option value="Ultimate">Ultimate</option>
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <label>Tarrif Plan</label>
+                            <select id="tarrifPlan">
+                                <option value="">Select One</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Yearly">Yearly</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Logo Details</h3>
+                    <div class="radio-group">
+                        <input type="radio" id="urlOption" name="logoSource" value="url" checked>
+                        <label for="urlOption">URL</label>
+                        <input type="radio" id="deviceOption" name="logoSource" value="device">
+                        <label for="deviceOption">Upload From Device</label>
+                        <input type="radio" id="galleryOption" name="logoSource" value="gallery">
+                        <label for="galleryOption">Gallery</label>
+                    </div>
+                    <div class="input-field" id="urlInput">
+                        <input type="text" id="logoUrl" placeholder="Please enter a valid image URL">
+                    </div>
+                    <div class="input-field" id="fileInput" style="display: none;">
+                        <input type="file" id="logoFile" accept="image/*">
+                    </div>
+                    <div class="checkbox-field">
+                        <input type="checkbox" id="logoAuthorization">
+                        <label for="logoAuthorization">I am authorized to use the logo for generating this bill.</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Payment Details</h3>
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label>Currency</label>
+                            <select id="currency">
+                                <option value="INR">Indian Rupee - ₹</option>
+                                <option value="USD">US Dollar - $</option>
+                                <option value="EUR">Euro - €</option>
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <label>Payment Method</label>
+                            <select id="paymentMethod">
+                                <option value="">Select One</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="UPI">UPI</option>
+                                <option value="NetBanking">Net Banking</option>
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <label>Total Plan Amount</label>
+                            <input type="number" id="planAmount" placeholder="Plan Amount">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>File Details</h3>
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label>Download File Name</label>
+                            <input type="text" id="fileName" placeholder="Internet Invoice Template 2">
+                            <small>This will be used as name of the generated PDF file</small>
+                        </div>
+                        <div class="input-field">
+                            <label>Invoice No</label>
+                            <input type="text" id="invoiceNo" placeholder="6584">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="downloadBtn" class="primary-button">Download</button>
+                    <button id="clearBtn" class="secondary-button">Clear</button>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h3>Live Preview</h3>
+                <div id="previewContainer" class="preview-container">
+                    <!-- Preview content will be dynamically generated here -->
+                </div>
+                <small>Watermark will be removed from actual pdf</small>
+            </div>
+        </div>
+    </div>
+    <script src="node_modules/html2pdf.js/dist/html2pdf.bundle.min.js"></script>
+    <script src="internet-bill.js"></script>
+</body>
+</html>
