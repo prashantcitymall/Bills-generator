@@ -31,37 +31,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Clear button functionality
     document.getElementById('clearBtn').addEventListener('click', function() {
-        // Clear text inputs and selects
+        // Clear text, number inputs and selects
         document.querySelectorAll('input[type="text"], input[type="number"], select').forEach(input => {
             input.value = '';
-            input.style.borderColor = ''; // Reset any error styling
         });
-
+        
         // Reset date to today
         document.getElementById('billingDate').value = today;
-
+        
         // Reset radio buttons to defaults
         document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.checked = radio.defaultChecked;
+            if (radio.defaultChecked) {
+                radio.checked = true;
+            } else {
+                radio.checked = false;
+            }
         });
-
-        // Uncheck authorization checkbox
+        
+        // Reset checkbox
         document.getElementById('logoAuthorization').checked = false;
-
-        // Reset file input if exists
-        const fileInput = document.getElementById('logoFile');
-        if (fileInput) fileInput.value = '';
-
-        // Show URL input, hide file input
-        document.getElementById('urlInput').style.display = 'block';
-        document.getElementById('fileInput').style.display = 'none';
-
-        // Update the preview
+        
+        // Update preview
         updatePreview();
     });
 
     // Download button functionality
-    document.getElementById('downloadBtn').addEventListener('click', function() {
+    document.getElementById('downloadBtn').addEventListener('click', async function() {
         // Validate required fields
         const required = ['providerName', 'accountNumber', 'customerName', 'planSpeed', 'planPackage', 'tarrifPlan', 'planAmount'];
         let isValid = true;
@@ -81,62 +76,71 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Get file name from input or use default
-        const fileName = document.getElementById('fileName').value || 'internet_bill';
+        const previewContent = document.getElementById('previewContainer');
+        const fileName = document.getElementById('fileName').value || 'internet-bill';
 
-        // Get the preview container
-        const element = document.getElementById('previewContainer');
+        // Hide watermark temporarily
+        const watermark = previewContent.querySelector('div[style*="opacity: 0.1"]');
+        if (watermark) watermark.style.display = 'none';
 
-        // Configure PDF options
-        const opt = {
-            margin: 10,
-            filename: `${fileName}.pdf`,
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { 
+        try {
+            // Convert the preview content to canvas
+            const canvas = await html2canvas(previewContent, {
                 scale: 2,
                 useCORS: true,
-                logging: true,
+                letterRendering: true,
                 backgroundColor: '#ffffff',
-                onrendered: function(canvas) {
-                    document.body.appendChild(canvas);
-                }
-            },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
-                orientation: 'portrait'
-            }
-        };
-
-        // Generate PDF
-        // First clone the element to avoid modifying the display version
-        const printElement = element.cloneNode(true);
-        document.body.appendChild(printElement);
-        
-        // Make sure the element is visible
-        printElement.style.display = 'block';
-        printElement.style.width = '210mm';
-        printElement.style.margin = '0';
-        printElement.style.padding = '10mm';
-        printElement.style.visibility = 'visible';
-        
-        // Generate PDF
-        html2pdf()
-            .from(printElement)
-            .set(opt)
-            .save()
-            .then(() => {
-                // Clean up the temporary element
-                document.body.removeChild(printElement);
-            })
-            .catch(error => {
-                console.error('Error generating PDF:', error);
-                alert('Error generating PDF. Please try again.');
-                // Clean up on error too
-                if (document.body.contains(printElement)) {
-                    document.body.removeChild(printElement);
-                }
+                windowWidth: previewContent.scrollWidth,
+                windowHeight: previewContent.scrollHeight
             });
+
+            // Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // Calculate dimensions
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+
+            // Add image to PDF
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+            // If content fits on one page
+            if (imgHeight <= pageHeight) {
+                doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            } else {
+                // If content needs multiple pages
+                let heightLeft = imgHeight;
+                let position = 0;
+                let page = 1;
+
+                while (heightLeft > 0) {
+                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    position -= pageHeight;
+
+                    if (heightLeft > 0) {
+                        doc.addPage();
+                        page++;
+                    }
+                }
+            }
+
+            // Save the PDF
+            doc.save(`${fileName}.pdf`);
+
+        } catch (error) {
+            console.error('PDF generation failed:', error);
+            alert('Failed to generate PDF. Please try again.');
+        } finally {
+            // Show watermark again
+            if (watermark) watermark.style.display = 'block';
+        }
     });
 
     // Initial preview update
@@ -171,12 +175,12 @@ function updatePreview() {
     const totalAmount = (taxableAmount + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2);
 
     const previewHTML = `
-        <div style="background: white; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; width: 100%; max-width: 800px; margin: 0 auto; page-break-inside: avoid;">
+        <div style="background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative;">
             <div style="text-align: right; margin-bottom: 20px;">
                 <span style="color: #666;">(Receipt for the Recipient)</span>
             </div>
             
-            <div style="margin-top: 20px; margin-bottom: 20px; color: #000;">
+            <div style="margin-top: 30px; margin-bottom: 40px; color: #000;">
                 <div style="float: left;">
                     <strong>${providerName}</strong><br>
                     ${providerAddress}
@@ -197,29 +201,29 @@ function updatePreview() {
                 Bill Generator
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; margin: 15px 0; border: 1px solid #ff9800;">
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #ff9800;">
                 <tr style="background: #fff;">
-                    <th style="border: 1px solid #ff9800; padding: 6px; text-align: center; color: #000;">Taxable Amount ₹</th>
-                    <th style="border: 1px solid #ff9800; padding: 6px; text-align: center; color: #000;">CGST Rate%</th>
-                    <th style="border: 1px solid #ff9800; padding: 6px; text-align: center; color: #000;">CGST Amount ₹</th>
-                    <th style="border: 1px solid #ff9800; padding: 6px; text-align: center; color: #000;">SGST Rate%</th>
-                    <th style="border: 1px solid #ff9800; padding: 6px; text-align: center; color: #000;">SGST Amount ₹</th>
-                    <th style="border: 1px solid #ff9800; padding: 6px; text-align: center; color: #000;">Payments Received ₹</th>
+                    <th style="border: 1px solid #ff9800; padding: 8px; text-align: center; color: #000;">Taxable Amount ₹</th>
+                    <th style="border: 1px solid #ff9800; padding: 8px; text-align: center; color: #000;">CGST Rate%</th>
+                    <th style="border: 1px solid #ff9800; padding: 8px; text-align: center; color: #000;">CGST Amount ₹</th>
+                    <th style="border: 1px solid #ff9800; padding: 8px; text-align: center; color: #000;">SGST Rate%</th>
+                    <th style="border: 1px solid #ff9800; padding: 8px; text-align: center; color: #000;">SGST Amount ₹</th>
+                    <th style="border: 1px solid #ff9800; padding: 8px; text-align: center; color: #000;">Payments Received ₹</th>
                 </tr>
                 <tr style="color: #000;">
-                    <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${taxableAmount.toFixed(2)}</td>
-                    <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${cgstRate}%</td>
-                    <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${cgstAmount}</td>
-                    <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${sgstRate}%</td>
-                    <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${sgstAmount}</td>
-                    <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${totalAmount}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${taxableAmount.toFixed(2)}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${cgstRate}%</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${cgstAmount}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${sgstRate}%</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${sgstAmount}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${totalAmount}</td>
                 </tr>
             </table>
 
-            <div style="margin: 15px 0;">
+            <div style="margin: 20px 0;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #000;">
                     <span>Service Plan Summary</span>
-                    <span>Account No: ${accountNumber} User Name: ${customerName}</span>
+                    <span></span>
                 </div>
                 <table style="width: 100%; border-collapse: collapse; border: 1px solid #ff9800;">
                     <tr style="background: #fff;">
@@ -230,19 +234,19 @@ function updatePreview() {
                         <th style="border: 1px solid #ff9800; padding: 8px; color: #000;">Plan Amount</th>
                     </tr>
                     <tr style="color: #000;">
-                        <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${planSpeed}</td>
-                        <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${planPackage}</td>
-                        <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">${tarrifPlan || '-'}</td>
-                        <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">0</td>
-                        <td style="border: 1px solid #ff9800; padding: 6px; text-align: center;">₹${planAmount}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${planSpeed}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${planPackage}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${tarrifPlan || '-'}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">0</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">₹${planAmount}</td>
                     </tr>
                 </table>
             </div>
 
-            <div style="margin: 15px 0;">
+            <div style="margin: 20px 0;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #000;">
                     <span>Receipt Details</span>
-                    <span>Account No: ${accountNumber} User Name: ${customerName}</span>
+                    <span></span>
                 </div>
                 <table style="width: 100%; border-collapse: collapse; border: 1px solid #ff9800;">
                     <tr style="background: #fff;">
@@ -262,7 +266,7 @@ function updatePreview() {
                 Registered office address: ${providerAddress}
             </div>
 
-            <div style="margin: 15px 0;">
+            <div style="margin: 20px 0;">
                 <div style="background: #ff9800; color: white; padding: 10px; border-radius: 5px;">
                     Terms and Conditions
                 </div>
