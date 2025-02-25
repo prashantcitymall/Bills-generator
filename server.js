@@ -36,6 +36,10 @@ app.get('/driver-salary', (req, res) => {
     res.sendFile(path.join(__dirname, 'driver-salary.html'));
 });
 
+app.get('/restaurant-bill', (req, res) => {
+    res.sendFile(path.join(__dirname, 'restaurant-bill.html'));
+});
+
 // Fallback route
 app.get('*', (req, res) => {
     res.redirect('/');
