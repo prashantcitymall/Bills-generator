@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Invoice Generator - BillGen Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="book-invoice.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                <span class="brand">BillGen Pro</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="fuel-bill.html">Fuel Receipt</a>
+                <a href="rent-receipt.html">Rent Receipt</a>
+                <a href="book-invoice.html" class="active">Book Invoice</a>
+            </div>
+            <div class="auth-buttons">
+                <button class="btn btn-secondary">Sign Up</button>
+                <button class="btn btn-primary">Login</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="book-invoice-container">
+        <div class="form-container">
+            <div class="template-selector">
+                <h2>Select Template</h2>
+                <div class="template-options">
+                    <label>
+                        <input type="radio" name="template" value="template1">
+                        Template 1
+                    </label>
+                    <label>
+                        <input type="radio" name="template" value="template2" checked>
+                        Template 2
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section book-details">
+                <h3>Book Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookAuthor">Book Author</label>
+                        <input type="text" id="bookAuthor" placeholder="Enter Author name">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookStoreName">Book Store Name</label>
+                        <input type="text" id="bookStoreName" placeholder="Enter Book Store Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="storeAddress">Store Address</label>
+                    <textarea id="storeAddress" placeholder="Store Address..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookName">Name Of Book</label>
+                        <input type="text" id="bookName" placeholder="Enter the Book name">
+                    </div>
+                    <div class="form-group">
+                        <label for="publisher">Publisher</label>
+                        <input type="text" id="publisher" placeholder="Publisher">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Enter something about Book..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section payment-details">
+                <h3>Payment Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="currency">Currency</label>
+                        <select id="currency">
+                            <option value="INR">Indian Rupee - ₹</option>
+                            <option value="USD">US Dollar - $</option>
+                            <option value="EUR">Euro - €</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod">
+                            <option value="">Select One</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="upi">UPI</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" placeholder="Number of Books">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookPrice">Book Price</label>
+                        <input type="number" id="bookPrice" placeholder="Price of Book">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section customer-details">
+                <h3>Customer Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" placeholder="Enter Customer Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="purchaseDate">Purchased Date</label>
+                        <input type="date" id="purchaseDate">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section file-details">
+                <h3>File Details</h3>
+                <div class="form-group">
+                    <label for="downloadFileName">Download File Name</label>
+                    <input type="text" id="downloadFileName" placeholder="Book Invoice Template 2">
+                </div>
+                <p class="file-note">This will be used as name of the generated PDF file</p>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
+                <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-times"></i> Clear</button>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <h2>Live Preview</h2>
+            <div class="preview-frame">
+                <div class="receipt-preview">
+                    <h2>Book Receipt</h2>
+                    <div class="header-divider"></div>
+                    <div class="receipt-header">
+                        <div class="receipt-info">
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <span class="label">Receipt No:</span>
+                                    <span class="value" id="previewReceiptNo">R06044</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Receipt Date:</span>
+                                    <span class="value" id="previewDate">Feb 25, 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="billing-details">
+                        <div class="bill-to">
+                            <h3>Bill To,</h3>
+                            <div class="detail-row">
+                                <span class="label">Customer Name:</span>
+                                <span class="value" id="previewCustomerName"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Book Name:</span>
+                                <span class="value" id="previewBookName"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Author:</span>
+                                <span class="value" id="previewAuthor"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Book Publisher:</span>
+                                <span class="value" id="previewPublisher"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Payment Method:</span>
+                                <span class="value" id="previewPayment"></span>
+                            </div>
+                        </div>
+                        <div class="sold-by">
+                            <h3>Sold By,</h3>
+                            <div class="detail-row">
+                                <span class="label">Store Name:</span>
+                                <span class="value" id="previewStoreName"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Store Address:</span>
+                                <span class="value" id="previewAddress"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="receipt-summary">
+                        <h3>Receipt Summary</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Description</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="previewItem">
+                                    <td>1</td>
+                                    <td id="previewDescription"></td>
+                                    <td id="previewQty"></td>
+                                    <td id="previewPrice"></td>
+                                    <td id="previewTotal"></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-right">Total:</td>
+                                    <td id="previewGrandTotal">₹ 0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="receipt-footer">
+                        <p class="thank-you">Thank You ! Visit Again</p>
+                        <p class="quote">Books are the quietest and most constant of friends; they are the most accessible and wisest of counselors, and the most patient of teachers</p>
+                        <p class="quote">Books are good company, in sad times and happy times, for books are people – people who have managed to stay alive by hiding between the covers of a book.</p>
+                    </div>
+                </div>
+            </div>
+            <p class="watermark">Watermark will be removed from actual pdf</p>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="book-invoice.js"></script>
+</body>
+</html>

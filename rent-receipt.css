@@ -1,0 +1,303 @@
+.rent-receipt-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.form-container {
+    flex: 1;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preview-container {
+    flex: 1;
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+    border: none;
+    box-shadow: none;
+}
+
+.preview-container * {
+    box-shadow: none !important;
+}
+
+.preview-container .divider-line {
+    border: none;
+    background-color: #000000;
+}
+
+.template-selector {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.template-options {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.template-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.form-section h3 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox input {
+    width: auto;
+}
+
+.checkbox label {
+    margin: 0;
+}
+
+.signature-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.file-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.preview-frame {
+    background: white;
+    padding: 2rem;
+}
+
+.receipt-preview {
+    background: white;
+    position: relative;
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #000000;
+}
+
+.receipt-header {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.receipt-header .date {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #000000;
+}
+
+.receipt-header h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 1.5rem 0;
+    color: #000000;
+}
+
+.receipt-content {
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.receipt-content .main-text {
+    margin-bottom: 2rem;
+}
+
+.receipt-content .declaration {
+    margin-bottom: 2rem;
+}
+
+.rupee {
+    font-family: Arial, sans-serif;
+}
+
+.receipt-details {
+    margin: 2rem 0;
+}
+
+.detail-row {
+    margin-bottom: 2rem;
+    display: block;
+}
+
+.detail-row .label {
+    font-weight: normal;
+    display: inline-block;
+    min-width: 150px;
+    color: #000000;
+    font-size: 1.1rem;
+}
+
+.detail-row .value {
+    display: inline-block;
+    min-width: 300px;
+    padding: 0 0.5rem;
+    color: #000000;
+}
+
+.detail-section {
+    margin-top: 2rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.left-col, .right-col {
+    flex: 1;
+}
+
+.right-col {
+    text-align: right;
+}
+
+.detail-row .label {
+    font-weight: 500;
+    color: #000000;
+    font-size: 1.25rem;
+    display: inline-block;
+}
+
+.detail-row .value {
+    display: inline-block;
+    margin-left: 1rem;
+    min-width: 200px;
+    color: #000000;
+    font-size: 1.25rem;
+}
+
+.values-row {
+    margin-bottom: 1.5rem;
+}
+
+.divider-line {
+    height: 1.5px;
+    background-color: #000000;
+    width: 100%;
+    margin: 25px 0;
+    display: block;
+}
+
+.values-row .value {
+    position: relative;
+    margin-left: 0;
+}
+
+.revenue-stamp {
+    width: 100px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: auto; /* Changed from margin-left to margin-right */
+    margin-top: 3rem;
+}
+
+.revenue-stamp img {
+    width: 80px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.revenue-stamp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.revenue-stamp img {
+    width: 72px; /* Increased by 30% from 55px */
+    height: auto;
+    object-fit: contain;
+}
+
+.revenue-stamp .stamp-text {
+    font-size: 1.1rem;
+    color: #000000;
+    font-weight: 500;
+    white-space: nowrap;
+    text-align: center;
+    margin-top: 0.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .rent-receipt-container {
+        flex-direction: column;
+    }
+    
+    .preview-container {
+        position: static;
+    }
+}
