@@ -124,15 +124,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const fileName = document.getElementById('fileName').value || 'restaurant-bill';
 
         try {
+            // Remove any transform scale before capturing
+            const previewSection = document.querySelector('.preview-section');
+            const originalTransform = previewSection.style.transform;
+            previewSection.style.transform = 'none';
+
             // Convert the preview content to canvas
             const canvas = await html2canvas(previewContent, {
                 scale: 2,
                 useCORS: true,
                 letterRendering: true,
                 backgroundColor: '#ffffff',
-                windowWidth: previewContent.scrollWidth,
-                windowHeight: previewContent.scrollHeight
+                fontFamily: 'Courier New, Courier, monospace',
+                logging: false,
+                removeContainer: false,
+                allowTaint: true,
+                width: previewContent.offsetWidth,
+                height: previewContent.offsetHeight
             });
+
+            // Restore the original transform
+            previewSection.style.transform = originalTransform;
 
             // Initialize jsPDF
             const { jsPDF } = window.jspdf;
@@ -142,34 +154,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 format: 'a4'
             });
 
-            // Calculate dimensions
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-
-            // Add image to PDF
+            // Set up PDF with custom font
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const pageWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
 
-            // If content fits on one page
-            if (imgHeight <= pageHeight) {
-                doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-            } else {
-                // If content needs multiple pages
-                let heightLeft = imgHeight;
-                let position = 0;
-                let page = 1;
+            // Calculate dimensions to fit on one page
+            const margin = 10; // 10mm margin
+            const maxWidth = pageWidth - (margin * 2);
+            const maxHeight = pageHeight - (margin * 2);
 
-                while (heightLeft > 0) {
-                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                    position -= pageHeight;
+            // Calculate scale to fit content while maintaining aspect ratio
+            const scale = Math.min(
+                maxWidth / canvas.width * 25.4,  // Convert px to mm
+                maxHeight / canvas.height * 25.4
+            );
 
-                    if (heightLeft > 0) {
-                        doc.addPage();
-                        page++;
-                    }
-                }
-            }
+            const scaledWidth = (canvas.width * scale) / 25.4;
+            const scaledHeight = (canvas.height * scale) / 25.4;
+
+            // Center the content
+            const x = (pageWidth - scaledWidth) / 2;
+            const y = (pageHeight - scaledHeight) / 2;
+
+            // Add image to PDF with high quality
+            doc.addImage(imgData, 'JPEG', x, y, scaledWidth, scaledHeight, undefined, 'FAST');
 
             // Save the PDF
             doc.save(`${fileName}.pdf`);
@@ -227,7 +236,9 @@ function updatePreview() {
                 <div class="restaurant-address">${restaurantAddress}</div>
                 ${document.getElementById('gstNo').checked ? `<div class="restaurant-gst">GST No: ${document.getElementById('gstNumber').value || ''}</div>` : ''}
             </div>
-            <div class="receipt-line">---------------- RECEIPT ----------------</div>
+            <div class="receipt-line"></div>
+            <div style="text-align: center; margin: 10px 0;">RECEIPT</div>
+            <div class="receipt-line"></div>
             
             <div class="receipt-header">
                 <div class="header-row">
@@ -240,35 +251,35 @@ function updatePreview() {
                 </div>
             </div>
             
-            <div class="receipt-line">----------------------------------------</div>
+            <div class="receipt-line"></div>
             
-            <div class="table-header">
-                <div class="header-cell">Item</div>
-                <div class="header-cell">Price</div>
-                <div class="header-cell">Qty</div>
-                <div class="header-cell">Total</div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px; margin: 10px 0; text-align: left;">
+                <div>Item</div>
+                <div>Price</div>
+                <div>Qty</div>
+                <div>Total</div>
             </div>
             
-            <div class="receipt-line">----------------------------------------</div>
+            <div class="receipt-line"></div>
             
             ${items.map(item => `
-                <div class="table-row">
-                    <div class="table-cell">${item.description || '-'}</div>
-                    <div class="table-cell">₹ ${item.price}</div>
-                    <div class="table-cell">${item.quantity}</div>
-                    <div class="table-cell">₹ ${item.total.toFixed(0)}</div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px; margin: 5px 0; text-align: left;">
+                    <div>${item.description || '-'}</div>
+                    <div>₹ ${item.price}</div>
+                    <div>${item.quantity}</div>
+                    <div>₹ ${item.total.toFixed(0)}</div>
                 </div>
             `).join('')}
             ${items.length === 0 ? `
-                <div class="table-row">
-                    <div class="table-cell">-</div>
-                    <div class="table-cell">₹ 0</div>
-                    <div class="table-cell">0</div>
-                    <div class="table-cell">₹ 0</div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px; margin: 5px 0; text-align: left;">
+                    <div>-</div>
+                    <div>₹ 0</div>
+                    <div>0</div>
+                    <div>₹ 0</div>
                 </div>
             ` : ''}
             
-            <div class="receipt-line">----------------------------------------</div>
+            <div class="receipt-line"></div>
             
             <div class="summary-section">
                 <div class="summary-row">
@@ -285,21 +296,21 @@ function updatePreview() {
                 </div>
             </div>
             
-            <div class="receipt-line">----------------------------------------</div>
+            <div class="receipt-line"></div>
             
             <div class="summary-row">
                 <span>Mode: ${document.getElementById('paymentMethod').value || '-'}</span>
                 <span>Total: ₹ ${total.toFixed(0)}</span>
             </div>
             
-            <div class="receipt-line">----------------------------------------</div>
+            <div class="receipt-line"></div>
             
             <div class="receipt-footer">
                 <div class="nature-text">**SAVE PAPER SAVE NATURE !!</div>
                 <div class="time-text">Time: ${billTime}</div>
             </div>
             
-            <div class="receipt-line">----------------------------------------</div>
+            <div class="receipt-line"></div>
             
             <div class="receipt-watermark">
                 <small>Watermark will be removed from actual pdf</small>
