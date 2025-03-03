@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BillGen Pro - Modern Bill Generator</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="shared-header.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -23,22 +24,30 @@
     </div>
     <header class="header">
         <nav class="navbar">
-            <div class="logo">
-                <span class="icon"><i class="fas fa-file-invoice"></i></span>
-                <span class="brand">BillGen Pro</span>
-            </div>
-            <div class="nav-links">
-                <a href="/" class="active">Home</a>
-                <a href="/fuel-bill">Fuel Receipt</a>
-                <a href="/rent-receipt">Rent Receipt</a>
-                <a href="/book-invoice">Book Invoice</a>
-                <a href="/driver-salary">Driver Salary</a>
-                <a href="/internet-bill">Internet Bill</a>
-                <a href="/restaurant-bill">Restaurant Bill</a>
+            <a href="/" class="logo-link">
+                <div class="logo">
+                    <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                    <span class="brand">BillGen Pro</span>
+                </div>
+            </a>
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    Generate Bills <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/hotel-bill"><i class="fas fa-hotel"></i>Hotel Stay Bill</a>
+                    <a href="/restaurant-bill"><i class="fas fa-utensils"></i>Restaurant Bill</a>
+                    <a href="/internet-bill"><i class="fas fa-wifi"></i>Internet Bill</a>
+                    <a href="/fuel-bill"><i class="fas fa-gas-pump"></i>Fuel Receipt</a>
+                    <a href="/rent-receipt"><i class="fas fa-home"></i>Rent Receipt</a>
+                    <a href="/book-invoice"><i class="fas fa-book"></i>Book Invoice</a>
+                    <a href="/driver-salary"><i class="fas fa-car"></i>Driver Salary</a>
+                </div>
             </div>
             <div class="auth-buttons">
-                <button class="btn btn-secondary">Sign Up</button>
-                <button class="btn btn-primary">Login</button>
+                <button class="contact-btn">Contact Us</button>
+                <button class="btn btn-signup">Sign Up</button>
+                <button class="btn btn-login">Login</button>
             </div>
         </nav>
     </header>
@@ -92,6 +101,12 @@
                         </div>
                         <span>LTA Receipt</span>
                     </a>
+                    <a href="/hotel-bill" class="bill-type-card">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <span>Hotel Stay Bill</span>
+                    </a>
                     <div class="bill-type-card">
                         <div class="icon-wrapper">
                             <i class="fas fa-shopping-cart"></i>
@@ -104,12 +119,7 @@
                         </div>
                         <span>Cab & Travel Bill</span>
                     </div>
-                    <div class="bill-type-card">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-hotel"></i>
-                        </div>
-                        <span>Hotel Bill</span>
-                    </div>
+
                     <div class="bill-type-card">
                         <div class="icon-wrapper">
                             <i class="fas fa-file-invoice"></i>
@@ -133,6 +143,117 @@
 
     </main>
 
+    <!-- Signup Modal -->
+    <div class="signup-modal" id="signupModal">
+        <div class="signup-form-container">
+            <button class="close-signup" id="closeSignup">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="signup-form-header">
+                <h2>Create Account</h2>
+                <p>Join BillGen Pro to streamline your billing process</p>
+            </div>
+            <form id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupFirstName">First Name</label>
+                        <input type="text" id="signupFirstName" name="firstName" required>
+                        <i class="fas fa-user input-icon"></i>
+                        <div class="error-message">Please enter your first name</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupLastName">Last Name</label>
+                        <input type="text" id="signupLastName" name="lastName" required>
+                        <i class="fas fa-user input-icon"></i>
+                        <div class="error-message">Please enter your last name</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupPhone">Phone Number</label>
+                    <input type="tel" id="signupPhone" name="phone" required>
+                    <i class="fas fa-phone input-icon"></i>
+                    <div class="error-message">Please enter a valid phone number</div>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                    <div class="error-message">Please enter a valid email address</div>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" required>
+                    <i class="fas fa-lock input-icon"></i>
+                    <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="strengthMeter"></div>
+                    </div>
+                    <div class="error-message">Password must be at least 8 characters</div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <i class="fas fa-lock input-icon"></i>
+                    <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
+                    <div class="password-match-indicator" id="passwordMatch">Passwords match</div>
+                    <div class="error-message">Passwords do not match</div>
+                </div>
+                <button type="submit" class="signup-btn">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contact Form Modal -->
+    <div class="contact-modal" id="contactModal">
+        <div class="contact-form-container">
+            <button class="close-modal" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="contact-form-header">
+                <h2>Get in Touch</h2>
+                <p>We'd love to hear from you. Send us a message!</p>
+            </div>
+            <form id="contactForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <i class="fas fa-phone input-icon"></i>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <i class="fas fa-comment input-icon"></i>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+                <div class="success-message" id="successMessage">
+                    Thank you! Your message has been sent successfully.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="contact-form.css">
+    <link rel="stylesheet" href="signup-form.css">
     <script src="script.js"></script>
+    <script src="shared-header.js"></script>
+    <script src="contact-form.js"></script>
+    <script src="signup-form.js"></script>
 </body>
 </html>

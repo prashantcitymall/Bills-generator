@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Stay Bill Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="shared-header.css">
+    <link rel="stylesheet" href="hotel-bill.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="background-design">
+        <div class="floating-elements">
+            <i class="fas fa-file-invoice"></i>
+            <i class="fas fa-receipt"></i>
+            <i class="fas fa-calculator"></i>
+            <i class="fas fa-coins"></i>
+            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-dollar-sign"></i>
+            <i class="fas fa-percentage"></i>
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div class="gradient-overlay"></div>
+    </div>
+    <header class="header">
+        <nav class="navbar">
+            <a href="/" class="logo-link">
+                <div class="logo">
+                    <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                    <span class="brand">BillGen Pro</span>
+                </div>
+            </a>
+
+            <div class="auth-buttons">
+                <button class="btn btn-signup">Sign Up</button>
+                <button class="btn btn-login">Login</button>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <h1 class="generate-title">Generate <span class="highlight">Hotel Stay Bill</span></h1>
+
+
+        <div class="form-container">
+            <div class="input-section">
+                <div class="template-section">
+                    <h3>Select Template</h3>
+                    <div class="radio-group">
+                        <input type="radio" id="template1" name="template" value="1" checked>
+                        <label for="template1">Template 1</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Hotel Details</h3>
+                    <div class="input-field">
+                        <label for="hotelName">Hotel Name</label>
+                        <input type="text" id="hotelName" placeholder="Enter hotel name">
+                    </div>
+                    <div class="input-field">
+                        <label for="hotelAddress">Hotel Address</label>
+                        <textarea id="hotelAddress" placeholder="Enter hotel address"></textarea>
+                    </div>
+                    <div class="dates-section">
+                        <div class="input-field">
+                            <label for="checkInDate">Check In Date</label>
+                            <input type="date" id="checkInDate">
+                        </div>
+                        <div class="input-field">
+                            <label for="checkInTime">Check In Time</label>
+                            <input type="time" id="checkInTime">
+                        </div>
+                        <div class="input-field">
+                            <label for="checkOutDate">Check Out Date</label>
+                            <input type="date" id="checkOutDate">
+                        </div>
+                        <div class="input-field">
+                            <label for="checkOutTime">Check Out Time</label>
+                            <input type="time" id="checkOutTime">
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <label for="billNo">Bill No</label>
+                        <input type="text" id="billNo">
+                    </div>
+                    <div class="input-field">
+                        <label for="nationality">Nationality</label>
+                        <input type="text" id="nationality" value="Indian">
+                    </div>
+                    <div class="input-field">
+                        <label for="roomNo">Room No</label>
+                        <input type="text" id="roomNo">
+                    </div>
+                    <div class="input-field">
+                        <label for="roomType">Room Type</label>
+                        <input type="text" id="roomType" value="AC">
+                    </div>
+                    <div class="gst-section">
+                        <div class="radio-group">
+                            <input type="radio" id="noGst" name="gstType" value="none" checked>
+                            <label for="noGst">None</label>
+                            <input type="radio" id="gstNo" name="gstType" value="gst">
+                            <label for="gstNo">GST No</label>
+                        </div>
+                        <div class="gst-input" style="display: none;">
+                            <input type="text" id="gstNumber" placeholder="M43010GH195260">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Logo Details</h3>
+                    <div class="radio-group">
+                        <input type="radio" id="logoUrl" name="logoSource" value="url" checked>
+                        <label for="logoUrl">URL</label>
+                        <input type="radio" id="logoUpload" name="logoSource" value="upload">
+                        <label for="logoUpload">Upload From Device</label>
+                        <input type="radio" id="logoGallery" name="logoSource" value="gallery">
+                        <label for="logoGallery">Gallery</label>
+                    </div>
+                    <div class="input-field">
+                        <input type="text" id="logoUrlInput" placeholder="Please enter a valid Image URL">
+                    </div>
+                    <div class="checkbox-field">
+                        <input type="checkbox" id="logoAuth">
+                        <label for="logoAuth">I am authorized to use the logo for generating this bill.</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Room Details</h3>
+                    <table class="order-table">
+                        <thead>
+                            <tr>
+                                <th>Room Type & Description</th>
+                                <th>Rate</th>
+                                <th>No of days</th>
+                                <th>Sub Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roomTableBody">
+                            <tr>
+                                <td><input type="text" class="room-description"></td>
+                                <td><input type="number" class="room-rate"></td>
+                                <td><input type="number" class="room-days"></td>
+                                <td class="room-total">₹0</td>
+                                <td>
+                                    <button class="add-row">+</button>
+                                    <button class="remove-row">-</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-section">
+                    <h3>Payment Details</h3>
+                    <div class="input-field">
+                        <label for="currency">Currency</label>
+                        <select id="currency">
+                            <option value="INR" selected>Indian Rupee - ₹</option>
+                        </select>
+                    </div>
+                    <div class="payment-grid">
+                        <div class="input-field">
+                            <label for="paymentType">Payment Type</label>
+                            <select id="paymentType">
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <label for="taxPercent">Tax %</label>
+                            <input type="number" id="taxPercent" value="0">
+                        </div>
+                        <div class="input-field">
+                            <label for="advanceAmount">Advance Amount</label>
+                            <input type="number" id="advanceAmount" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Receptionist Signature</h3>
+                    <div class="radio-group">
+                        <input type="radio" id="signatureUrl" name="signatureSource" value="url" checked>
+                        <label for="signatureUrl">URL</label>
+                        <input type="radio" id="signatureUpload" name="signatureSource" value="upload">
+                        <label for="signatureUpload">Upload From Device</label>
+                        <input type="radio" id="signatureGallery" name="signatureSource" value="gallery">
+                        <label for="signatureGallery">Gallery</label>
+                    </div>
+                    <div class="input-field">
+                        <input type="text" id="signatureUrlInput" placeholder="Enter signature image URL">
+                    </div>
+                    <div class="checkbox-field">
+                        <input type="checkbox" id="signatureAuth">
+                        <label for="signatureAuth">I am authorized to use the signature for generating this bill.</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Guest Details</h3>
+                    <div class="input-field">
+                        <label for="guestName">Guest Name</label>
+                        <input type="text" id="guestName">
+                    </div>
+                    <div class="input-field">
+                        <label for="guestGender">Gender</label>
+                        <select id="guestGender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="guestAge">Age</label>
+                        <input type="number" id="guestAge">
+                    </div>
+                    <div class="input-field">
+                        <label for="guestAddress">Guest Address</label>
+                        <textarea id="guestAddress"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="button-group">
+                        <input type="text" id="fileName" placeholder="Enter file name">
+                        <button id="clearBtn" class="secondary-button">Clear</button>
+                        <button id="downloadBtn" class="primary-button">Download</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="preview-section" class="preview-section">
+                <h3>Live Preview</h3>
+                <div id="previewContainer" class="preview-container">
+                    <div class="receipt-preview">
+                        <!-- Preview content will be updated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="hotel-bill.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
