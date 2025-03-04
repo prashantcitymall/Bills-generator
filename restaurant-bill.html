@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Bill Generator - BillGen Pro</title>
+    <title>Restaurant Bill - BillGen Pro</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="shared-header.css">
     <link rel="stylesheet" href="restaurant-bill.css">
@@ -21,8 +21,23 @@
                     <span class="brand">BillGen Pro</span>
                 </div>
             </a>
-
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    Generate Bills <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="general-bill.html"><i class="fas fa-file-invoice"></i>General Bill</a>
+                    <a href="hotel-bill.html"><i class="fas fa-hotel"></i>Hotel Stay Bill</a>
+                    <a href="restaurant-bill.html" class="active"><i class="fas fa-utensils"></i>Restaurant Bill</a>
+                    <a href="internet-bill.html"><i class="fas fa-wifi"></i>Internet Bill</a>
+                    <a href="fuel-bill.html"><i class="fas fa-gas-pump"></i>Fuel Receipt</a>
+                    <a href="book-invoice.html"><i class="fas fa-book"></i>Book Invoice</a>
+                    <a href="driver-salary.html"><i class="fas fa-car"></i>Driver Salary</a>
+                    <a href="rent-receipt.html"><i class="fas fa-home"></i>Rent Receipt</a>
+                </div>
+            </div>
             <div class="auth-buttons">
+                <button class="contact-btn">Contact Us</button>
                 <button class="btn btn-signup">Sign Up</button>
                 <button class="btn btn-login">Login</button>
             </div>
@@ -202,8 +217,8 @@
         </div>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="shared-header.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="restaurant-bill.js"></script>
 </body>
 </html>
