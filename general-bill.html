@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Bill - BillGen Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="shared-header.css">
+    <link rel="stylesheet" href="general-bill.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="/" class="logo-link">
+                <div class="logo">
+                    <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                    <span class="brand">BillGen Pro</span>
+                </div>
+            </a>
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    Generate Bills <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="general-bill.html"><i class="fas fa-file-invoice"></i>General Bill</a>
+                    <a href="hotel-bill.html"><i class="fas fa-hotel"></i>Hotel Stay Bill</a>
+                    <a href="restaurant-bill.html"><i class="fas fa-utensils"></i>Restaurant Bill</a>
+                    <a href="internet-bill.html"><i class="fas fa-wifi"></i>Internet Bill</a>
+                    <a href="fuel-bill.html"><i class="fas fa-gas-pump"></i>Fuel Receipt</a>
+                    <a href="rent-receipt.html"><i class="fas fa-home"></i>Rent Receipt</a>
+                    <a href="book-invoice.html"><i class="fas fa-book"></i>Book Invoice</a>
+                    <a href="driver-salary.html"><i class="fas fa-car"></i>Driver Salary</a>
+                </div>
+            </div>
+            <div class="auth-buttons">
+                <button class="contact-btn">Contact Us</button>
+                <button class="btn btn-signup">Sign Up</button>
+                <button class="btn btn-login">Login</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="background-design">
+        <div class="floating-elements">
+            <i class="fas fa-file-invoice"></i>
+            <i class="fas fa-receipt"></i>
+            <i class="fas fa-calculator"></i>
+            <i class="fas fa-coins"></i>
+            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-dollar-sign"></i>
+            <i class="fas fa-percentage"></i>
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div class="gradient-overlay"></div>
+    </div>
+
+    <div class="bill-container">
+        <div class="form-section">
+            <h1>General Bill</h1>
+            <div class="template-selector">
+                <h3>Select Template</h3>
+                <div class="template-options">
+                    <label class="template-option">
+                        <input type="radio" name="template" value="template1" checked>
+                        <span>Template 1</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Customer Details Section -->
+            <div class="form-group">
+                <h3>Customer Details</h3>
+                <div class="input-grid">
+                    <div class="input-field">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="customerLocation">Customer Location</label>
+                        <input type="text" id="customerLocation" required>
+                    </div>
+                </div>
+                <div class="input-field full-width">
+                    <label for="shippingAddress">Customer Shipping Address</label>
+                    <textarea id="shippingAddress" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <!-- Shop Details Section -->
+            <div class="form-group">
+                <h3>Shop Details</h3>
+                <div class="input-grid">
+                    <div class="input-field">
+                        <label for="shopName">Shop Name</label>
+                        <input type="text" id="shopName" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="shopAddress">Shop Address</label>
+                        <textarea id="shopAddress" rows="2" required></textarea>
+                    </div>
+                    <div class="input-field">
+                        <label for="soldByDetails">Sold By Details</label>
+                        <input type="text" id="soldByDetails" required>
+                    </div>
+                </div>
+                <div class="tax-options">
+                    <label class="tax-option">
+                        <input type="radio" name="taxType" value="none" checked>
+                        <span>None</span>
+                    </label>
+                    <label class="tax-option">
+                        <input type="radio" name="taxType" value="cst">
+                        <span>CST TIN</span>
+                    </label>
+                    <label class="tax-option">
+                        <input type="radio" name="taxType" value="gst">
+                        <span>GST TIN</span>
+                    </label>
+                    <input type="text" id="taxNumber" class="tax-input" placeholder="Enter tax number">
+                </div>
+            </div>
+
+            <!-- Order Details Section -->
+            <div class="form-group">
+                <h3>Order Details</h3>
+                <div class="order-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Item Price</th>
+                                <th>Quantity</th>
+                                <th>Tax %</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderItems">
+                            <tr>
+                                <td><input type="text" class="item-description"></td>
+                                <td><input type="number" class="item-price" min="0" step="0.01"></td>
+                                <td><input type="number" class="item-quantity" min="0"></td>
+                                <td><input type="number" class="item-tax" min="0" max="100"></td>
+                                <td class="action-buttons">
+                                    <button class="add-row"><i class="fas fa-plus"></i></button>
+                                    <button class="remove-row"><i class="fas fa-minus"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payment Details Section -->
+            <div class="form-group">
+                <h3>Payment Details</h3>
+                <div class="input-grid">
+                    <div class="input-field">
+                        <label for="currency">Currency</label>
+                        <select id="currency" required>
+                            <option value="INR">Indian Rupee - ₹</option>
+                            <option value="USD">US Dollar - $</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" required>
+                            <option value="">Select One</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="upi">UPI</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="invoiceNumber">Invoice Number</label>
+                        <input type="text" id="invoiceNumber" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="orderNumber">Order Number</label>
+                        <input type="text" id="orderNumber" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Details Section -->
+            <div class="form-group">
+                <h3>File Details</h3>
+                <div class="input-field">
+                    <label for="fileName">Download File Name</label>
+                    <input type="text" id="fileName" value="General Bill Template 1" readonly>
+                    <p class="file-note">This will be used as name of the generated PDF file</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button id="downloadBtn" class="primary-button">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button id="clearBtn" class="secondary-button">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>Live Preview</h2>
+            <div id="billPreview" class="bill-preview">
+                <!-- Preview content will be dynamically updated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="shared-header.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="general-bill.js"></script>
+</body>
+</html>
