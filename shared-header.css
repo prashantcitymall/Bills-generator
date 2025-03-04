@@ -26,7 +26,7 @@
     text-decoration: none;
     cursor: pointer;
     position: relative;
-    padding: 8px 16px;
+    padding: 13.8px 27.6px;
     border-radius: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(255, 255, 255, 0.03);
@@ -42,11 +42,11 @@
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 13.8px;
 }
 
 .logo .icon {
-    font-size: 28px;
+    font-size: 27.6px;
     background: linear-gradient(45deg, #526DFF, #8A8FFF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -60,7 +60,7 @@
 }
 
 .logo .brand {
-    font-size: 20px;
+    font-size: 23px;
     font-weight: 600;
     background: linear-gradient(45deg, #FFFFFF 30%, #A4ABFF 100%);
     -webkit-background-clip: text;
@@ -81,9 +81,9 @@
     color: rgba(255, 255, 255, 0.9);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;
+    padding: 12.1px 24.2px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18.15px;
     border-radius: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 500;
@@ -182,10 +182,10 @@
     background: transparent;
     border: 1px solid rgba(82, 109, 255, 0.3);
     color: rgba(255, 255, 255, 0.9);
-    padding: 8px 20px;
+    padding: 12.1px 24.2px;
     border-radius: 12px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 18.15px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -196,10 +196,10 @@
 }
 
 .btn {
-    padding: 8px 20px;
+    padding: 12.1px 24.2px;
     border-radius: 12px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 18.15px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
 }
@@ -257,6 +257,21 @@
     .dropdown {
         margin: 0 16px;
     }
+    
+    .dropdown-btn,
+    .contact-btn,
+    .btn {
+        padding: 10.89px 21.78px;
+        font-size: 16.94px;
+    }
+    
+    .logo .icon {
+        font-size: 24.15px;
+    }
+    
+    .logo .brand {
+        font-size: 20.7px;
+    }
 }
 
 @media (max-width: 576px) {
@@ -271,6 +286,21 @@
     
     .dropdown {
         margin: 0 12px;
+    }
+    
+    .dropdown-btn,
+    .contact-btn,
+    .btn {
+        padding: 9.68px 19.36px;
+        font-size: 15.73px;
+    }
+    
+    .logo .icon {
+        font-size: 20.7px;
+    }
+    
+    .logo .brand {
+        font-size: 18.4px;
     }
 }
 

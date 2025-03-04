@@ -6,6 +6,7 @@
     padding: 2rem;
     max-width: 1800px;
     margin: 0 auto;
+    padding-top: 92px;
 }
 
 .form-section {
@@ -67,6 +68,7 @@ h2, h3 {
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 1.5rem;
+    margin-top: 46px;
 }
 
 .input-grid {
@@ -250,5 +252,25 @@ th {
     .preview-section {
         position: static;
         max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .bill-container {
+        padding-top: 80.5px;
+    }
+    
+    .form-group {
+        margin-top: 40.25px;
+    }
+}
+
+@media (max-width: 576px) {
+    .bill-container {
+        padding-top: 69px;
+    }
+    
+    .form-group {
+        margin-top: 34.5px;
     }
 }

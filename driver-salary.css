@@ -3,6 +3,7 @@
     display: flex;
     gap: 2rem;
     padding: 2rem;
+    padding-top: 104px;
     max-width: 1600px;
     margin: 0 auto;
 }
@@ -11,6 +12,7 @@
     flex: 1;
     background: white;
     padding: 2rem;
+    margin-top: 52px;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -143,6 +145,43 @@ textarea {
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.highlight {
+    color: #ff6b6b;
+    text-decoration: underline;
+    text-decoration-color: #ff6b6b;
+    margin-left: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .driver-salary-container {
+        padding-top: 91px;
+    }
+    
+    .form-container {
+        margin-top: 45.5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .driver-salary-container {
+        padding-top: 78px;
+    }
+    
+    .form-container {
+        margin-top: 39px;
+    }
 }
 
 /* Preview Styles */

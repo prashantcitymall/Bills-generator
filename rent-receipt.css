@@ -1,13 +1,14 @@
 .rent-receipt-container {
     display: flex;
     gap: 2rem;
-    padding: 2rem;
+    padding: 104px 2rem 2rem 2rem;
     max-width: 1600px;
     margin: 0 auto;
 }
 
 .form-container {
     flex: 1;
+    margin-top: 52px;
     background: white;
     padding: 2rem;
     border-radius: 12px;
@@ -299,5 +300,25 @@ textarea {
     
     .preview-container {
         position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .rent-receipt-container {
+        padding-top: 91px; /* Increased from 70px by 30% */
+    }
+    
+    .form-container {
+        margin-top: 45.5px; /* Increased from 35px by 30% */
+    }
+}
+
+@media (max-width: 576px) {
+    .rent-receipt-container {
+        padding-top: 78px; /* Increased from 60px by 30% */
+    }
+    
+    .form-container {
+        margin-top: 39px; /* Increased from 30px by 30% */
     }
 }

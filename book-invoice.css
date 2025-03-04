@@ -2,13 +2,14 @@
 .book-invoice-container {
     display: flex;
     gap: 2rem;
-    padding: 2rem;
+    padding: 114.4px 2rem 2rem 2rem;
     max-width: 1600px;
     margin: 0 auto;
 }
 
 .form-container {
     flex: 1;
+    margin-top: 57.2px;
     background: white;
     padding: 2rem;
     border-radius: 12px;
@@ -114,6 +115,27 @@ textarea {
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .book-invoice-container {
+        padding-top: 100.1px;
+    }
+    
+    .form-container {
+        margin-top: 50.05px;
+    }
+}
+
+@media (max-width: 576px) {
+    .book-invoice-container {
+        padding-top: 85.8px;
+    }
+    
+    .form-container {
+        margin-top: 42.9px;
+    }
 }
 
 /* Preview Styles */

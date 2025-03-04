@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Invoice Generator - BillGen Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="shared-header.css">
+    <link rel="stylesheet" href="ecommerce-bill.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="background-design">
+        <div class="gradient-overlay"></div>
+    </div>
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="logo-link">
+                <div class="logo">
+                    <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                    <span class="brand">BillGen Pro</span>
+                </div>
+            </a>
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    Generate Bills <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="general-bill.html"><i class="fas fa-file-invoice"></i>General Bill</a>
+                    <a href="hotel-bill.html"><i class="fas fa-hotel"></i>Hotel Stay Bill</a>
+                    <a href="restaurant-bill.html"><i class="fas fa-utensils"></i>Restaurant Bill</a>
+                    <a href="internet-bill.html"><i class="fas fa-wifi"></i>Internet Bill</a>
+                    <a href="fuel-bill.html"><i class="fas fa-gas-pump"></i>Fuel Receipt</a>
+                    <a href="book-invoice.html"><i class="fas fa-book"></i>Book Invoice</a>
+                    <a href="driver-salary.html"><i class="fas fa-car"></i>Driver Salary</a>
+                    <a href="rent-receipt.html"><i class="fas fa-home"></i>Rent Receipt</a>
+                    <a href="ecommerce-bill.html" class="active"><i class="fas fa-shopping-cart"></i>E-commerce Invoice</a>
+                </div>
+            </div>
+            <div class="auth-buttons">
+                <button class="contact-btn">Contact Us</button>
+                <button class="btn btn-signup">Sign Up</button>
+                <button class="btn btn-login">Login</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="ecommerce-bill-container">
+        <h1 class="title">Generate <span class="highlight">E-commerce Invoice</span></h1>
+        
+        <div class="form-container">
+            <div class="input-form" id="ecommerceForm">
+                <div class="template-selector">
+                    <h3>Select Template</h3>
+                    <div class="template-options">
+                        <label>
+                            <input type="radio" name="template" value="amazon" checked onchange="updatePreview()">
+                            Amazon
+                        </label>
+                        <label>
+                            <input type="radio" name="template" value="flipkart" onchange="updatePreview()">
+                            Flipkart
+                        </label>
+                        <label>
+                            <input type="radio" name="template" value="myntra" onchange="updatePreview()">
+                            Myntra
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" placeholder="Enter Customer Name" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label for="invoiceNumber">Invoice Number</label>
+                        <input type="text" id="invoiceNumber" placeholder="Enter Receipt Number" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="soldBy">Sold By</label>
+                        <input type="text" id="soldBy" placeholder="Enter Seller Name" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label for="orderNumber">Order Number</label>
+                        <input type="text" id="orderNumber" placeholder="Enter Order Number" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group full-width">
+                        <label for="shippingAddress">Customer Shipping Address</label>
+                        <textarea id="shippingAddress" placeholder="Shipping Address..." oninput="updatePreview()"></textarea>
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="soldByDetails">Sold By Details</label>
+                        <textarea id="soldByDetails" placeholder="Sold by RetailTech..." oninput="updatePreview()"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="panNo">PAN NO</label>
+                        <input type="text" id="panNo" placeholder="Enter PAN NO" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label for="gstin">GSTIN</label>
+                        <input type="text" id="gstin" placeholder="Enter GSTIN" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="placeOfSupply">Place of Supply</label>
+                        <select id="placeOfSupply" onchange="updatePreview()">
+                            <option value="">Select</option>
+                            <option value="22">Delhi (22)</option>
+                            <option value="27">Maharashtra (27)</option>
+                            <option value="29">Karnataka (29)</option>
+                            <option value="36">Telangana (36)</option>
+                            <option value="33">Tamil Nadu (33)</option>
+                            <option value="37">Andhra Pradesh (37)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="placeOfDelivery">Place of Delivery</label>
+                        <select id="placeOfDelivery" onchange="updatePreview()">
+                            <option value="">Select</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Items</h3>
+                    <div class="items-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Tax %</th>
+                                    <th>Discount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsTableBody">
+                                <tr>
+                                    <td><input type="text" placeholder="Item description" oninput="updatePreview()"></td>
+                                    <td><input type="number" placeholder="0" min="0" oninput="updatePreview()"></td>
+                                    <td><input type="number" placeholder="1" min="0" oninput="updatePreview()"></td>
+                                    <td><input type="number" placeholder="2" min="0" oninput="updatePreview()"></td>
+                                    <td><input type="number" placeholder="0" min="0" oninput="updatePreview()"></td>
+                                    <td>
+                                        <button class="add-item-btn" onclick="addNewItemRow()">Add</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" onchange="updatePreview()">
+                            <option value="Cash">Cash</option>
+                            <option value="Credit/Debit Card">Credit/Debit Card</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="orderDate">Order Date</label>
+                        <input type="date" id="orderDate" onchange="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label for="invoiceDate">Invoice Date</label>
+                        <input type="date" id="invoiceDate" onchange="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="form-section terms">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="termsCheckbox">
+                        <span class="checkmark"></span>
+                        I have read the <a href="#" class="terms-link">terms and conditions</a>.
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button class="generate-btn" onclick="downloadPDF()">Generate PDF</button>
+                    <button class="clear-btn" onclick="clearForm()">Clear</button>
+                </div>
+            </div>
+
+            <div class="preview-container">
+                <h2>Live Preview</h2>
+                <div class="preview-card" id="previewCard">
+                    <!-- Live preview will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="shared-header.js"></script>
+    <script src="ecommerce-bill.js"></script>
+</body>
+</html>

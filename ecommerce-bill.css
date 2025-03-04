@@ -1,0 +1,422 @@
+/* E-commerce Invoice Styles */
+.ecommerce-bill-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 96px 2rem 2rem 2rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: #fff;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.highlight {
+    color: #ff6b6b;
+    text-decoration: underline;
+    text-decoration-color: #ff6b6b;
+    margin-left: 8px;
+}
+
+.form-container {
+    display: flex;
+    gap: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.input-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.template-selector {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.template-options {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.template-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+.form-section {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.input-group {
+    flex: 1;
+    min-width: 250px;
+}
+
+.input-group.full-width {
+    flex: 100%;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.signature-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.items-table {
+    width: 100%;
+    overflow-x: auto;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0.8rem;
+    text-align: left;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.add-item-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.add-item-btn:hover {
+    background: #45a049;
+}
+
+.terms {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.terms-link {
+    color: #ff6b6b;
+    text-decoration: none;
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.generate-btn,
+.clear-btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.generate-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.generate-btn:hover {
+    background: #45a049;
+}
+
+.clear-btn {
+    background: #f44336;
+    color: white;
+}
+
+.clear-btn:hover {
+    background: #da190b;
+}
+
+.preview-container {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.preview-container h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.preview-card {
+    background: white;
+    padding: 15mm;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.preview-card p,
+.preview-card td,
+.preview-card th,
+.preview-card h3,
+.preview-card div {
+    color: #000 !important;
+}
+
+/* Amazon Template Styles */
+.amazon-template {
+    font-family: Arial, sans-serif;
+    color: #000;
+    padding: 2rem;
+    background: #fff;
+}
+
+.amazon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    border-bottom: none;
+    padding: 0;
+    background: transparent;
+}
+
+.amazon-logo {
+    height: 40px;
+    width: auto;
+}
+
+.invoice-title {
+    font-size: 14px;
+    text-align: right;
+}
+
+.amazon-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.seller-details, .billing-details {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.seller-details {
+    text-align: left;
+}
+
+.billing-details {
+    text-align: right;
+}
+
+.order-details {
+    margin: 1.5rem 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Adjust table styling for better page fit */
+.amazon-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.85rem; /* Reduce font size slightly */
+    table-layout: fixed; /* Fixed table layout for better control */
+}
+
+.amazon-items th {
+    background: #f5f5f5;
+    padding: 0.4rem;
+    border: 1px solid #ddd;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0.8rem;
+}
+
+.amazon-items td {
+    padding: 0.4rem;
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Set specific column widths */
+.amazon-items th:nth-child(1) { width: 5%; }  /* Sl. No */
+.amazon-items th:nth-child(2) { width: 25%; } /* Description */
+.amazon-items th:nth-child(3) { width: 10%; } /* Unit Price */
+.amazon-items th:nth-child(4) { width: 8%; }  /* Discount */
+.amazon-items th:nth-child(5) { width: 7%; }  /* Qty */
+.amazon-items th:nth-child(6) { width: 10%; } /* Net Amount */
+.amazon-items th:nth-child(7) { width: 8%; }  /* Tax Rate */
+.amazon-items th:nth-child(8) { width: 9%; }  /* Tax Type */
+.amazon-items th:nth-child(9) { width: 9%; }  /* Tax Amount */
+.amazon-items th:nth-child(10) { width: 9%; } /* Total Amount */
+
+/* Prevent text overflow */
+.amazon-items td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Allow description column to wrap */
+.amazon-items td:nth-child(2) {
+    white-space: normal;
+    word-break: break-word;
+}
+
+.amount-words {
+    border: 1px solid #000;
+    padding: 1rem;
+    margin: 1rem 0;
+    min-height: 100px;
+}
+
+.signature-section {
+    text-align: right;
+    margin-top: 1rem;
+}
+
+.tax-note {
+    margin: 1rem 0;
+    font-size: 14px;
+}
+
+.payment-details {
+    border: 1px solid #000;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.payment-details table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payment-details td {
+    padding: 0.4rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.footer-note {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: #666;
+    text-align: center;
+}
+
+/* Add print-specific styles */
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    body * {
+        visibility: hidden;
+    }
+    
+    #previewCard, #previewCard * {
+        visibility: visible;
+    }
+    
+    #previewCard {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        padding: 15mm;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .amazon-items {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .amazon-items th {
+        background-color: #f5f5f5 !important;
+    }
+}
