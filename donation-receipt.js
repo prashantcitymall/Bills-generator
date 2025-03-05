@@ -196,9 +196,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     </tr>
                 </table>
 
-                <p style="text-align: center; margin-top: 20px; font-style: normal; color: #000; font-size: 14px;">
-                    Thank you for your generosity, we appreciate your support
-                </p>
+                <div style="position: relative; margin-top: 20px; min-height: 200px;">
+                    <p style="text-align: center; margin-top: 20px; font-style: normal; color: #000; font-size: 14px;">
+                        Thank you for your generosity, we appreciate your support
+                    </p>
+
+                    <!-- Temple Stamp -->
+                    <div class="temple-stamp">
+                        <div class="stamp-temple-name">${formData.templeName}</div>
+                        <div class="stamp-details">
+                            ${formData.templeAddress}<br>
+                            Phone: +91 ${formData.phoneNo}<br>
+                            Govt Regd. No. 91 of 2018
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
 
