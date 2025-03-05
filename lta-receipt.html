@@ -3,13 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LTA Receipt Generator</title>
+    <title>LTA Receipt Generator - BillGen Pro</title>
     <link rel="stylesheet" href="lta-receipt.css">
+    <link rel="stylesheet" href="shared-header.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="lta-receipt.js"></script>
 </head>
 <body>
+    <div class="background-design">
+        <div class="floating-elements">
+            <i class="fas fa-file-invoice"></i>
+            <i class="fas fa-receipt"></i>
+            <i class="fas fa-calculator"></i>
+            <i class="fas fa-coins"></i>
+            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-dollar-sign"></i>
+            <i class="fas fa-percentage"></i>
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div class="gradient-overlay"></div>
+    </div>
+    <header class="header">
+        <nav class="navbar">
+            <a href="/" class="logo-link">
+                <div class="logo">
+                    <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                    <span class="brand">BillGen Pro</span>
+                </div>
+            </a>
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    Generate Bills <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="general-bill.html"><i class="fas fa-file-invoice"></i>General Bill</a>
+                    <a href="hotel-bill.html"><i class="fas fa-hotel"></i>Hotel Stay Bill</a>
+                    <a href="restaurant-bill.html"><i class="fas fa-utensils"></i>Restaurant Bill</a>
+                    <a href="internet-bill.html"><i class="fas fa-wifi"></i>Internet Bill</a>
+                    <a href="fuel-bill.html"><i class="fas fa-gas-pump"></i>Fuel Receipt</a>
+                    <a href="rent-receipt.html"><i class="fas fa-home"></i>Rent Receipt</a>
+                    <a href="book-invoice.html"><i class="fas fa-book"></i>Book Invoice</a>
+                    <a href="driver-salary.html"><i class="fas fa-car"></i>Driver Salary</a>
+                    <a href="ecommerce-bill.html"><i class="fas fa-shopping-cart"></i>E-commerce Invoice</a>
+                    <a href="donation-receipt.html"><i class="fas fa-hand-holding-heart"></i>Donation Receipt</a>
+                    <a href="lta-receipt.html"><i class="fas fa-plane"></i>LTA Receipt</a>
+                </div>
+            </div>
+        </nav>
+    </header>
     <div class="page-container">
         <div class="form-container">
             <h1>LTA Receipt</h1>
