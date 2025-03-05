@@ -1,0 +1,768 @@
+:root {
+    --primary-color: #0066ff;
+    --border-color: #e0e0e0;
+    --background-color: #f5f6f8;
+    --text-color: #333;
+    --label-color: #666;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.page-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.form-container {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+}
+
+.preview-container {
+    flex: 1;
+    position: sticky;
+    top: 2rem;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    margin: 0 0 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.section {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+
+h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--text-color);
+}
+
+h4 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 1rem 0;
+    color: var(--label-color);
+}
+
+/* Radio buttons */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.radio-label input[type="radio"] {
+    display: none;
+}
+
+.radio-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    margin-right: 8px;
+    position: relative;
+    display: inline-block;
+}
+
+.radio-custom::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s;
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Form elements */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-row.three-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f8f9fc;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon input {
+    padding-right: 2.5rem;
+}
+
+.input-with-icon i {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--label-color);
+    cursor: pointer;
+}
+
+/* Checkbox */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+    display: inline-block;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom::after {
+    content: '✓';
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.terms-link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-generate,
+.btn-clear {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-generate {
+    background: var(--primary-color);
+    color: white;
+    flex: 1;
+}
+
+.btn-clear {
+    background: #dc3545;
+    color: white;
+    flex: 1;
+}
+
+.btn-generate:hover,
+.btn-clear:hover {
+    opacity: 0.9;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .form-row,
+    .form-row.three-columns {
+        flex-direction: column;
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        margin: 1rem;
+    }
+    
+    .form-container {
+        padding: 1rem;
+    }
+}
+
+/* Preview */
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.preview-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--text-color);
+}
+
+.btn-download {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.preview-ticket {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.ticket-header {
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.ticket-header .ticket-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px;
+    margin-top: 15%;
+}
+
+.ticket-top .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.ticket-top .logo img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    max-width: 120px;
+}
+
+.ticket-top .ticket-label {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
+    margin-left: 15%;
+    position: relative;
+}
+
+.ticket-header .success-message {
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ticket-label {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.contact-info {
+    text-align: right;
+}
+
+.help-text {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.contact-details {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.write-us {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 0.25rem;
+}
+
+.ticket-body {
+    padding: 1rem;
+}
+
+.destination-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.boarding-point {
+    margin: 20px 0 25px 0;
+}
+
+.boarding-point #preview-location {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #000;
+    display: block;
+    margin-bottom: 8px;
+    font-family: Arial, sans-serif;
+}
+
+.to-section {
+    margin: 15px 0;
+}
+
+.to-section .label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    display: block;
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+}
+
+.to-section #preview-destination {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 5px;
+    display: block;
+    font-family: Arial, sans-serif;
+}
+
+.to-section #preview-to-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.travel-details {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.travel-details > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.travel-details .label {
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+}
+
+.travel-details .value {
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.travel-details .travel-type {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: normal;
+    margin-top: 2px;
+}
+
+/* Ensure location is visible in boarding details */
+.details-section .details-value {
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-height: 1.2em;
+    display: block;
+}
+
+.section-title {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 600;
+    margin: 12px 0 8px;
+}
+
+.details-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.details-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.details-label {
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+}
+
+.details-value {
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.passenger-details {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 10px;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.passenger-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.passenger-label {
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+}
+
+.passenger-value {
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.ticket-footer {
+    padding: 1rem;
+}
+
+.note {
+    font-size: 0.9rem;
+    color: var(--label-color);
+    margin-bottom: 1rem;
+}
+
+.fare-details {
+    text-align: right;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.fare-details > div {
+    margin-bottom: 0.25rem;
+}
+
+.terms {
+    text-align: center;
+    color: var(--primary-color);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Table headings styling */
+.preview-ticket .ticket-body h3,
+.preview-ticket .ticket-body .section-heading,
+.preview-ticket .ticket-body .label {
+    color: #333333;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* Specific table header text */
+.preview-ticket .ticket-body .table-header,
+.preview-ticket .boarding-details th,
+.preview-ticket .dropping-details th,
+.preview-ticket .passenger-details th {
+    color: #333333;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Column headers */
+.preview-ticket th,
+.preview-ticket td.header {
+    color: #333333;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 8px 0;
+}
+
+/* Modern table styling */
+.preview-ticket table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 15px 0;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.preview-ticket th {
+    background: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.preview-ticket td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.preview-ticket tr:last-child td {
+    border-bottom: none;
+}
+
+/* Section headings */
+.preview-ticket .section-heading {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+    margin: 25px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Travel info section */
+.travel-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.travel-info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.travel-info-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.travel-info-value {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Payment details section */
+.payment-details {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.9rem;
+}
+
+.payment-row:last-child {
+    border-bottom: none;
+    font-weight: 600;
+}
+
+.payment-label {
+    color: #666;
+}
+
+.payment-value {
+    color: #333;
+    font-weight: 500;
+}
+
+/* Note section */
+.ticket-note {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    color: #666;
+    font-size: 0.8rem;
+    border-left: 4px solid #0066ff;
+}
+
+@media (max-width: 1200px) {
+    .page-container {
+        flex-direction: column;
+    }
+
+    .preview-container {
+        position: static;
+    }
+}
+
+/* Dropdown styling for both travel type and payment method */
+select[name="travel-type"],
+select[name="payment-method"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+
+select[name="travel-type"]:focus,
+select[name="payment-method"]:focus {
+    outline: none;
+    border-color: #0066ff;
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+select[name="travel-type"] option,
+select[name="payment-method"] option {
+    padding: 12px;
+    font-size: 0.95rem;
+    background-color: #fff;
+    color: #333;
+}
+
+select[name="travel-type"] option:hover,
+select[name="payment-method"] option:hover,
+select[name="travel-type"] option:focus,
+select[name="payment-method"] option:focus {
+    background-color: #f5f5f5;
+}
+
+select[name="travel-type"]::-ms-expand,
+select[name="payment-method"]::-ms-expand {
+    display: none;
+}
+
+select[name="travel-type"] option:checked,
+select[name="payment-method"] option:checked {
+    background-color: #e8f0fe;
+    color: #0066ff;
+}

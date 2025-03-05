@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LTA Receipt Generator</title>
+    <link rel="stylesheet" href="lta-receipt.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="lta-receipt.js"></script>
+</head>
+<body>
+    <div class="page-container">
+        <div class="form-container">
+            <h1>LTA Receipt</h1>
+            
+            <!-- Template Selection -->
+            <div class="section">
+                <h3>Select Template</h3>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="template" value="template1" checked>
+                        <span class="radio-custom"></span>
+                        Template 1
+                    </label>
+                </div>
+            </div>
+
+            <!-- LTA Details -->
+            <div class="section">
+                <h3>LTA Details</h3>
+                <h4>Select logo</h4>
+                <div class="radio-group logo-options">
+                    <label class="radio-label">
+                        <input type="radio" name="logo" value="redbus" checked>
+                        <span class="radio-custom"></span>
+                        Red Bus
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="logo" value="makemytrip">
+                        <span class="radio-custom"></span>
+                        Make My Trip
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="logo" value="goibibo">
+                        <span class="radio-custom"></span>
+                        Goibibo
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="logo" value="ixigo">
+                        <span class="radio-custom"></span>
+                        iXigo
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="logo" value="yatra">
+                        <span class="radio-custom"></span>
+                        Yatra
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="logo" value="abhibus">
+                        <span class="radio-custom"></span>
+                        AbhiBus
+                    </label>
+                </div>
+            </div>
+
+            <!-- Boarding Point Details -->
+            <div class="section">
+                <h3>Boarding Point Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Location</label>
+                        <div class="input-with-icon">
+                            <input type="text" name="location" placeholder="Location Name">
+                            <i class="fas fa-pen-to-square"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Landmark</label>
+                        <div class="input-with-icon">
+                            <input type="text" placeholder="Landmark...">
+                            <i class="fas fa-pen-to-square"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Reporting Date</label>
+                        <input type="date" class="date-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Departure Time</label>
+                        <input type="time" class="time-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drop Point Details -->
+            <div class="section">
+                <h3>Drop Point Details</h3>
+                <div class="form-row three-columns">
+                    <div class="form-group">
+                        <label>Dropping Point Date</label>
+                        <input type="date" placeholder="Dropping Point Date" class="date-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Dropping Point Time</label>
+                        <input type="time" placeholder="Dropping Point Time" class="time-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Dropping Address</label>
+                        <div class="input-with-icon">
+                            <input type="text" placeholder="Enter address" value="surajpur policeline greater noida">
+                            <i class="fas fa-pen-to-square"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passenger Details -->
+            <div class="section">
+                <h3>Passenger Details</h3>
+                <div class="form-group">
+                    <label>Passenger Name, Age, Gender</label>
+                    <input type="text" placeholder="Name, Age, Gender">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>No of Person</label>
+                        <input type="number" placeholder="Number of passengers">
+                    </div>
+                    <div class="form-group">
+                        <label>Seat No</label>
+                        <input type="text" placeholder="Seat number">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Travel Details -->
+            <div class="section">
+                <h3>Travel Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Travel Type</label>
+                        <select name="travel-type" class="form-control">
+                            <option value="Sleeper">Sleeper</option>
+                            <option value="AC Sleeper">AC Sleeper</option>
+                            <option value="Semi Sleeper">Semi Sleeper</option>
+                            <option value="A/C Sleeper (2+1)">A/C Sleeper (2+1)</option>
+                            <option value="Non Sleeper">Non Sleeper</option>
+                            <option value="Non AC">Non AC</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Travel Name</label>
+                        <input type="text" placeholder="Travel agency name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Traveler Address</label>
+                    <div class="input-with-icon">
+                        <input type="text" placeholder="Address...">
+                        <i class="fas fa-pen-to-square"></i>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ticket No</label>
+                        <input type="text" placeholder="Ticket number">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Details -->
+            <div class="section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Boarding Point No</label>
+                        <input type="text" placeholder="Boarding point number">
+                    </div>
+                    <div class="form-group">
+                        <label>Customer Care No</label>
+                        <input type="text" placeholder="Customer care number">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="section">
+                <div class="form-row three-columns">
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select name="payment-method" class="form-control">
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Net Banking">Net Banking</option>
+                            <option value="Card">Card</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" placeholder="Enter amount">
+                    </div>
+                    <div class="form-group">
+                        <label>Tax %</label>
+                        <input type="number" placeholder="Tax percentage">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="section terms-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" required>
+                    <span class="checkbox-custom"></span>
+                    I have read the <a href="#" class="terms-link">terms and conditions</a>
+                </label>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button type="submit" class="btn-generate">Generate</button>
+                <button type="reset" class="btn-clear">Clear</button>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-header">
+                <h2>Live Preview</h2>
+                <button class="btn-download">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+            <div class="preview-ticket" id="previewTicket">
+                <div class="ticket-header">
+                    <div class="success-message">
+                        Congratulations! You have booked a reschedulable ticket. You can
+                        advance or postpone this journey till <span id="preview-journey-date">5 Mar 2025 20:52</span>
+                    </div>
+                    <div class="ticket-top">
+                        <div class="logo">
+                            <img id="selectedPlatformLogo" src="images/redbus.png" alt="Platform Logo">
+                            <span class="ticket-label">eTICKET</span>
+                        </div>
+                        <div class="contact-info">
+                            <div class="help-text">Need help with your trip?</div>
+                            <div class="contact-details">
+                                <div>Boarding Point Ph. No.: <span id="preview-boarding-phone">080278546</span></div>
+                                <div>Travels-Customer Care: <span id="preview-customer-care">080490587</span></div>
+                                <div class="write-us">Write to us here</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ticket-body">
+                    <div class="boarding-point">
+                        <span id="preview-boarding-location">-</span>
+                    </div>
+                    <div class="destination-info">
+                        <div class="to-section">
+                            <span class="label">To</span>
+                            <div class="destination" id="preview-destination">surajpur policeline greater noida</div>
+                            <div class="date" id="preview-to-date">5 Mar 2025</div>
+                        </div>
+                        
+                        <div class="ticket-number">
+                            Ticket no: <span id="preview-ticket-no">8BZJ0DNGSLPGPCHB</span>
+                            <div class="pnr">PNR no: <span id="preview-pnr">TDW7SYF2QWVIT0SUZ6UO</span></div>
+                        </div>
+                    </div>
+
+                    <div class="travel-details">
+                        <div>
+                            <span class="label">Travel Name</span>
+                            <span class="value" id="preview-travel-name">BEDI TRAVELS</span>
+                            <span class="value travel-type" id="preview-travel-type">A/C Sleeper (2+1)</span>
+                        </div>
+                        <div>
+                            <span class="label">Reporting Date</span>
+                            <span class="value" id="preview-reporting-date">2025-03-05</span>
+                        </div>
+                        <div>
+                            <span class="label">Departure time</span>
+                            <span class="value" id="preview-departure-time">22:06</span>
+                        </div>
+                        <div>
+                            <span class="label">Number of Passengers</span>
+                            <span class="value" id="preview-passengers">1</span>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Boarding point details</h3>
+                    <div class="details-section">
+                        <div class="details-grid">
+                            <div class="details-item">
+                                <span class="details-label">Location</span>
+                                <span class="details-value" id="preview-boarding-details-location">-</span>
+                            </div>
+                            <div class="details-item">
+                                <span class="details-label">Landmark</span>
+                                <span class="details-value" id="preview-landmark">Water box road</span>
+                            </div>
+                            <div class="details-item">
+                                <span class="details-label">Address</span>
+                                <span class="details-value" id="preview-address">HIMACHAL PRADESH</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Dropping point details</h3>
+                    <div class="details-section">
+                        <div class="details-grid">
+                            <div class="details-item">
+                                <span class="details-label">Dropping point time</span>
+                                <span class="details-value" id="preview-drop-time">-</span>
+                            </div>
+                            <div class="details-item">
+                                <span class="details-label">Dropping point Date</span>
+                                <span class="details-value" id="preview-drop-date">-</span>
+                            </div>
+                            <div class="details-item">
+                                <span class="details-label">Address</span>
+                                <span class="details-value" id="preview-drop-address">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="passenger-details">
+                        <div class="passenger-item">
+                            <span class="passenger-label">Passenger Details (Age, Gender)</span>
+                            <span class="passenger-value" id="preview-passenger-details">Prashant yadav,34,Male</span>
+                        </div>
+                        <div class="passenger-item">
+                            <span class="passenger-label">Seat Number</span>
+                            <span class="passenger-value" id="preview-seat-no">37</span>
+                        </div>
+                    </div>
+
+                    <div class="ticket-footer">
+                        <div class="note">NOTE: This operator accepts mTicket, you need not carry a printout</div>
+                        <div class="fare-details">
+                            <div>Total Fare : ₹ <span id="preview-total-fare">1200.00</span></div>
+                            <div>(% GST and service charge applicable, if any)</div>
+                            <div>Net amount : ₹ <span id="preview-net-amount">1153.85</span></div>
+                            <div>Taxable amount : ₹ <span id="preview-tax-amount">1153.85</span></div>
+                        </div>
+                        <div class="terms">Terms & Conditions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
