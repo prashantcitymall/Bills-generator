@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Receipt - BillGen Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="shared-header.css">
+    <link rel="stylesheet" href="donation-receipt.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-design">
+        <div class="gradient-overlay"></div>
+    </div>
+    <header class="header">
+        <nav class="navbar">
+            <a href="/" class="logo-link">
+                <div class="logo">
+                    <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                    <span class="brand">BillGen Pro</span>
+                </div>
+            </a>
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    Generate Bills <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="general-bill.html"><i class="fas fa-file-invoice"></i>General Bill</a>
+                    <a href="hotel-bill.html"><i class="fas fa-hotel"></i>Hotel Stay Bill</a>
+                    <a href="restaurant-bill.html"><i class="fas fa-utensils"></i>Restaurant Bill</a>
+                    <a href="internet-bill.html"><i class="fas fa-wifi"></i>Internet Bill</a>
+                    <a href="fuel-bill.html"><i class="fas fa-gas-pump"></i>Fuel Receipt</a>
+                    <a href="book-invoice.html"><i class="fas fa-book"></i>Book Invoice</a>
+                    <a href="driver-salary.html"><i class="fas fa-car"></i>Driver Salary</a>
+                    <a href="rent-receipt.html"><i class="fas fa-home"></i>Rent Receipt</a>
+                    <a href="donation-receipt.html" class="active"><i class="fas fa-hand-holding-heart"></i>Donation Receipt</a>
+                </div>
+            </div>
+            <div class="auth-buttons">
+                <button class="contact-btn">Contact Us</button>
+                <button class="btn btn-signup">Sign Up</button>
+                <button class="btn btn-login">Login</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="donation-container">
+        <h1 class="title">Generate <span class="highlight">Donation Receipt</span></h1>
+
+        <div class="form-preview-container">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2>Donation Receipt Form</h2>
+                <form id="donationForm">
+                    <div class="form-group">
+                        <label>Select Template</label>
+                        <div class="template-selection">
+                            <input type="radio" id="template1" name="template" value="template1" checked>
+                            <label for="template1">Template 1</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="templeName">Temple Name *</label>
+                        <input type="text" id="templeName" required placeholder="Enter Temple Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trustPan">Trust PAN No *</label>
+                        <input type="text" id="trustPan" required placeholder="Enter Trust PAN Number" maxlength="10">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="templeAddress">Temple Address *</label>
+                        <input type="text" id="templeAddress" required placeholder="Enter Temple Address">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="phoneNo">Phone No *</label>
+                            <input type="tel" id="phoneNo" required placeholder="Mobile No">
+                        </div>
+                        <div class="form-group half">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" required placeholder="Enter Email">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Website</label>
+                        <input type="text" id="website" placeholder="Enter Website">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="receiptNo">Receipt No *</label>
+                        <input type="text" id="receiptNo" required placeholder="Enter Receipt Number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount *</label>
+                        <input type="number" id="amount" required placeholder="Enter Amount">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="receivedFrom">Received from *</label>
+                        <input type="text" id="receivedFrom" required placeholder="Enter Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="donatorPan">Donator's PAN No *</label>
+                        <input type="text" id="donatorPan" required placeholder="Enter Donator's PAN Number" maxlength="10">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="receivedBy">Received by *</label>
+                        <input type="text" id="receivedBy" required placeholder="Enter Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Logo</label>
+                        <div class="logo-options">
+                            <div class="option">
+                                <input type="radio" id="logoUrl" name="logoType" value="url" checked>
+                                <label for="logoUrl">URL</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="logoUpload" name="logoType" value="upload">
+                                <label for="logoUpload">Upload</label>
+                            </div>
+                        </div>
+                        <div id="logoUrlInput" class="logo-input">
+                            <input type="text" id="logoUrlField" placeholder="Enter logo URL">
+                        </div>
+                        <div id="logoFileInput" class="logo-input" style="display: none;">
+                            <input type="file" id="logoFile" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" placeholder="Enter Description"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="date">Date *</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group half">
+                            <label for="paymentMethod">Payment Method *</label>
+                            <select id="paymentMethod" required>
+                                <option value="">Select One</option>
+                                <option value="cash">Cash</option>
+                                <option value="check">Check</option>
+                                <option value="card">Card</option>
+                                <option value="upi">UPI</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group terms">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I have read the terms and conditions</label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="downloadBtn" class="generate-btn">Generate</button>
+                        <button type="reset" class="clear-btn">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <h2>Live Preview</h2>
+                <div id="receiptPreview" class="receipt-preview">
+                    <!-- Preview content will be generated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="shared-header.js"></script>
+    <script src="donation-receipt.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</body>
+</html>
