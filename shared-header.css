@@ -2,48 +2,41 @@
 .header {
     position: fixed;
     top: 0;
-    left: 1%;
-    width: 98%;
+    left: 0;
+    right: 0;
     z-index: 1000;
     background: linear-gradient(135deg, rgba(13, 17, 38, 0.85) 0%, rgba(22, 28, 64, 0.85) 100%);
-    padding: 15px 30px;
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(100, 255, 218, 0.1);
-    border-radius: 0 0 25px 25px;
-    box-shadow: 
-        0 4px 30px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(100, 255, 218, 0.1),
-        inset 0 0 20px rgba(100, 255, 218, 0.05);
-    animation: headerGlow 4s ease-in-out infinite;
+    padding: 12px 24px;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(82, 109, 255, 0.05);
 }
 
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1540px; /* Increased from 1400px by 10% */
+    max-width: 1400px;
     margin: 0 auto;
-    gap: 26.4px; /* Increased from 24px by 10% */
+    gap: 24px;
 }
 
 .logo-link {
     text-decoration: none;
     cursor: pointer;
     position: relative;
-    padding: 15.18px 30.36px; /* Increased padding by 10% */
-    border-radius: 13.2px; /* Increased by 10% */
+    padding: 13.8px 27.6px;
+    border-radius: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(255, 255, 255, 0.03);
     margin-right: auto;
 }
 
 .logo-link:hover {
-    background: rgba(100, 255, 218, 0.1);
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-        0 8px 20px rgba(100, 255, 218, 0.2),
-        0 0 30px rgba(100, 255, 218, 0.1);
-    border-color: rgba(100, 255, 218, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(82, 109, 255, 0.15);
 }
 
 .logo {
@@ -53,43 +46,12 @@
 }
 
 .logo .icon {
-    font-size: 30px;
-    background: var(--gradient);
+    font-size: 27.6px;
+    background: linear-gradient(45deg, #526DFF, #8A8FFF);
     -webkit-background-clip: text;
-    animation: iconPulse 2s ease-in-out infinite;
-}
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 12px rgba(100, 255, 218, 0.4));
+    filter: drop-shadow(0 0 8px rgba(82, 109, 255, 0.3));
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes headerGlow {
-    0%, 100% {
-        box-shadow: 
-            0 4px 30px rgba(0, 0, 0, 0.3),
-            0 0 30px rgba(100, 255, 218, 0.1),
-            inset 0 0 20px rgba(100, 255, 218, 0.05);
-        border-color: rgba(100, 255, 218, 0.1);
-    }
-    50% {
-        box-shadow: 
-            0 4px 40px rgba(0, 0, 0, 0.4),
-            0 0 40px rgba(100, 255, 218, 0.15),
-            inset 0 0 30px rgba(100, 255, 218, 0.1);
-        border-color: rgba(100, 255, 218, 0.2);
-    }
-}
-
-@keyframes iconPulse {
-    0%, 100% {
-        filter: drop-shadow(0 0 12px rgba(100, 255, 218, 0.4));
-        transform: scale(1);
-    }
-    50% {
-        filter: drop-shadow(0 0 20px rgba(100, 255, 218, 0.6));
-        transform: scale(1.1);
-    }
-}
 }
 
 .logo-link:hover .icon {
