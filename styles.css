@@ -27,12 +27,13 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 110%; /* Increase base font size by 10% */
 }
 
 body {
     background-color: #f0f2f5;
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.76; /* Increased from 1.6 by 10% */
     position: relative;
     overflow-x: hidden;
 }
@@ -198,7 +199,7 @@ body {
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 2.2rem; /* Increased from 2rem by 10% */
 }
 
 .nav-links a {
@@ -214,8 +215,8 @@ body {
 
 /* Button Styles */
 .btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 12px;
+    padding: 0.825rem 1.65rem; /* Increased from 0.75rem 1.5rem by 10% */
+    border-radius: 13.2px; /* Increased from 12px by 10% */
     border: none;
     font-weight: 600;
     cursor: pointer;
@@ -233,8 +234,8 @@ body {
 }
 
 .btn-large {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+    padding: 1.1rem 2.2rem; /* Increased from 1rem 2rem by 10% */
+    font-size: 1.21rem; /* Increased from 1.1rem by 10% */
 }
 
 .btn-outline {
@@ -245,7 +246,7 @@ body {
 
 .auth-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 1.1rem; /* Increased from 1rem by 10% */
 }
 
 /* Hero Section */
@@ -298,26 +299,27 @@ body {
 /* Bill Types Grid */
 .bill-types-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1.5rem;
-    margin: 3rem auto;
-    max-width: 1200px;
+    grid-template-columns: repeat(4, 1fr); /* Changed from 6 to 4 columns to make cards larger */
+    gap: 2rem; /* Increased from 1.5rem */
+    margin: 3.3rem auto; /* Increased from 3rem */
+    max-width: 1320px; /* Increased from 1200px */
+    padding: 0 2rem; /* Added padding for better spacing */
 }
 
 .bill-type-card {
     background: rgba(17, 34, 64, 0.8);
     text-decoration: none;
     color: inherit;
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 1.8rem 1.2rem;
+    backdrop-filter: blur(11px); /* Increased from 10px by 10% */
+    border-radius: 22px; /* Increased from 20px by 10% */
+    padding: 1.98rem 1.32rem; /* Increased from 1.8rem 1.2rem by 10% */
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.2rem;
+    gap: 1.32rem; /* Increased from 1.2rem by 10% */
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 11px 22px rgba(0, 0, 0, 0.08); /* Increased from 10px 20px by 10% */
     position: relative;
     overflow: hidden;
 }
@@ -336,8 +338,8 @@ body {
 }
 
 .bill-type-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8.8px) scale(1.022); /* Increased transform values by 10% */
+    box-shadow: 0 16.5px 33px rgba(0, 0, 0, 0.12); /* Increased shadow values by 10% */
 }
 
 .bill-type-card:hover::before {
@@ -345,8 +347,8 @@ body {
 }
 
 .icon-wrapper {
-    width: 64px;
-    height: 64px;
+    width: 88px; /* Further increased for home page tabs */
+    height: 88px; /* Further increased for home page tabs */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -373,27 +375,27 @@ body {
 .bill-type-card:nth-child(12) .icon-wrapper { background: var(--medical-gradient); }
 
 .bill-type-card:hover .icon-wrapper {
-    transform: scale(1.1) rotate(5deg);
+    transform: scale(1.11) rotate(5.5deg); /* Increased scale and rotation by 10% */
 }
 
 .icon-wrapper i {
-    font-size: 1.8rem;
+    font-size: 2.2rem; /* Further increased from 1.98rem */ /* Increased from 1.8rem by 10% */
     transition: transform 0.4s ease;
 }
 
 .bill-type-card:hover .icon-wrapper i {
-    transform: scale(1.1);
+    transform: scale(1.11); /* Increased from 1.1 by 10% */
 }
 
 .bill-type-card span {
     font-weight: 600;
     color: var(--text-primary);
-    font-size: 1rem;
+    font-size: 1.1rem; /* Increased from 1rem by 10% */
     text-align: center;
     position: relative;
     z-index: 2;
     transition: all 0.3s ease;
-    text-shadow: 0 0 10px rgba(204, 214, 246, 0.2);
+    text-shadow: 0 0 11px rgba(204, 214, 246, 0.2); /* Increased shadow by 10% */
 }
 
 .bill-type-card:hover span {

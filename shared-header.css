@@ -17,17 +17,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1400px;
+    max-width: 1540px; /* Increased from 1400px by 10% */
     margin: 0 auto;
-    gap: 24px;
+    gap: 26.4px; /* Increased from 24px by 10% */
 }
 
 .logo-link {
     text-decoration: none;
     cursor: pointer;
     position: relative;
-    padding: 13.8px 27.6px;
-    border-radius: 12px;
+    padding: 15.18px 30.36px; /* Increased padding by 10% */
+    border-radius: 13.2px; /* Increased by 10% */
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(255, 255, 255, 0.03);
     margin-right: auto;
