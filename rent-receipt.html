@@ -17,30 +17,26 @@
         <nav class="navbar">
             <a href="/" class="logo-link">
                 <div class="logo">
-                    <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                    <span class="icon"><i class="fas fa-file-invoice" aria-hidden="true"></i></span>
                     <span class="brand">BillGen Pro</span>
                 </div>
             </a>
             <div class="dropdown">
-                <button class="dropdown-btn">
-                    Generate Bills <i class="fas fa-chevron-down"></i>
+                <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+                    Generate Bills <i class="fas fa-chevron-down" aria-hidden="true"></i>
                 </button>
-                <div class="dropdown-content">
-                    <a href="general-bill.html"><i class="fas fa-file-invoice"></i>General Bill</a>
-                    <a href="hotel-bill.html"><i class="fas fa-hotel"></i>Hotel Stay Bill</a>
-                    <a href="restaurant-bill.html"><i class="fas fa-utensils"></i>Restaurant Bill</a>
-                    <a href="internet-bill.html"><i class="fas fa-wifi"></i>Internet Bill</a>
-                    <a href="fuel-bill.html"><i class="fas fa-gas-pump"></i>Fuel Receipt</a>
-                    <a href="book-invoice.html"><i class="fas fa-book"></i>Book Invoice</a>
-                    <a href="driver-salary.html"><i class="fas fa-car"></i>Driver Salary</a>
-                    <a href="rent-receipt.html" class="active"><i class="fas fa-home"></i>Rent Receipt</a>
+                <div class="dropdown-content" role="menu" aria-label="Bill Types">
+                    <a href="general-bill.html" role="menuitem"><i class="fas fa-file-invoice" aria-hidden="true"></i>General Bill</a>
+                    <a href="hotel-bill.html" role="menuitem"><i class="fas fa-hotel" aria-hidden="true"></i>Hotel Stay Bill</a>
+                    <a href="restaurant-bill.html" role="menuitem"><i class="fas fa-utensils" aria-hidden="true"></i>Restaurant Bill</a>
+                    <a href="internet-bill.html" role="menuitem"><i class="fas fa-wifi" aria-hidden="true"></i>Internet Bill</a>
+                    <a href="fuel-bill.html" role="menuitem"><i class="fas fa-gas-pump" aria-hidden="true"></i>Fuel Receipt</a>
+                    <a href="book-invoice.html" role="menuitem"><i class="fas fa-book" aria-hidden="true"></i>Book Invoice</a>
+                    <a href="driver-salary.html" role="menuitem"><i class="fas fa-car" aria-hidden="true"></i>Driver Salary</a>
+                    <a href="rent-receipt.html" class="active"><i class="fas fa-home" aria-hidden="true"></i>Rent Receipt</a>
                 </div>
             </div>
-            <div class="auth-buttons">
-                <button class="contact-btn">Contact Us</button>
-                <button class="btn btn-signup">Sign Up</button>
-                <button class="btn btn-login">Login</button>
-            </div>
+
         </nav>
     </header>
 
@@ -175,8 +171,8 @@
             </div>
 
             <div class="form-actions">
-                <button class="btn btn-primary" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
-                <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-times"></i> Clear</button>
+                <button class="btn btn-primary" id="downloadBtn"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
+                <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-times" aria-hidden="true"></i> Clear</button>
             </div>
         </div>
 
