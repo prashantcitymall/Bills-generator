@@ -39,36 +39,77 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePreview();
     });
 
-    // Download button functionality (placeholder)
-    document.getElementById('downloadBtn').addEventListener('click', function() {
-        // Validate required fields
+    // Download functionality
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (!validateForm()) return;
+
+        const element = document.querySelector('.receipt-preview');
+        const watermark = element.querySelector('.watermark');
+        if (watermark) watermark.style.display = 'none';
+
+        const opt = {
+            margin: [10, 10, 10, 10], // [top, right, bottom, left] margins in mm
+            filename: `rent-receipt-${document.getElementById('downloadFileName').value || 'RR001'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                scrollY: 0
+            },
+            jsPDF: { 
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
+
+        // New Promise-based usage:
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (watermark) watermark.style.display = 'block';
+        });
+    });
+
+    // Validate form function
+    function validateForm() {
         const requiredFields = [
-            'employeeName',
-            'rentAddress',
-            'landlordName',
-            'panNo',
-            'rentAmount'
+            { field: document.getElementById('employeeName'), name: 'Employee Name' },
+            { field: document.getElementById('rentAddress'), name: 'Rent Address' },
+            { field: document.getElementById('landlordName'), name: 'Landlord Name' },
+            { field: document.getElementById('panNo'), name: 'PAN Number' },
+            { field: document.getElementById('fromDate'), name: 'From Date' },
+            { field: document.getElementById('toDate'), name: 'To Date' },
+            { field: document.getElementById('rentAmount'), name: 'Rent Amount' }
         ];
 
-        let isValid = true;
-        requiredFields.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (!field.value.trim()) {
-                field.style.borderColor = 'red';
-                isValid = false;
-            } else {
-                field.style.borderColor = '';
-            }
-        });
-
-        if (!isValid) {
-            alert('Please fill in all required fields');
-            return;
+        // Validate dates
+        const fromDate = new Date(document.getElementById('fromDate').value);
+        const toDate = new Date(document.getElementById('toDate').value);
+        
+        if (fromDate > toDate) {
+            alert('From Date cannot be later than To Date');
+            document.getElementById('fromDate').focus();
+            return false;
         }
 
-        // TODO: Implement actual PDF generation and download
-        alert('PDF generation will be implemented in the next phase');
-    });
+        // Validate rent amount
+        const rentAmount = parseFloat(document.getElementById('rentAmount').value);
+        if (rentAmount <= 0) {
+            alert('Rent Amount must be greater than 0');
+            document.getElementById('rentAmount').focus();
+            return false;
+        }
+
+        for (const { field, name } of requiredFields) {
+            if (!field.value.trim()) {
+                alert(`Please enter ${name}`);
+                field.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     // Initial preview update
     updatePreview();
@@ -91,15 +132,12 @@ function updatePreview() {
     const address = document.getElementById('rentAddress').value || '';
     document.getElementById('previewAddress').textContent = address;
 
-    // Update landlord name
+    // Update landlord name in all locations
     const landlordName = document.getElementById('landlordName').value || '';
-    document.getElementById('previewLandlord').textContent = landlordName;
-    
-    // Update landlord name in the main text
-    const mainText = document.querySelector('.main-text');
-    const mainTextContent = mainText.innerHTML;
-    const landlordRegex = /(to landlord, Mr\/Ms)(?:\s+[^\s]+)?/;
-    mainText.innerHTML = mainTextContent.replace(landlordRegex, `$1${landlordName ? ' ' + landlordName : ''}`);
+    const landlordElements = document.querySelectorAll('#previewLandlord');
+    landlordElements.forEach(element => {
+        element.textContent = landlordName;
+    });
 
     // Update Pan No.
     const panNo = document.getElementById('panNo').value || '';
@@ -114,7 +152,6 @@ function updatePreview() {
     const fromDate = formatDate(document.getElementById('fromDate').value);
     const toDate = formatDate(document.getElementById('toDate').value);
     document.getElementById('previewDates').textContent = `${fromDate} - ${toDate}`;
-    document.getElementById('previewPeriod').textContent = `${fromDate} to ${toDate}`;
     document.getElementById('previewPeriod').textContent = `${fromDate} to ${toDate}`;
 }
 

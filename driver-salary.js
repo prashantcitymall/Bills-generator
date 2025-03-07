@@ -34,52 +34,75 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Download functionality
-    document.getElementById('downloadBtn').addEventListener('click', async function() {
-        const previewContent = document.querySelector('.receipt-preview');
-        const fileName = document.getElementById('downloadFileName').value || 'driver-salary';
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (!validateForm()) return;
 
-        // Hide watermark temporarily
-        const watermark = document.querySelector('.watermark');
+        const element = document.querySelector('.receipt-preview');
+        const watermark = element.querySelector('.watermark');
         if (watermark) watermark.style.display = 'none';
 
-        try {
-            // Convert the preview content to canvas
-            const canvas = await html2canvas(previewContent, {
+        const opt = {
+            margin: 1,
+            filename: `driver-salary-${document.getElementById('downloadFileName').value || 'DS001'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
                 scale: 2,
                 useCORS: true,
-                letterRendering: true,
-                backgroundColor: '#ffffff',
-                windowWidth: previewContent.scrollWidth,
-                windowHeight: previewContent.scrollHeight
-            });
-
-            // Initialize jsPDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
+                allowTaint: true,
+                scrollY: 0
+            },
+            jsPDF: { 
                 unit: 'mm',
-                format: 'a4'
-            });
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
 
-            // Calculate dimensions
-            const imgWidth = 210;
-            const pageHeight = 297;
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-
-            // Add the image to the PDF
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-
-            // Save the PDF
-            doc.save(`${fileName}.pdf`);
-
-        } catch (error) {
-            console.error('PDF generation failed:', error);
-        } finally {
-            // Show watermark again
+        // New Promise-based usage:
+        html2pdf().set(opt).from(element).save().then(() => {
             if (watermark) watermark.style.display = 'block';
-        }
+        });
     });
+
+    // Validate form function
+    function validateForm() {
+        const requiredFields = [
+            { field: document.getElementById('driverName'), name: 'Driver Name' },
+            { field: document.getElementById('employeeName'), name: 'Employee Name' },
+            { field: document.getElementById('vehicleNumber'), name: 'Vehicle Number' },
+            { field: document.getElementById('fromDate'), name: 'From Date' },
+            { field: document.getElementById('toDate'), name: 'To Date' },
+            { field: document.getElementById('salaryAmount'), name: 'Salary Amount' }
+        ];
+
+        // Validate dates
+        const fromDate = new Date(document.getElementById('fromDate').value);
+        const toDate = new Date(document.getElementById('toDate').value);
+        
+        if (fromDate > toDate) {
+            alert('From Date cannot be later than To Date');
+            document.getElementById('fromDate').focus();
+            return false;
+        }
+
+        // Validate salary amount
+        const salaryAmount = parseFloat(document.getElementById('salaryAmount').value);
+        if (salaryAmount <= 0) {
+            alert('Salary Amount must be greater than 0');
+            document.getElementById('salaryAmount').focus();
+            return false;
+        }
+
+        for (const { field, name } of requiredFields) {
+            if (!field.value.trim()) {
+                alert(`Please enter ${name}`);
+                field.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     // Initial preview update
     updatePreview();

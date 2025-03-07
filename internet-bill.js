@@ -56,92 +56,59 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Download button functionality
-    document.getElementById('downloadBtn').addEventListener('click', async function() {
-        // Validate required fields
-        const required = ['providerName', 'accountNumber', 'customerName', 'planSpeed', 'planPackage', 'tarrifPlan', 'planAmount'];
-        let isValid = true;
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (!validateForm()) return;
 
-        required.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (!field.value) {
-                field.style.borderColor = 'red';
-                isValid = false;
-            } else {
-                field.style.borderColor = '';
-            }
-        });
-
-        if (!isValid) {
-            alert('Please fill in all required fields');
-            return;
-        }
-
-        const previewContent = document.getElementById('previewContainer');
-        const fileName = document.getElementById('fileName').value || 'internet-bill';
-
-        // Hide watermark temporarily
-        const watermark = previewContent.querySelector('div[style*="opacity: 0.1"]');
+        const element = document.querySelector('.preview-container');
+        const watermark = element.querySelector('.watermark');
         if (watermark) watermark.style.display = 'none';
 
-        try {
-            // Convert the preview content to canvas
-            const canvas = await html2canvas(previewContent, {
+        const opt = {
+            margin: 1,
+            filename: `internet-bill-${document.getElementById('invoiceNo').value || 'IN6584'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
                 scale: 2,
                 useCORS: true,
-                letterRendering: true,
-                backgroundColor: '#ffffff',
-                windowWidth: previewContent.scrollWidth,
-                windowHeight: previewContent.scrollHeight
-            });
-
-            // Initialize jsPDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
+                allowTaint: true,
+                scrollY: 0
+            },
+            jsPDF: { 
                 unit: 'mm',
-                format: 'a4'
-            });
-
-            // Calculate dimensions
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-
-            // Add image to PDF
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
-            // If content fits on one page
-            if (imgHeight <= pageHeight) {
-                doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-            } else {
-                // If content needs multiple pages
-                let heightLeft = imgHeight;
-                let position = 0;
-                let page = 1;
-
-                while (heightLeft > 0) {
-                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                    position -= pageHeight;
-
-                    if (heightLeft > 0) {
-                        doc.addPage();
-                        page++;
-                    }
-                }
+                format: 'a4',
+                orientation: 'portrait'
             }
+        };
 
-            // Save the PDF
-            doc.save(`${fileName}.pdf`);
-
-        } catch (error) {
-            console.error('PDF generation failed:', error);
-            alert('Failed to generate PDF. Please try again.');
-        } finally {
-            // Show watermark again
+        // New Promise-based usage:
+        html2pdf().set(opt).from(element).save().then(() => {
             if (watermark) watermark.style.display = 'block';
-        }
+        });
     });
+
+    // Validate form function
+    function validateForm() {
+        const requiredFields = [
+            { field: document.getElementById('providerName'), name: 'Provider Name' },
+            { field: document.getElementById('providerAddress'), name: 'Provider Address' },
+            { field: document.getElementById('accountNumber'), name: 'Account Number' },
+            { field: document.getElementById('customerName'), name: 'Customer Name' },
+            { field: document.getElementById('customerAddress'), name: 'Customer Address' },
+            { field: document.getElementById('planSpeed'), name: 'Plan Speed' },
+            { field: document.getElementById('planPackage'), name: 'Plan Package' },
+            { field: document.getElementById('tarrifPlan'), name: 'Tarrif Plan' },
+            { field: document.getElementById('planAmount'), name: 'Plan Amount' }
+        ];
+
+        for (const { field, name } of requiredFields) {
+            if (!field.value.trim()) {
+                alert(`Please enter ${name}`);
+                field.focus();
+                return false;
+            }
+        }
+        return true;
+    }
 
     // Initial preview update
     updatePreview();

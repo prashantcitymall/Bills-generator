@@ -260,7 +260,8 @@ textarea {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-right: auto; /* Changed from margin-left to margin-right */
+    margin-left: 95%; /* Position from the left at 95% to shift 5% from right */
+    transform: translateX(-100%); /* Pull back by its own width */
     margin-top: 3rem;
 }
 

@@ -107,94 +107,81 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Download button functionality
-    document.getElementById('downloadBtn').addEventListener('click', async function() {
-        // Validate required fields
-        const required = ['hotelName', 'checkInDate', 'checkOutDate'];
-        let isValid = true;
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (!validateForm()) return;
 
-        required.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (!field.value) {
-                field.style.borderColor = 'red';
-                isValid = false;
-            } else {
-                field.style.borderColor = '';
-            }
-        });
+        const element = document.getElementById('previewContainer');
+        const watermark = element.querySelector('.watermark');
+        if (watermark) watermark.style.display = 'none';
 
-        if (!isValid) {
-            alert('Please fill in all required fields');
-            return;
-        }
-
-        const previewContent = document.getElementById('previewContainer');
-        const fileName = document.getElementById('fileName').value || 'hotel-bill';
-
-        try {
-            // Remove any transform scale before capturing
-            const previewSection = document.querySelector('.preview-section');
-            const originalTransform = previewSection.style.transform;
-            previewSection.style.transform = 'none';
-
-            // Convert the preview content to canvas
-            const canvas = await html2canvas(previewContent, {
+        const opt = {
+            margin: 1,
+            filename: `hotel-bill-${document.getElementById('billNo').value || 'HB001'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
                 scale: 2,
                 useCORS: true,
-                letterRendering: true,
-                backgroundColor: '#ffffff',
-                fontFamily: 'Arial, sans-serif',
-                logging: false,
-                removeContainer: false,
                 allowTaint: true,
-                width: previewContent.offsetWidth,
-                height: previewContent.offsetHeight
-            });
-
-            // Restore the original transform
-            previewSection.style.transform = originalTransform;
-
-            // Initialize jsPDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
+                scrollY: 0
+            },
+            jsPDF: { 
                 unit: 'mm',
-                format: 'a4'
-            });
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
 
-            // Set up PDF with custom font
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            const pageWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-
-            // Calculate dimensions to fit on one page
-            const margin = 10; // 10mm margin
-            const maxWidth = pageWidth - (margin * 2);
-            const maxHeight = pageHeight - (margin * 2);
-
-            // Calculate scale to fit content while maintaining aspect ratio
-            const scale = Math.min(
-                maxWidth / canvas.width * 25.4,  // Convert px to mm
-                maxHeight / canvas.height * 25.4
-            );
-
-            const scaledWidth = (canvas.width * scale) / 25.4;
-            const scaledHeight = (canvas.height * scale) / 25.4;
-
-            // Center the content
-            const x = (pageWidth - scaledWidth) / 2;
-            const y = (pageHeight - scaledHeight) / 2;
-
-            // Add image to PDF with high quality
-            doc.addImage(imgData, 'JPEG', x, y, scaledWidth, scaledHeight, undefined, 'FAST');
-
-            // Save the PDF
-            doc.save(`${fileName}.pdf`);
-
-        } catch (error) {
-            console.error('PDF generation failed:', error);
-            alert('Failed to generate PDF. Please try again.');
-        }
+        // New Promise-based usage:
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (watermark) watermark.style.display = 'block';
+        });
     });
+
+    // Validate form function
+    function validateForm() {
+        const requiredFields = [
+            { field: document.getElementById('hotelName'), name: 'Hotel Name' },
+            { field: document.getElementById('hotelAddress'), name: 'Hotel Address' },
+            { field: document.getElementById('billNo'), name: 'Bill Number' },
+            { field: document.getElementById('checkInDate'), name: 'Check In Date' },
+            { field: document.getElementById('checkInTime'), name: 'Check In Time' },
+            { field: document.getElementById('checkOutDate'), name: 'Check Out Date' },
+            { field: document.getElementById('checkOutTime'), name: 'Check Out Time' },
+            { field: document.getElementById('roomNo'), name: 'Room Number' },
+            { field: document.getElementById('roomType'), name: 'Room Type' }
+        ];
+
+        // Check if at least one room is added
+        const roomTable = document.getElementById('roomTableBody');
+        const rows = roomTable.querySelectorAll('tr');
+        let hasValidRoom = false;
+
+        for (const row of rows) {
+            const description = row.querySelector('.room-description').value;
+            const rate = parseFloat(row.querySelector('.room-rate').value) || 0;
+            const days = parseFloat(row.querySelector('.room-days').value) || 0;
+
+            if (description && rate > 0 && days > 0) {
+                hasValidRoom = true;
+                break;
+            }
+        }
+
+        if (!hasValidRoom) {
+            alert('Please add at least one room with valid rate and days');
+            return false;
+        }
+
+        for (const { field, name } of requiredFields) {
+            if (!field.value.trim()) {
+                alert(`Please enter ${name}`);
+                field.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     // Initial preview update
     updatePreview();

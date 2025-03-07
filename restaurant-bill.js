@@ -100,94 +100,78 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Download button functionality
-    document.getElementById('downloadBtn').addEventListener('click', async function() {
-        // Validate required fields
-        const required = ['restaurantName', 'billDate', 'billTime'];
-        let isValid = true;
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (!validateForm()) return;
 
-        required.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (!field.value) {
-                field.style.borderColor = 'red';
-                isValid = false;
-            } else {
-                field.style.borderColor = '';
-            }
-        });
+        const element = document.getElementById('previewContainer');
+        const watermark = element.querySelector('.watermark');
+        if (watermark) watermark.style.display = 'none';
 
-        if (!isValid) {
-            alert('Please fill in all required fields');
-            return;
-        }
-
-        const previewContent = document.getElementById('previewContainer');
-        const fileName = document.getElementById('fileName').value || 'restaurant-bill';
-
-        try {
-            // Remove any transform scale before capturing
-            const previewSection = document.querySelector('.preview-section');
-            const originalTransform = previewSection.style.transform;
-            previewSection.style.transform = 'none';
-
-            // Convert the preview content to canvas
-            const canvas = await html2canvas(previewContent, {
+        const opt = {
+            margin: 1,
+            filename: `restaurant-bill-${document.getElementById('invoiceNo').value || 'RB001'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
                 scale: 2,
                 useCORS: true,
-                letterRendering: true,
-                backgroundColor: '#ffffff',
-                fontFamily: 'Courier New, Courier, monospace',
-                logging: false,
-                removeContainer: false,
                 allowTaint: true,
-                width: previewContent.offsetWidth,
-                height: previewContent.offsetHeight
-            });
-
-            // Restore the original transform
-            previewSection.style.transform = originalTransform;
-
-            // Initialize jsPDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
+                scrollY: 0
+            },
+            jsPDF: { 
                 unit: 'mm',
-                format: 'a4'
-            });
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
 
-            // Set up PDF with custom font
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            const pageWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-
-            // Calculate dimensions to fit on one page
-            const margin = 10; // 10mm margin
-            const maxWidth = pageWidth - (margin * 2);
-            const maxHeight = pageHeight - (margin * 2);
-
-            // Calculate scale to fit content while maintaining aspect ratio
-            const scale = Math.min(
-                maxWidth / canvas.width * 25.4,  // Convert px to mm
-                maxHeight / canvas.height * 25.4
-            );
-
-            const scaledWidth = (canvas.width * scale) / 25.4;
-            const scaledHeight = (canvas.height * scale) / 25.4;
-
-            // Center the content
-            const x = (pageWidth - scaledWidth) / 2;
-            const y = (pageHeight - scaledHeight) / 2;
-
-            // Add image to PDF with high quality
-            doc.addImage(imgData, 'JPEG', x, y, scaledWidth, scaledHeight, undefined, 'FAST');
-
-            // Save the PDF
-            doc.save(`${fileName}.pdf`);
-
-        } catch (error) {
-            console.error('PDF generation failed:', error);
-            alert('Failed to generate PDF. Please try again.');
-        }
+        // New Promise-based usage:
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (watermark) watermark.style.display = 'block';
+        });
     });
+
+    // Validate form function
+    function validateForm() {
+        const requiredFields = [
+            { field: document.getElementById('restaurantName'), name: 'Restaurant Name' },
+            { field: document.getElementById('restaurantAddress'), name: 'Restaurant Address' },
+            { field: document.getElementById('invoiceNo'), name: 'Invoice Number' },
+            { field: document.getElementById('billDate'), name: 'Bill Date' },
+            { field: document.getElementById('billTime'), name: 'Bill Time' },
+            { field: document.getElementById('paymentMethod'), name: 'Payment Method' }
+        ];
+
+        // Check if at least one item is added to the order
+        const orderTable = document.getElementById('orderTableBody');
+        const rows = orderTable.querySelectorAll('tr');
+        let hasValidItem = false;
+
+        for (const row of rows) {
+            const description = row.querySelector('.item-description').value;
+            const price = parseFloat(row.querySelector('.item-price').value) || 0;
+            const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+
+            if (description && price > 0 && quantity > 0) {
+                hasValidItem = true;
+                break;
+            }
+        }
+
+        if (!hasValidItem) {
+            alert('Please add at least one item to the order');
+            return false;
+        }
+
+        for (const { field, name } of requiredFields) {
+            if (!field.value.trim()) {
+                alert(`Please enter ${name}`);
+                field.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     // Initial preview update
     updatePreview();
