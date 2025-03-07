@@ -127,8 +127,46 @@ textarea {
 
 .form-actions {
     display: flex;
+    flex-direction: row;
     gap: 1rem;
     margin-top: 2rem;
+    justify-content: flex-start;
+}
+
+.form-actions .btn {
+    font-size: 1.6rem;
+    padding: 1.2rem 3rem;
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.form-actions .btn-primary {
+    background: #ff6b6b;
+    color: white;
+}
+
+.form-actions .btn-primary:hover {
+    background: #ff5252;
+}
+
+.form-actions .btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #dee2e6;
+}
+
+.form-actions .btn-secondary:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.form-actions i {
+    font-size: 1.8rem;
 }
 
 .preview-frame {
