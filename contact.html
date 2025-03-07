@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - BillGen Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Contact Us - BillGen Pro</title>
+    <link rel="stylesheet" href="base.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="shared-header.css">
-    <link rel="stylesheet" href="auth.css">
-    <link rel="stylesheet" href="otp.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div class="background-design">
+        <div class="gradient-overlay"></div>
+    </div>
     <header class="header">
         <nav class="navbar">
             <a href="/" class="logo-link">
@@ -41,7 +43,7 @@
                         <a href="lta-receipt.html" role="menuitem"><i class="fas fa-plane"></i>LTA Receipt</a>
                     </div>
                 </div>
-                <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="contact.html" class="nav-link active"><i class="fas fa-envelope"></i> Contact Us</a>
                 <div class="auth-buttons">
                     <a href="signin.html" class="auth-button signin-button">Sign In</a>
                     <a href="signup.html" class="auth-button signup-button">Sign Up</a>
@@ -50,68 +52,58 @@
         </nav>
     </header>
 
-    <div class="background-design">
-        <div class="floating-elements">
-            <i class="fas fa-file-invoice"></i>
-            <i class="fas fa-receipt"></i>
-            <i class="fas fa-calculator"></i>
-            <i class="fas fa-coins"></i>
-            <i class="fas fa-chart-line"></i>
-            <i class="fas fa-dollar-sign"></i>
-            <i class="fas fa-percentage"></i>
-            <i class="fas fa-file-invoice-dollar"></i>
-        </div>
-        <div class="gradient-overlay"></div>
-    </div>
+    <main class="contact-container">
+        <div class="contact-form-wrapper">
+            <h1>Contact Form</h1>
+            <p class="contact-description">Have questions or feedback? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            
+            <form id="contactForm" class="contact-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="fullName" name="fullName" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-with-icon">
+                            <input type="email" id="email" name="email" required>
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                    </div>
+                </div>
 
-    <main class="auth-container">
-        <div class="auth-card">
-            <a href="signin.html" class="close-button">
-                <i class="fas fa-times"></i>
-            </a>
-            <div class="auth-header">
-                <h2>Reset Password</h2>
-                <p>Enter your email to receive an OTP</p>
-            </div>
-
-            <form id="forgotPasswordForm" class="auth-form">
                 <div class="form-group">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input type="email" id="email" name="email" required placeholder="Email Address">
+                    <label for="subject">Choose Subject</label>
+                    <div class="input-with-icon">
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="billing">Billing Issue</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
 
-                <button type="submit" class="auth-submit">Send OTP</button>
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/" class="btn btn-secondary">Back to Home</a>
+                    <button type="submit" class="btn btn-primary">Submit Now</button>
+                </div>
             </form>
-
-            <!-- OTP Dialog -->
-            <div id="otpDialog" class="otp-dialog">
-                <div class="otp-dialog-content">
-                    <h3>Enter OTP</h3>
-                    <p>Please enter the OTP sent to your email</p>
-                    
-                    <div class="otp-container">
-                        <input type="text" maxlength="1" class="otp-input" required>
-                        <input type="text" maxlength="1" class="otp-input" required>
-                        <input type="text" maxlength="1" class="otp-input" required>
-                        <input type="text" maxlength="1" class="otp-input" required>
-                        <input type="text" maxlength="1" class="otp-input" required>
-                        <input type="text" maxlength="1" class="otp-input" required>
-                    </div>
-
-                    <button type="button" class="auth-submit verify-otp-btn">Verify & Sign In</button>
-
-                    <div class="otp-footer">
-                        <p>Didn't receive the code?</p>
-                        <button type="button" id="resendOtp" class="resend-btn">
-                            Resend OTP <span id="timer"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     </main>
 
-    <script src="auth.js"></script>
     <script src="shared-header.js"></script>
+    <script src="contact.js"></script>
 </body>
 </html>
