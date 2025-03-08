@@ -290,6 +290,7 @@ body {
     font-weight: 700;
     background: var(--gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -333,6 +334,7 @@ body {
     margin-bottom: 1rem;
     background: var(--gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -405,6 +407,7 @@ body {
     font-size: 3.4rem;
     background: var(--gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -689,17 +692,23 @@ body {
 }
 
 .icon-wrapper {
-    width: 90px;
-    height: 90px;
+    width: 81px;
+    height: 81px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 26px;
+    border-radius: 23px;
     background: var(--gradient);
     color: white;
     position: relative;
     z-index: 2;
     transition: all 0.4s ease;
+    margin-left: 10%;
+}
+
+.icon-wrapper i {
+    font-size: 2.25rem;
+    transition: transform 0.4s ease;
 }
 
 /* Custom gradients for each bill type */
@@ -721,7 +730,7 @@ body {
 }
 
 .icon-wrapper i {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
     transition: transform 0.4s ease;
 }
 
@@ -746,6 +755,7 @@ body {
     transform: scale(1.05);
     background: var(--gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
