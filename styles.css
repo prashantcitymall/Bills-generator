@@ -672,6 +672,7 @@ body {
     max-width: 2400px;
     justify-items: center;
     align-items: start;
+    margin-left: 5%;
 }
 
 .bill-type-card {
