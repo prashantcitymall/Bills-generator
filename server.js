@@ -5,12 +5,13 @@ import passport from "passport";
 import session from "express-session";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
-import { MongoClient } from "mongodb";
-import MongoStore from "connect-mongo";
+import connectPgSimple from "connect-pg-simple";
+import { testConnection, users, bills, pgConfig } from "./db/index.js";
 
 // Load environment variables if .env file exists
 try {
   dotenv.config();
+  console.log("ENV: Loaded environment variables");
 } catch (err) {
   console.log("ENV: Failed to load .env file, using defaults");
 }
@@ -38,54 +39,32 @@ const callbackURL = isProduction
 
 console.log(`AUTH: Using callback URL ${callbackURL}`);
 
-// MongoDB connection string
-const mongoURI = process.env.MONGODB_URI || "mongodb+srv://sushant:2TQ67U0Mo8kyEVwk@billcreator.imovr7t.mongodb.net/?retryWrites=true&w=majority&appName=billcreator";
-console.log(`MONGODB: URI ${mongoURI ? "is set" : "is NOT set"} (${mongoURI ? mongoURI.substring(0, 20) + '...' : 'undefined'})`);
-let mongoClient;
+// Database connection string
+const dbUrl =
+  process.env.DATABASE_URL ||
+  "postgres://sushant:8JDxnvrjwCHid7g@billcreator.cb6aeu424474.eu-north-1.rds.amazonaws.com:5432/bc";
+console.log(
+  `DB: Connection string ${dbUrl ? "is set" : "is NOT set"} (${
+    dbUrl ? dbUrl.substring(0, 20) + "..." : "undefined"
+  })`
+);
+
+// Configure session store
 let sessionStore;
-
-// Setup session store based on environment
-if (isProduction) {
-  console.log(`MONGODB: Configuring connection to MongoDB Atlas for production`);
-
-  // Create MongoDB session store
-  try {
-    if (!mongoURI) {
-      throw new Error("MongoDB URI is not defined. Check environment variables.");
-    }
-    
-    // Configure MongoStore with minimal options - let the driver handle connection details
-    sessionStore = MongoStore.create({
-      mongoUrl: mongoURI,
-      collectionName: "user_session",
-      ttl: 24 * 60 * 60 // 1 day in seconds
-    });
-    console.log("SESSION: Using MongoStore for storage");
-  } catch (err) {
-    console.error(`SESSION: MongoStore creation failed - ${err.message}`);
-    console.log("SESSION: Falling back to MemoryStore");
-    sessionStore = undefined;
-  }
-} else {
-  console.log("SESSION: Development environment using MongoStore");
-  // Even in development, use MongoStore for consistency
-  try {
-    if (!mongoURI) {
-      throw new Error("MongoDB URI is not defined. Check environment variables.");
-    }
-    
-    // Configure MongoStore with minimal options - let the driver handle connection details
-    sessionStore = MongoStore.create({
-      mongoUrl: mongoURI,
-      collectionName: "user_session",
-      ttl: 24 * 60 * 60 // 1 day in seconds
-    });
-    console.log("SESSION: Using MongoStore for storage in development");
-  } catch (err) {
-    console.error(`SESSION: MongoStore creation failed - ${err.message}`);
-    console.log("SESSION: Falling back to MemoryStore");
-    sessionStore = undefined;
-  }
+try {
+  // Create PostgreSQL session store
+  const PgStore = connectPgSimple(session);
+  sessionStore = new PgStore({
+    conObject: pgConfig,
+    tableName: "session",
+    createTableIfMissing: true,
+    pruneSessionInterval: 60, // Prune expired sessions every minute
+  });
+  console.log("SESSION: Using PostgreSQL for session storage");
+} catch (err) {
+  console.error(`SESSION: PostgreSQL store creation failed - ${err.message}`);
+  console.log("SESSION: Falling back to MemoryStore");
+  sessionStore = undefined;
 }
 
 // Set up session middleware
@@ -98,9 +77,9 @@ app.use(
     cookie: {
       secure: isProduction,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: 'lax', // Helps with cross-site request issues
+      sameSite: "lax", // Helps with cross-site request issues
     },
-    name: 'bills.session' // Custom session name
+    name: "bills.session", // Custom session name
   })
 );
 
@@ -111,12 +90,18 @@ app.use(passport.session());
 // Passport configuration
 passport.serializeUser((user, done) => {
   console.log(`AUTH: Serializing user ${user.id}`);
-  done(null, user);
+  done(null, user.id);
 });
 
-passport.deserializeUser((user, done) => {
-  console.log(`AUTH: Deserializing user ${user.id}`);
-  done(null, user);
+passport.deserializeUser(async (id, done) => {
+  console.log(`AUTH: Deserializing user ${id}`);
+  try {
+    const user = await users.findById(id);
+    done(null, user);
+  } catch (err) {
+    console.error(`AUTH: Error deserializing user - ${err.message}`);
+    done(err, null);
+  }
 });
 
 // Set up Google Strategy
@@ -129,22 +114,27 @@ passport.use(
       callbackURL: callbackURL,
       proxy: true, // Add proxy support for production environments behind proxies
       // Add additional options to handle SSL/TLS issues
-      userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
-      passReqToCallback: true // Pass request object to callback
+      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+      passReqToCallback: true, // Pass request object to callback
     },
-    (req, accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
       try {
         console.log("AUTH: Google authentication strategy executing");
         if (!profile || !profile.id) {
           console.error("AUTH: Invalid profile received from Google");
           return done(new Error("Invalid profile received from Google"), null);
         }
-        
+
         console.log("AUTH: Google authentication successful");
         console.log(
-          `AUTH: User profile id=${profile.id}, name=${profile.displayName || 'unknown'}`
+          `AUTH: User profile id=${profile.id}, name=${
+            profile.displayName || "unknown"
+          }`
         );
-        return done(null, profile);
+
+        // Find or create user in database
+        const user = await users.findOrCreate(profile);
+        return done(null, user);
       } catch (err) {
         console.error(`AUTH: Error in Google strategy - ${err.message}`);
         return done(err, null);
@@ -165,11 +155,17 @@ app.get(
   "/auth/google/callback",
   (req, res, next) => {
     console.log("AUTH: Google callback received");
-    passport.authenticate("google", { failureRedirect: "/signin" })(req, res, next);
+    passport.authenticate("google", { failureRedirect: "/signin" })(
+      req,
+      res,
+      next
+    );
   },
   (req, res) => {
     try {
-      console.log(`AUTH: Login successful for user ${req.user?.id || 'unknown'}`);
+      console.log(
+        `AUTH: Login successful for user ${req.user?.id || "unknown"}`
+      );
       res.redirect("/");
     } catch (err) {
       console.error(`AUTH: Error in callback handler - ${err.message}`);
@@ -202,6 +198,109 @@ app.get("/auth/logout", (req, res, next) => {
     console.log(`AUTH: User ${userId} logged out successfully`);
     res.redirect("/");
   });
+});
+
+// User profile API endpoints
+app.get("/api/profile", (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  res.json({ profile: req.user });
+});
+
+app.put("/api/profile", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const updatedUser = await users.updateProfile(req.user.id, req.body);
+    res.json({ profile: updatedUser });
+  } catch (err) {
+    console.error(`API: Profile update error - ${err.message}`);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+// Bill management API endpoints
+app.post("/api/bills", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const bill = await bills.create(req.user.id, req.body);
+    res.status(201).json({ bill });
+  } catch (err) {
+    console.error(`API: Bill creation error - ${err.message}`);
+    res.status(500).json({ error: "Failed to create bill" });
+  }
+});
+
+app.get("/api/bills", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const userBills = await bills.findByUserId(req.user.id);
+    res.json({ bills: userBills });
+  } catch (err) {
+    console.error(`API: Bills retrieval error - ${err.message}`);
+    res.status(500).json({ error: "Failed to retrieve bills" });
+  }
+});
+
+app.get("/api/bills/:id", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const bill = await bills.findById(req.params.id, req.user.id);
+    if (!bill) {
+      return res.status(404).json({ error: "Bill not found" });
+    }
+    res.json({ bill });
+  } catch (err) {
+    console.error(`API: Bill retrieval error - ${err.message}`);
+    res.status(500).json({ error: "Failed to retrieve bill" });
+  }
+});
+
+app.put("/api/bills/:id", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const bill = await bills.update(req.params.id, req.user.id, req.body);
+    if (!bill) {
+      return res.status(404).json({ error: "Bill not found" });
+    }
+    res.json({ bill });
+  } catch (err) {
+    console.error(`API: Bill update error - ${err.message}`);
+    res.status(500).json({ error: "Failed to update bill" });
+  }
+});
+
+app.delete("/api/bills/:id", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const success = await bills.delete(req.params.id, req.user.id);
+    if (!success) {
+      return res.status(404).json({ error: "Bill not found" });
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error(`API: Bill deletion error - ${err.message}`);
+    res.status(500).json({ error: "Failed to delete bill" });
+  }
 });
 
 // Serve static files
@@ -240,38 +339,33 @@ app.get("*", (req, res) => {
 // Start the server
 const startServer = async () => {
   try {
-    // Test MongoDB connection
-    if (!mongoURI) {
-      throw new Error("MongoDB URI is not defined. Check environment variables.");
-    }
-    
-    console.log("MONGODB: Attempting to connect to MongoDB...");
-    // Use minimal configuration like in our test script
-    const client = new MongoClient(mongoURI);
-    await client.connect();
-    console.log("MONGODB: Connection established successfully");
-    
-    // List databases to verify connection is working properly
-    const databasesList = await client.db().admin().listDatabases();
-    console.log("MONGODB: Available databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-    
-    await client.close();
-    console.log("MONGODB: Test connection closed");
-  } catch (err) {
-    console.error(`MONGODB: Connection test failed - ${err.message}`);
-    if (err.stack) {
-      console.error("MONGODB: Error stack trace:");
-      console.error(err.stack.split('\n').slice(0, 3).join('\n'));
-    }
-    console.log("SESSION: Using MemoryStore as fallback");
-  }
+    // Test database connection
+    console.log("DB: Testing PostgreSQL connection...");
+    const connected = await testConnection();
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`SERVER: Running on http://0.0.0.0:${PORT}`);
-  });
+    if (!connected) {
+      console.error("DB: PostgreSQL connection test failed");
+      console.log("SESSION: Using MemoryStore as fallback");
+    } else {
+      console.log("DB: PostgreSQL connection test successful");
+    }
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`SERVER: Running on http://0.0.0.0:${PORT}`);
+    });
+  } catch (err) {
+    console.error(`SERVER: Failed to start - ${err.message}`);
+    if (err.stack) {
+      console.error("SERVER: Error stack trace:");
+      console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+    }
+  }
 };
 
 startServer().catch((err) => {
   console.error(`SERVER: Failed to start - ${err.message}`);
+  if (err.stack) {
+    console.error("SERVER: Error stack trace:");
+    console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+  }
 });
