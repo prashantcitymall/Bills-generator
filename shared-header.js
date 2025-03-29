@@ -74,7 +74,7 @@ async function checkAuthStatus() {
         console.log('Checking authentication status...');
         
         // Fetch user profile data with proper credentials
-        const response = await fetch('/api/profile', {
+        const response = await fetch('/api/user', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ async function checkAuthStatus() {
             // Store authentication state in localStorage
             localStorage.setItem('authState', JSON.stringify({
                 isAuthenticated: true,
-                profile: data.profile,
+                profile: data.user,
                 lastChecked: new Date().toISOString()
             }));
             
@@ -105,7 +105,7 @@ async function checkAuthStatus() {
                 console.log('Google sign-in button not found in DOM');
             }
             
-            showAuthenticatedUI(data.profile);
+            showAuthenticatedUI(data.user);
             
             // If on signin or signup page, redirect to home
             const currentPath = window.location.pathname;
