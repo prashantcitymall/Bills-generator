@@ -16,15 +16,15 @@ const logger = {
   },
 };
 
-// PostgreSQL connection configuration
+// PostgreSQL configuration
 const pgConfig = {
   connectionString:
     process.env.DATABASE_URL ||
     "postgres://sushant:8JDxnvrjwCHid7g@billcreator.cb6aeu424474.eu-north-1.rds.amazonaws.com:5432/bc",
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: {
+    rejectUnauthorized: false,
+    sslmode: "require",
+  },
 };
 
 // Initialize pg-promise with options

@@ -29,9 +29,25 @@
                 </div>
             </div>
             <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+            
+            <!-- User Profile Dropdown (shown when logged in) -->
+            <div class="user-profile" style="display: none;">
+                <div class="dropdown">
+                    <button class="profile-dropdown-btn">
+                        <span class="user-greeting">Hi, <span class="user-name">User</span> <i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="profile-dropdown-content dropdown-content" role="menu" aria-label="User Menu">
+                        <a href="/profile" role="menuitem"><i class="fas fa-user"></i>My Profile</a>
+                        <a href="/my-bills" role="menuitem"><i class="fas fa-file-invoice"></i>My Bills</a>
+                        <a href="#" class="logout-link" role="menuitem"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Auth Buttons (shown when logged out) -->
             <div class="auth-buttons">
-                <a href="signin.html" class="auth-button signin-button">Sign In</a>
-                <a href="signup.html" class="auth-button signup-button">Sign Up</a>
+                <a href="signin.html" class="auth-button"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <a href="signup.html" class="auth-button"><i class="fas fa-user-plus"></i> Sign Up</a>
             </div>
         </div>
     </nav>
