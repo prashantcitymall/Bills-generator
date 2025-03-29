@@ -54,22 +54,15 @@ if (isProduction) {
       throw new Error("MongoDB URI is not defined. Check environment variables.");
     }
     
-    // Configure MongoStore with SSL options
+    // Configure MongoStore with simplified SSL options
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
       collectionName: "user_session",
       ttl: 24 * 60 * 60, // 1 day in seconds
       crypto: {
         secret: process.env.SESSION_SECRET || "your-session-secret"
-      },
-      mongoOptions: {
-        ssl: true,
-        tls: true,
-        tlsAllowInvalidCertificates: true,
-        tlsAllowInvalidHostnames: true,
-        useNewUrlParser: true,
-        useUnifiedTopology: true
       }
+      // Removed explicit mongoOptions to use driver defaults
     });
     console.log("SESSION: Using MongoStore for storage");
   } catch (err) {
@@ -85,22 +78,15 @@ if (isProduction) {
       throw new Error("MongoDB URI is not defined. Check environment variables.");
     }
     
-    // Configure MongoStore with SSL options
+    // Configure MongoStore with simplified SSL options
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
       collectionName: "user_session",
       ttl: 24 * 60 * 60, // 1 day in seconds
       crypto: {
         secret: process.env.SESSION_SECRET || "your-session-secret"
-      },
-      mongoOptions: {
-        ssl: true,
-        tls: true,
-        tlsAllowInvalidCertificates: true,
-        tlsAllowInvalidHostnames: true,
-        useNewUrlParser: true,
-        useUnifiedTopology: true
       }
+      // Removed explicit mongoOptions to use driver defaults
     });
     console.log("SESSION: Using MongoStore for storage in development");
   } catch (err) {
@@ -268,13 +254,9 @@ const startServer = async () => {
     }
     
     console.log("MONGODB: Attempting to connect to MongoDB...");
+    // Use a simpler connection approach without explicit SSL options
+    // Let the connection string parameters handle the SSL configuration
     const client = new MongoClient(mongoURI, {
-      ssl: true,
-      tls: true,
-      tlsAllowInvalidCertificates: true,
-      tlsAllowInvalidHostnames: true,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000 // 5 seconds timeout for server selection
     });
     await client.connect();
