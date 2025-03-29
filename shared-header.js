@@ -301,6 +301,16 @@ function showUnauthenticatedUI() {
     const authButtons = document.querySelector('.auth-buttons');
     const userProfile = document.querySelector('.user-profile');
 
+    // First check if user profile is visible - if it is, don't show auth buttons
+    if (userProfile && userProfile.style.display === 'flex') {
+        console.log('User profile is visible, not showing auth buttons');
+        if (authButtons) {
+            authButtons.style.display = 'none';
+        }
+        return;
+    }
+    
+    // Only show auth buttons if user profile is not visible
     if (authButtons) {
         authButtons.style.display = 'flex';
         console.log('Auth buttons shown');
