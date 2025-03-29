@@ -56,12 +56,25 @@
                 </div>
                 <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
                 
-                <!-- Google Sign In Button -->
-                <a href="/auth/google" class="google-signin-button">
+                <!-- Google Sign In Button (hidden when logged in) -->
+                <a href="/auth/google" class="google-signin-button" id="googleSignInBtn">
                     <img src="images/google logo.png" alt="Google" class="google-icon">
                     <span>Sign in</span>
                 </a>
-
+                
+                <!-- User Profile Dropdown (shown when logged in) -->
+                <div class="user-profile" style="display: none;">
+                    <div class="dropdown">
+                        <button class="profile-dropdown-btn">
+                            <span class="user-greeting">Hi, <span class="user-name">User</span> <i class="fas fa-chevron-down"></i></span>
+                        </button>
+                        <div class="profile-dropdown-content dropdown-content" role="menu" aria-label="User Menu">
+                            <a href="/profile" role="menuitem"><i class="fas fa-user"></i>My Profile</a>
+                            <a href="/my-bills" role="menuitem"><i class="fas fa-file-invoice"></i>My Bills</a>
+                            <a href="#" class="logout-link" role="menuitem"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -270,8 +283,22 @@
         </div>
     </footer>
 
+    <script>
+        // Load the header template dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('header_template.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-container').innerHTML = data;
+                    // After loading the header template, initialize the header functionality
+                    const headerScript = document.createElement('script');
+                    headerScript.src = 'shared-header.js';
+                    document.body.appendChild(headerScript);
+                })
+                .catch(error => console.error('Error loading header template:', error));
+        });
+    </script>
     <script src="script.js"></script>
-    <script src="shared-header.js"></script>
     <script src="auth.js"></script>
 </body>
 </html>

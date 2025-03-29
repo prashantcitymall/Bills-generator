@@ -1,10 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM content loaded, initializing header...');
+    
+    // Initialize header elements after a short delay to ensure they're loaded
+    setTimeout(initializeHeader, 100);
+});
+
+// Initialize header elements and set up event listeners
+function initializeHeader() {
+    console.log('Initializing header elements...');
+    
     // Initially hide both auth elements until we check status
     const authButtons = document.querySelector('.auth-buttons');
     const userProfile = document.querySelector('.user-profile');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
     
     if (authButtons) authButtons.style.display = 'none';
     if (userProfile) userProfile.style.display = 'none';
+    if (googleSignInBtn) googleSignInBtn.style.display = 'none'; // Hide sign-in button initially
     
     // Dropdown functionality
     const dropdownBtn = document.querySelector('.dropdown-btn');
@@ -34,20 +46,27 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const authData = JSON.parse(storedAuthState);
             if (authData && authData.isAuthenticated && authData.profile) {
+                console.log('Found stored auth state, showing authenticated UI');
                 // Show authenticated UI immediately with stored data
                 // This prevents flashing of login/signup during page reload
                 showAuthenticatedUI(authData.profile);
+            } else {
+                console.log('Stored auth state invalid or user not authenticated');
+                showUnauthenticatedUI();
             }
         } catch (e) {
             console.error('Error parsing stored auth state:', e);
             // Clear invalid stored state
             localStorage.removeItem('authState');
+            showUnauthenticatedUI();
         }
+    } else {
+        console.log('No stored auth state found');
     }
 
     // Always check current auth status with server
     checkAuthStatus();
-});
+}
 
 // Function to check authentication status
 async function checkAuthStatus() {
@@ -77,6 +96,15 @@ async function checkAuthStatus() {
                 lastChecked: new Date().toISOString()
             }));
             
+            // Explicitly hide the Google sign-in button and show the user profile
+            const googleSignInBtn = document.getElementById('googleSignInBtn');
+            if (googleSignInBtn) {
+                googleSignInBtn.style.display = 'none';
+                console.log('Google sign-in button hidden (authenticated)');
+            } else {
+                console.log('Google sign-in button not found in DOM');
+            }
+            
             showAuthenticatedUI(data.profile);
             
             // If on signin or signup page, redirect to home
@@ -91,6 +119,15 @@ async function checkAuthStatus() {
             // Clear any stored auth state
             localStorage.removeItem('authState');
             
+            // Explicitly show the Google sign-in button
+            const googleSignInBtn = document.getElementById('googleSignInBtn');
+            if (googleSignInBtn) {
+                googleSignInBtn.style.display = 'flex';
+                console.log('Google sign-in button shown (unauthenticated)');
+            } else {
+                console.log('Google sign-in button not found in DOM');
+            }
+            
             showUnauthenticatedUI();
         }
     } catch (error) {
@@ -104,41 +141,64 @@ async function checkAuthStatus() {
 function showAuthenticatedUI(profile) {
     console.log('Showing authenticated UI for profile:', profile);
     
-    const authButtons = document.querySelector('.auth-buttons');
-    const userProfile = document.querySelector('.user-profile');
-    const userName = document.querySelector('.user-name');
-    const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
-
-    if (authButtons) {
-        authButtons.style.display = 'none';
-        console.log('Auth buttons hidden');
-    }
-    
-    if (googleSignInBtn) {
-        googleSignInBtn.style.display = 'none';
-        console.log('Google sign-in button hidden');
-    }
-    
-    if (userProfile) {
-        userProfile.style.display = 'flex';
-        console.log('User profile shown');
-    } else {
-        // If the user-profile element doesn't exist, we need to create it
-        createUserProfileElement(profile);
-        return; // After creating the element, return as we'll rerun this function
-    }
-    
-    if (userName && profile && profile.display_name) {
-        userName.textContent = profile.display_name;
-        console.log('Username set to:', profile.display_name);
-    } else {
-        console.log('Could not set username', { 
-            userNameExists: !!userName, 
-            profileExists: !!profile, 
-            displayNameExists: profile ? !!profile.display_name : false 
+    // Try to find elements multiple times with increasing delay if not found
+    // This helps when elements are loaded dynamically
+    findElementsWithRetry(function() {
+        const authButtons = document.querySelector('.auth-buttons');
+        const userProfile = document.querySelector('.user-profile');
+        const userName = document.querySelector('.user-name');
+        const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        
+        console.log('Elements found:', { 
+            authButtons: !!authButtons, 
+            userProfile: !!userProfile, 
+            userName: !!userName, 
+            profileDropdownBtn: !!profileDropdownBtn,
+            googleSignInBtn: !!googleSignInBtn
         });
-    }
+        
+        // IMPORTANT: First hide the Google sign-in button
+        if (googleSignInBtn) {
+            googleSignInBtn.style.display = 'none';
+            console.log('Google sign-in button hidden');
+        } else {
+            console.warn('Google sign-in button not found');
+            // Try to find it by class if ID is not found
+            const signInByClass = document.querySelector('.google-signin-button');
+            if (signInByClass) {
+                signInByClass.style.display = 'none';
+                console.log('Google sign-in button hidden by class selector');
+            }
+        }
+        
+        if (authButtons) {
+            authButtons.style.display = 'none';
+            console.log('Auth buttons hidden');
+        }
+        
+        if (userProfile) {
+            userProfile.style.display = 'flex';
+            console.log('User profile shown');
+        } else {
+            // If the user-profile element doesn't exist, we need to create it
+            createUserProfileElement(profile);
+            return false; // Return false to continue retrying
+        }
+        
+        if (userName && profile && profile.display_name) {
+            userName.textContent = profile.display_name;
+            console.log('Username set to:', profile.display_name);
+        } else {
+            console.log('Could not set username', { 
+                userNameExists: !!userName, 
+                profileExists: !!profile, 
+                displayNameExists: profile ? !!profile.display_name : false 
+            });
+        }
+        
+        return true; // Elements found and updated
+    });
 
     // Add profile picture if available
     if (profile && profile.profile_picture) {
@@ -304,22 +364,65 @@ function createUserProfileElement(profile) {
 function showUnauthenticatedUI() {
     console.log('Showing unauthenticated UI');
     
-    const authButtons = document.querySelector('.auth-buttons');
-    const userProfile = document.querySelector('.user-profile');
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
+    // Try to find elements multiple times with increasing delay if not found
+    findElementsWithRetry(function() {
+        const authButtons = document.querySelector('.auth-buttons');
+        const userProfile = document.querySelector('.user-profile');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        
+        console.log('Elements found for unauthenticated UI:', { 
+            authButtons: !!authButtons, 
+            userProfile: !!userProfile, 
+            googleSignInBtn: !!googleSignInBtn 
+        });
+        
+        // IMPORTANT: First show the Google sign-in button
+        if (googleSignInBtn) {
+            googleSignInBtn.style.display = 'flex';
+            console.log('Google sign-in button shown');
+        } else {
+            console.warn('Google sign-in button not found by ID');
+            // Try to find it by class if ID is not found
+            const signInByClass = document.querySelector('.google-signin-button');
+            if (signInByClass) {
+                signInByClass.style.display = 'flex';
+                console.log('Google sign-in button shown by class selector');
+            }
+        }
+        
+        if (authButtons) {
+            authButtons.style.display = 'flex';
+            console.log('Auth buttons shown');
+        }
+        
+        if (userProfile) {
+            userProfile.style.display = 'none';
+            console.log('User profile hidden');
+        }
+        
+        return true; // Elements found and updated
+    });
+}
 
-    if (authButtons) {
-        authButtons.style.display = 'flex';
-        console.log('Auth buttons shown');
+// Helper function to find elements with retry
+function findElementsWithRetry(callback, maxRetries = 5, delay = 100) {
+    let retries = 0;
+    
+    function attempt() {
+        if (retries >= maxRetries) {
+            console.error('Max retries reached, could not find all elements');
+            return;
+        }
+        
+        const result = callback();
+        if (result === false) {
+            retries++;
+            console.log(`Retry attempt ${retries}/${maxRetries} after ${delay}ms`);
+            setTimeout(attempt, delay);
+            // Increase delay for next retry
+            delay *= 1.5;
+        }
     }
     
-    if (googleSignInBtn) {
-        googleSignInBtn.style.display = 'flex';
-        console.log('Google sign-in button shown');
-    }
-    
-    if (userProfile) {
-        userProfile.style.display = 'none';
-        console.log('User profile hidden');
-    }
+    attempt();
 }
