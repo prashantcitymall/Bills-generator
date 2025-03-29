@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('fromDate').value = today;
     document.getElementById('toDate').value = today;
+    document.getElementById('printDate').value = today;
 
     // Update preview when form fields change
     const formElements = document.querySelectorAll('input, select, textarea');
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset dates to today
         document.getElementById('fromDate').value = today;
         document.getElementById('toDate').value = today;
+        document.getElementById('printDate').value = today;
         
         // Reset radio buttons to defaults
         document.querySelector('input[name="template"][value="template4"]').checked = true;
@@ -72,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { field: document.getElementById('vehicleNumber'), name: 'Vehicle Number' },
             { field: document.getElementById('fromDate'), name: 'From Date' },
             { field: document.getElementById('toDate'), name: 'To Date' },
+            { field: document.getElementById('printDate'), name: 'Print Date' },
             { field: document.getElementById('salaryAmount'), name: 'Salary Amount' }
         ];
 
@@ -109,6 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updatePreview() {
+    // Update print date
+    const printDate = formatDate(document.getElementById('printDate').value);
+    document.getElementById('previewPrintDate').textContent = printDate;
+    
     // Update driver name
     const driverName = document.getElementById('driverName').value || '________________';
     document.getElementById('previewDriverName').textContent = driverName;

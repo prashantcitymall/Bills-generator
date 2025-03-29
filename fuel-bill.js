@@ -184,5 +184,34 @@ document.getElementById('clearBtn').addEventListener('click', () => {
     updatePreview();
 });
 
+// Template selection handling
+const templateRadios = document.querySelectorAll('input[name="template"]');
+const logoImage = document.querySelector('.bpcl-logo');
+
+templateRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        // Update the file name with the selected template number
+        document.getElementById('fileName').value = `Fuel Bill Template ${this.value}`;
+        
+        // Change logo based on template selection
+        if (this.value === '2') {
+            logoImage.src = 'images/hp.png';
+            logoImage.alt = 'HP Logo';
+        } else if (this.value === '3') {
+            logoImage.src = 'images/iocl.png';
+            logoImage.alt = 'IOCL Logo';
+        } else if (this.value === '4') {
+            logoImage.src = 'images/relience.png';
+            logoImage.alt = 'Reliance Logo';
+        } else {
+            logoImage.src = 'images/bpcl.png';
+            logoImage.alt = 'BPCL Logo';
+        }
+        
+        // Update the preview
+        updatePreview();
+    });
+});
+
 // Initial preview update
 updatePreview();

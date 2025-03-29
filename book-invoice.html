@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="shared-header.css">
     <link rel="stylesheet" href="book-invoice.css">
+    <link rel="stylesheet" href="preview-notification.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -45,10 +46,14 @@
                     </div>
                 </div>
                 <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
-                <div class="auth-buttons">
-                    <a href="signin.html" class="auth-button signin">Sign In</a>
-                    <a href="signup.html" class="auth-button signup">Sign Up</a>
-                </div>
+                
+                <!-- Google Sign In Button -->
+                <a href="signin.html" class="google-signin-button">
+                    <img src="images/google logo.png" alt="Google" class="google-icon">
+                    <span>Sign in</span>
+                </a>
+                
+
             </div>
         </nav>
     </header>
@@ -103,6 +108,12 @@
 
             <div class="form-section payment-details">
                 <h3>Payment Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="receiptNo">Receipt No</label>
+                        <input type="text" id="receiptNo" placeholder="Enter Receipt Number">
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="currency">Currency</label>
@@ -167,7 +178,10 @@
             <h2>Live Preview</h2>
             <div class="preview-frame">
                 <div class="receipt-preview">
-                    <h2>Book Receipt</h2>
+                    <div class="receipt-logo-header">
+                        <img src="images/book_invoice.png" alt="Book Invoice Logo" class="book-invoice-logo">
+                        <h2>Book Receipt</h2>
+                    </div>
                     <div class="header-divider"></div>
                     <div class="receipt-header">
                         <div class="receipt-info">
@@ -261,10 +275,9 @@
             <p class="watermark">Watermark will be removed from actual pdf</p>
         </div>
     </main>
-
-    <div class="footer-logo">
-        <i class="fas fa-file-invoice"></i>
-        <span>Bill Creator</span>
+    
+    <div class="preview-notification">
+        <i class="fas fa-info-circle"></i> Note: The preview may not reflect the original view of the bill/receipt. Some changes may be visible in the live preview, but the original view can only be seen after downloading. Please make sure to download and check once. Thank you for your support!
     </div>
 
     <script src="shared-header.js"></script>

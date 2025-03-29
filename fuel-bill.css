@@ -219,6 +219,23 @@
     margin-bottom: 2rem;
 }
 
+.title-with-logo {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.logo-container {
+    flex-shrink: 0;
+}
+
+.bpcl-logo {
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+}
+
 .title-section h1 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
@@ -268,6 +285,12 @@
     font-weight: 600;
 }
 
+/* Make Payment Method value text dark black */
+#previewPaymentMethod {
+    color: #000;
+    font-weight: 700;
+}
+
 .details-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -295,6 +318,19 @@
     color: #333;
     margin-bottom: 0.5rem;
     line-height: 1.4;
+}
+
+/* Make only the label text bold and black, not the values */
+.billed-to p,
+.station-details p {
+    font-weight: 700;
+    color: #000;
+}
+
+.billed-to p span,
+.station-details p span {
+    font-weight: 400;
+    color: #333;
 }
 
 .details-grid p {
