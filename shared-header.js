@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (authButtons) authButtons.style.display = 'none';
     if (userProfile) userProfile.style.display = 'none';
     
+    // Track authentication state globally
+    window.isAuthenticated = false;
+    
     // Dropdown functionality
     const dropdownBtn = document.querySelector('.dropdown-btn');
     const dropdownContent = document.querySelector('.dropdown-content');
@@ -36,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (authData && authData.isAuthenticated && authData.profile) {
                 // Show authenticated UI immediately with stored data
                 // This prevents flashing of login/signup during page reload
+                window.isAuthenticated = true;
                 showAuthenticatedUI(authData.profile);
             }
         } catch (e) {
@@ -77,6 +81,7 @@ async function checkAuthStatus() {
                 lastChecked: new Date().toISOString()
             }));
             
+            window.isAuthenticated = true;
             showAuthenticatedUI(data.profile);
             
             // If on signin or signup page, redirect to home
@@ -91,11 +96,13 @@ async function checkAuthStatus() {
             // Clear any stored auth state
             localStorage.removeItem('authState');
             
+            window.isAuthenticated = false;
             showUnauthenticatedUI();
         }
     } catch (error) {
         console.error('Error checking authentication status:', error);
         // Default to unauthenticated UI on error
+        window.isAuthenticated = false;
         showUnauthenticatedUI();
     }
 }
@@ -103,6 +110,9 @@ async function checkAuthStatus() {
 // Show UI for authenticated users
 function showAuthenticatedUI(profile) {
     console.log('Showing authenticated UI for profile:', profile);
+    
+    // Set global authentication state
+    window.isAuthenticated = true;
     
     const authButtons = document.querySelector('.auth-buttons');
     const userProfile = document.querySelector('.user-profile');
@@ -296,11 +306,20 @@ function createUserProfileElement(profile) {
 
 // Show UI for unauthenticated users
 function showUnauthenticatedUI() {
-    console.log('Showing unauthenticated UI');
+    console.log('Showing unauthenticated UI, isAuthenticated:', window.isAuthenticated);
     
     const authButtons = document.querySelector('.auth-buttons');
     const userProfile = document.querySelector('.user-profile');
 
+    // If user is authenticated, don't show auth buttons regardless of UI state
+    if (window.isAuthenticated) {
+        console.log('User is authenticated, not showing auth buttons');
+        if (authButtons) {
+            authButtons.style.display = 'none';
+        }
+        return;
+    }
+    
     // First check if user profile is visible - if it is, don't show auth buttons
     if (userProfile && userProfile.style.display === 'flex') {
         console.log('User profile is visible, not showing auth buttons');
@@ -310,7 +329,7 @@ function showUnauthenticatedUI() {
         return;
     }
     
-    // Only show auth buttons if user profile is not visible
+    // Only show auth buttons if user is not authenticated and profile is not visible
     if (authButtons) {
         authButtons.style.display = 'flex';
         console.log('Auth buttons shown');
