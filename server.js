@@ -44,11 +44,19 @@ passport.deserializeUser((user, done) => {
     done(null, user);
 });
 
+// Determine the appropriate callback URL based on environment
+const isProduction = process.env.NODE_ENV === 'production';
+const callbackURL = isProduction
+    ? 'https://billcreator.store/auth/google/callback'
+    : 'http://localhost:3001/auth/google/callback';
+
+console.log(`Using Google OAuth callback URL: ${callbackURL}`);
+
 // Set up Google Strategy
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'YOUR_GOOGLE_CLIENT_SECRET',
-    callbackURL: '/auth/google/callback'
+    callbackURL: callbackURL
 }, (accessToken, refreshToken, profile, done) => {
     // Here you would typically save the user to your database
     // For now, we'll just pass the profile info
