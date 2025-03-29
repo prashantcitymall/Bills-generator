@@ -46,6 +46,8 @@ passport.deserializeUser((user, done) => {
 
 // Determine the appropriate callback URL based on environment
 const isProduction = process.env.NODE_ENV === 'production';
+console.log(`NODE_ENV: ${process.env.NODE_ENV}, isProduction: ${isProduction}`);
+
 const callbackURL = isProduction
     ? 'https://billcreator.store/auth/google/callback'
     : 'http://localhost:3001/auth/google/callback';
