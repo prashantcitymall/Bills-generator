@@ -121,8 +121,76 @@ document.addEventListener('DOMContentLoaded', function() {
     const googleAuth = document.querySelector('.google-auth');
     if (googleAuth) {
         googleAuth.addEventListener('click', function() {
-            // Implement Google OAuth here
-            console.log('Google Sign In clicked');
+            console.log('Google auth button clicked');
+            // Redirect to Google OAuth route
+            window.location.href = '/auth/google';
         });
     }
+
+    // Check if user is logged in
+    function checkAuthStatus() {
+        fetch('/api/user')
+            .then(response => response.json())
+            .then(data => {
+                if (data.user) {
+                    // User is logged in
+                    updateUIForLoggedInUser(data.user);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking authentication status:', error);
+            });
+    }
+
+    // Update UI for logged in user
+    function updateUIForLoggedInUser(user) {
+        const authButtons = document.querySelector('.auth-buttons');
+        if (authButtons) {
+            // Clear existing buttons
+            authButtons.innerHTML = '';
+            
+            // Create user dropdown
+            const userDropdown = document.createElement('div');
+            userDropdown.className = 'user-dropdown';
+            
+            // Create dropdown button with user name/email
+            const dropdownBtn = document.createElement('button');
+            dropdownBtn.className = 'user-dropdown-btn';
+            dropdownBtn.innerHTML = `
+                <i class="fas fa-user-circle"></i>
+                <span>${user.displayName || user.emails[0].value}</span>
+                <i class="fas fa-chevron-down"></i>
+            `;
+            
+            // Create dropdown content
+            const dropdownContent = document.createElement('div');
+            dropdownContent.className = 'user-dropdown-content';
+            dropdownContent.innerHTML = `
+                <a href="/profile.html"><i class="fas fa-user"></i> Profile</a>
+                <a href="/my-bills.html"><i class="fas fa-file-invoice"></i> My Bills</a>
+                <a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            `;
+            
+            // Append elements
+            userDropdown.appendChild(dropdownBtn);
+            userDropdown.appendChild(dropdownContent);
+            authButtons.appendChild(userDropdown);
+            
+            // Toggle dropdown on click
+            dropdownBtn.addEventListener('click', function() {
+                dropdownContent.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            window.addEventListener('click', function(e) {
+                if (!e.target.matches('.user-dropdown-btn') && 
+                    !e.target.matches('.user-dropdown-btn *')) {
+                    dropdownContent.classList.remove('show');
+                }
+            });
+        }
+    }
+
+    // Check auth status on page load
+    checkAuthStatus();
 });
