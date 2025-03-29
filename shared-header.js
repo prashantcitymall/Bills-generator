@@ -101,6 +101,7 @@ function showAuthenticatedUI(profile) {
     const authButtons = document.querySelector('.auth-buttons');
     const userProfile = document.querySelector('.user-profile');
     const userName = document.querySelector('.user-name');
+    const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
 
     if (authButtons) {
         authButtons.style.display = 'none';
@@ -123,35 +124,73 @@ function showAuthenticatedUI(profile) {
         });
     }
 
+    // Add profile picture if available
+    if (profile && profile.profile_picture) {
+        // Check if profile picture element already exists
+        let profilePic = profileDropdownBtn.querySelector('.profile-pic');
+        
+        // If it doesn't exist, create it
+        if (!profilePic) {
+            profilePic = document.createElement('img');
+            profilePic.className = 'profile-pic';
+            profilePic.style.width = '24px';
+            profilePic.style.height = '24px';
+            profilePic.style.borderRadius = '50%';
+            profilePic.style.marginRight = '8px';
+            profilePic.alt = 'Profile';
+            
+            // Insert before the greeting span
+            const greeting = profileDropdownBtn.querySelector('.user-greeting');
+            if (greeting) {
+                profileDropdownBtn.insertBefore(profilePic, greeting);
+            } else {
+                profileDropdownBtn.prepend(profilePic);
+            }
+        }
+        
+        // Set or update the profile picture src
+        profilePic.src = profile.profile_picture;
+        console.log('Profile picture set:', profile.profile_picture);
+    }
+
     // Setup profile dropdown
-    const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
     const profileDropdownContent = document.querySelector('.profile-dropdown-content');
 
     if (profileDropdownBtn && profileDropdownContent) {
-        const profileDropdown = profileDropdownBtn.parentElement;
+        const profileDropdown = profileDropdownBtn.closest('.dropdown');
         
-        profileDropdown.addEventListener('mouseenter', function() {
-            profileDropdownContent.style.opacity = '1';
-            profileDropdownContent.style.visibility = 'visible';
-            profileDropdownContent.style.transform = 'translateY(0)';
-        });
+        if (profileDropdown) {
+            // Remove any existing event listeners by cloning and replacing
+            const newProfileDropdown = profileDropdown.cloneNode(true);
+            profileDropdown.parentNode.replaceChild(newProfileDropdown, profileDropdown);
+            
+            // Add event listeners to the new element
+            newProfileDropdown.addEventListener('mouseenter', function() {
+                profileDropdownContent.style.opacity = '1';
+                profileDropdownContent.style.visibility = 'visible';
+                profileDropdownContent.style.transform = 'translateY(0)';
+            });
 
-        profileDropdown.addEventListener('mouseleave', function() {
-            profileDropdownContent.style.opacity = '0';
-            profileDropdownContent.style.visibility = 'hidden';
-            profileDropdownContent.style.transform = 'translateY(10px)';
-        });
-    }
-
-    // Setup logout functionality
-    const logoutLink = document.querySelector('.logout-link');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Clear stored auth state before logout
-            localStorage.removeItem('authState');
-            window.location.href = '/auth/logout';
-        });
+            newProfileDropdown.addEventListener('mouseleave', function() {
+                profileDropdownContent.style.opacity = '0';
+                profileDropdownContent.style.visibility = 'hidden';
+                profileDropdownContent.style.transform = 'translateY(10px)';
+            });
+            
+            // Re-add click event to logout link
+            const logoutLink = newProfileDropdown.querySelector('.logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Clear stored auth state before logout
+                    localStorage.removeItem('authState');
+                    window.location.href = '/auth/logout';
+                });
+                console.log('Logout link event listener added');
+            } else {
+                console.log('Logout link not found');
+            }
+        }
     }
 }
 

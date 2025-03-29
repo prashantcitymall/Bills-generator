@@ -505,6 +505,9 @@
 
 .profile-dropdown-content {
     min-width: 180px;
+    right: 0;
+    left: auto;
+    transform: translateY(10px);
 }
 
 .profile-dropdown-content a {
@@ -524,6 +527,20 @@
 
 .logout-link i {
     color: #ff6b6b;
+}
+
+.profile-pic {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 8px;
+    object-fit: cover;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 8px rgba(100, 255, 218, 0.2);
+}
+
+.user-profile .dropdown {
+    z-index: 1000;
 }
 
 /* Responsive Adjustments */
