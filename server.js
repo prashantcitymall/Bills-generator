@@ -20,15 +20,20 @@ try {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy - required for secure cookies behind proxies
+// For Nginx behind Route53, we need to trust all proxies in the chain
+app.set('trust proxy', 'loopback, linklocal, uniquelocal');
+
 // Enable CORS with credentials support
 app.use(
   cors({
     origin: process.env.NODE_ENV === "production"
-      ? ["https://billcreator.store"]
+      ? ["https://billcreator.store", "https://www.billcreator.store"]
       : ["http://localhost:3001", "http://localhost:3000"],
     credentials: true, // Allow cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["X-Session-ID"] // Expose custom headers
   })
 );
 
@@ -62,14 +67,34 @@ console.log(
 // Configure session store
 let sessionStore;
 try {
-  // Create PostgreSQL session store
+  // Create PostgreSQL session store with better error handling
   const PgStore = connectPgSimple(session);
   sessionStore = new PgStore({
     conObject: pgConfig,
     tableName: "session",
     createTableIfMissing: true,
     pruneSessionInterval: 60, // Prune expired sessions every minute
+    errorLog: (error) => {
+      console.error(`SESSION STORE ERROR: ${error.message}`);
+      if (error.stack) {
+        console.error(error.stack.split('\n').slice(0, 3).join('\n'));
+      }
+    }
   });
+  
+  // Verify connection to session store
+  sessionStore.on('connect', () => {
+    console.log("SESSION: Successfully connected to PostgreSQL session store");
+  });
+  
+  sessionStore.on('disconnect', () => {
+    console.error("SESSION: Disconnected from PostgreSQL session store");
+  });
+  
+  sessionStore.on('error', (error) => {
+    console.error(`SESSION: Store error - ${error.message}`);
+  });
+  
   console.log("SESSION: Using PostgreSQL for session storage");
 } catch (err) {
   console.error(`SESSION: PostgreSQL store creation failed - ${err.message}`);
@@ -84,16 +109,38 @@ app.use(
     secret: process.env.SESSION_SECRET || "your-session-secret",
     resave: false,
     saveUninitialized: false,
+    proxy: true, // Trust the reverse proxy
     cookie: {
       secure: isProduction, // Only use secure cookies in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: isProduction ? "none" : "lax", // Use 'none' in production for cross-site requests
       path: "/",
+      domain: isProduction ? ".billcreator.store" : undefined // Use domain in production
     },
     name: "bills.session", // Custom session name
   })
 );
+
+// Add middleware to ensure X-Forwarded-Proto is properly handled
+app.use((req, res, next) => {
+  const logger = {
+    debug: (message) => console.log(`PROXY-DEBUG: ${message}`)
+  };
+  
+  // Log headers to help with debugging
+  logger.debug(`Protocol: ${req.protocol}, Original URL: ${req.originalUrl}`);
+  logger.debug(`X-Forwarded-Proto: ${req.get('X-Forwarded-Proto') || 'not set'}`);
+  logger.debug(`X-Forwarded-Host: ${req.get('X-Forwarded-Host') || 'not set'}`);
+  
+  // Force HTTPS redirect if accessed via HTTP in production
+  if (isProduction && req.headers['x-forwarded-proto'] !== 'https') {
+    logger.debug('Redirecting HTTP to HTTPS');
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+  
+  next();
+});
 
 // Initialize Passport
 app.use(passport.initialize());
@@ -138,12 +185,19 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log(`AUTH: Deserializing user ${id}`);
   try {
+    console.log(`AUTH: Deserializing user ${id}`);
     const user = await users.findById(id);
+    if (!user) {
+      console.error(`AUTH: Failed to deserialize user ${id} - not found`);
+      return done(null, false);
+    }
     done(null, user);
   } catch (err) {
     console.error(`AUTH: Error deserializing user - ${err.message}`);
+    if (err.stack) {
+      console.error(err.stack.split('\n').slice(0, 3).join('\n'));
+    }
     done(err, null);
   }
 });
@@ -199,9 +253,17 @@ app.get(
   "/auth/google/callback",
   (req, res, next) => {
     console.log("AUTH: Google callback received");
+    // Log request headers for debugging
+    const logger = {
+      debug: (message) => console.log(`AUTH-DEBUG: ${message}`)
+    };
+    logger.debug(`Callback headers: ${JSON.stringify(req.headers['host'])}`);
+    logger.debug(`Callback protocol: ${req.protocol}`);
+    
     passport.authenticate("google", {
       failureRedirect: "/signin",
       failWithError: true,
+      keepSessionInfo: true // Keep session information across the authentication
     })(req, res, next);
   },
   async (req, res) => {
@@ -219,35 +281,32 @@ app.get(
         console.log(`AUTH: User ${userId} already has active session ${existingSession.sid}, reusing`);
       }
 
-      // Force regenerate the session to ensure clean state
-      const originalSessionID = req.sessionID;
-      req.session.regenerate((err) => {
+      // Save the session explicitly with proper error handling
+      req.session.save((err) => {
         if (err) {
-          console.error(`SESSION: Error regenerating session - ${err.message}`);
-          return res.redirect("/signin?error=session_regenerate_error");
+          console.error(`SESSION: Error saving session - ${err.message}`);
+          if (err.stack) {
+            console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+          }
+          return res.redirect("/signin?error=session_error");
         }
         
-        // Restore user to the new session
-        req.session.passport = { user: userId };
+        console.log(`AUTH: Login successful for user ${userId}, session: ${req.sessionID}`);
         
-        // Save the session explicitly
-        req.session.save((err) => {
-          if (err) {
-            console.error(`SESSION: Error saving session - ${err.message}`);
-            if (err.stack) {
-              console.error(err.stack.split("\n").slice(0, 3).join("\n"));
-            }
-            return res.redirect("/signin?error=session_error");
-          }
-          
-          console.log(`AUTH: Login successful for user ${userId}, new session: ${req.sessionID}`);
-          console.log(`AUTH: Previous session was: ${originalSessionID}`);
-          
-          // Set a custom header to help with debugging
-          res.setHeader('X-Session-ID', req.sessionID);
-          
-          res.redirect("/");
+        // Set a custom header to help with debugging
+        res.setHeader('X-Session-ID', req.sessionID);
+        
+        // Set a session cookie manually as a backup
+        res.cookie('sessionBackup', req.sessionID, {
+          httpOnly: true,
+          secure: isProduction,
+          maxAge: 24 * 60 * 60 * 1000,
+          sameSite: isProduction ? 'none' : 'lax',
+          path: '/',
+          domain: isProduction ? '.billcreator.store' : undefined
         });
+        
+        res.redirect("/");
       });
     } catch (err) {
       console.error(`AUTH: Error in callback handler - ${err.message}`);
