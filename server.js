@@ -23,10 +23,9 @@ const PORT = process.env.PORT || 3001;
 // Enable CORS with credentials support
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://billcreator.store"
-        : "http://localhost:3001",
+    origin: process.env.NODE_ENV === "production"
+      ? ["https://billcreator.store"]
+      : ["http://localhost:3001", "http://localhost:3000"],
     credentials: true, // Allow cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -90,6 +89,7 @@ app.use(
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: isProduction ? "none" : "lax", // Use 'none' in production for cross-site requests
+      path: "/",
     },
     name: "bills.session", // Custom session name
   })
@@ -98,6 +98,38 @@ app.use(
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Session debugging middleware
+app.use((req, res, next) => {
+  const logger = {
+    info: (message) => console.log(`SESSION-DEBUG: ${message}`),
+    debug: (message) => console.log(`SESSION-DEBUG: ${message}`)
+  };
+
+  // Log session ID and authentication status
+  if (req.sessionID) {
+    logger.debug(`Request has sessionID: ${req.sessionID}`);
+    logger.debug(`Is authenticated: ${req.isAuthenticated()}`);
+    
+    // Check if session exists in store
+    if (req.session) {
+      logger.debug(`Session exists with cookie: ${JSON.stringify(req.session.cookie)}`);
+      
+      // Log passport data if it exists
+      if (req.session.passport) {
+        logger.debug(`Session has passport data: ${JSON.stringify(req.session.passport)}`);
+      } else {
+        logger.debug('Session has no passport data');
+      }
+    } else {
+      logger.debug('Session object does not exist');
+    }
+  } else {
+    logger.debug('No sessionID in request');
+  }
+  
+  next();
+});
 
 // Passport configuration
 passport.serializeUser((user, done) => {
@@ -176,28 +208,46 @@ app.get(
     try {
       // Check if user already has an active session
       const userId = req.user?.id;
-      if (userId) {
-        const existingSession = await sessionManager.findActiveSessionForUser(userId);
-        if (existingSession) {
-          console.log(`AUTH: User ${userId} already has active session ${existingSession.sid}, reusing`);
-          // We'll still save the current session to ensure it's updated
-        }
+      if (!userId) {
+        console.error("AUTH: No user ID in authenticated request");
+        return res.redirect("/signin?error=no_user");
       }
 
-      // Ensure session is saved before redirect
-      req.session.save((err) => {
-        if (err) {
-          console.error(`SESSION: Error saving session - ${err.message}`);
-          if (err.stack) {
-            console.error(err.stack.split("\n").slice(0, 3).join("\n"));
-          }
-          return res.redirect("/signin?error=session_error");
-        }
+      console.log(`AUTH: Processing login for user ${userId}`);
+      const existingSession = await sessionManager.findActiveSessionForUser(userId);
+      if (existingSession) {
+        console.log(`AUTH: User ${userId} already has active session ${existingSession.sid}, reusing`);
+      }
 
-        console.log(
-          `AUTH: Login successful for user ${req.user?.id || "unknown"}`
-        );
-        res.redirect("/");
+      // Force regenerate the session to ensure clean state
+      const originalSessionID = req.sessionID;
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error(`SESSION: Error regenerating session - ${err.message}`);
+          return res.redirect("/signin?error=session_regenerate_error");
+        }
+        
+        // Restore user to the new session
+        req.session.passport = { user: userId };
+        
+        // Save the session explicitly
+        req.session.save((err) => {
+          if (err) {
+            console.error(`SESSION: Error saving session - ${err.message}`);
+            if (err.stack) {
+              console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+            }
+            return res.redirect("/signin?error=session_error");
+          }
+          
+          console.log(`AUTH: Login successful for user ${userId}, new session: ${req.sessionID}`);
+          console.log(`AUTH: Previous session was: ${originalSessionID}`);
+          
+          // Set a custom header to help with debugging
+          res.setHeader('X-Session-ID', req.sessionID);
+          
+          res.redirect("/");
+        });
       });
     } catch (err) {
       console.error(`AUTH: Error in callback handler - ${err.message}`);
