@@ -5,8 +5,8 @@ import passport from "passport";
 import session from "express-session";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
-import { createClient } from "redis";
-import { RedisStore } from "connect-redis";
+import { MongoClient } from "mongodb";
+import MongoStore from "connect-mongo";
 
 // Load environment variables if .env file exists
 try {
@@ -38,44 +38,43 @@ const callbackURL = isProduction
 
 console.log(`AUTH: Using callback URL ${callbackURL}`);
 
-// Initialize Redis client and session store
-let redisClient;
+// MongoDB connection string
+const mongoURI = process.env.MONGODB_URI;
+let mongoClient;
 let sessionStore;
 
-// Setup Redis client based on environment
+// Setup session store based on environment
 if (isProduction) {
-  const redisHost = process.env.REDIS_HOST || "localhost";
-  const redisPort = process.env.REDIS_PORT || 6379;
+  console.log(`MONGODB: Configuring connection to MongoDB Atlas`);
 
-  console.log(`REDIS: Configuring connection to ${redisHost}:${redisPort}`);
-
-  redisClient = createClient({
-    url: `redis://${redisHost}:${redisPort}`,
-  });
-
-  redisClient.on("error", (err) => {
-    console.error(`REDIS: Connection error - ${err.message}`);
-  });
-
-  redisClient.on("connect", () => {
-    console.log("REDIS: Connected successfully");
-  });
-
+  // Create MongoDB session store
   try {
-    // Create Redis store using connect-redis v8
-    sessionStore = new RedisStore({
-      client: redisClient,
-      prefix: "bills-session:",
+    sessionStore = MongoStore.create({
+      mongoUrl: mongoURI,
+      collectionName: "user_session", // Use the collection name provided
+      ttl: 24 * 60 * 60, // 1 day in seconds
     });
-    console.log("SESSION: Using RedisStore for storage");
+    console.log("SESSION: Using MongoStore for storage");
   } catch (err) {
-    console.error(`SESSION: RedisStore creation failed - ${err.message}`);
+    console.error(`SESSION: MongoStore creation failed - ${err.message}`);
     console.log("SESSION: Falling back to MemoryStore");
     sessionStore = undefined;
   }
 } else {
-  console.log("SESSION: Development environment using MemoryStore");
-  sessionStore = undefined;
+  console.log("SESSION: Development environment using MongoStore");
+  // Even in development, use MongoStore for consistency
+  try {
+    sessionStore = MongoStore.create({
+      mongoUrl: mongoURI,
+      collectionName: "user_session",
+      ttl: 24 * 60 * 60, // 1 day in seconds
+    });
+    console.log("SESSION: Using MongoStore for storage in development");
+  } catch (err) {
+    console.error(`SESSION: MongoStore creation failed - ${err.message}`);
+    console.log("SESSION: Falling back to MemoryStore");
+    sessionStore = undefined;
+  }
 }
 
 // Set up session middleware
@@ -202,16 +201,17 @@ app.get("*", (req, res) => {
   res.redirect("/");
 });
 
-// Start the server and connect to Redis if in production
+// Start the server
 const startServer = async () => {
-  if (isProduction && redisClient) {
-    try {
-      await redisClient.connect();
-      console.log("REDIS: Connection established successfully");
-    } catch (err) {
-      console.error(`REDIS: Connection failed - ${err.message}`);
-      console.log("SESSION: Using MemoryStore as fallback");
-    }
+  try {
+    // Test MongoDB connection
+    const client = new MongoClient(mongoURI);
+    await client.connect();
+    console.log("MONGODB: Connection established successfully");
+    await client.close();
+  } catch (err) {
+    console.error(`MONGODB: Connection test failed - ${err.message}`);
+    console.log("SESSION: Using MemoryStore as fallback");
   }
 
   app.listen(PORT, "0.0.0.0", () => {
