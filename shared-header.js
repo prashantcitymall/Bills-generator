@@ -108,10 +108,16 @@ function showAuthenticatedUI(profile) {
     const userProfile = document.querySelector('.user-profile');
     const userName = document.querySelector('.user-name');
     const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
 
     if (authButtons) {
         authButtons.style.display = 'none';
         console.log('Auth buttons hidden');
+    }
+    
+    if (googleSignInBtn) {
+        googleSignInBtn.style.display = 'none';
+        console.log('Google sign-in button hidden');
     }
     
     if (userProfile) {
@@ -300,10 +306,16 @@ function showUnauthenticatedUI() {
     
     const authButtons = document.querySelector('.auth-buttons');
     const userProfile = document.querySelector('.user-profile');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
 
     if (authButtons) {
         authButtons.style.display = 'flex';
         console.log('Auth buttons shown');
+    }
+    
+    if (googleSignInBtn) {
+        googleSignInBtn.style.display = 'flex';
+        console.log('Google sign-in button shown');
     }
     
     if (userProfile) {
