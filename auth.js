@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dropdownContent.innerHTML = `
                 <a href="/profile.html"><i class="fas fa-user"></i> Profile</a>
                 <a href="/my-bills.html"><i class="fas fa-file-invoice"></i> My Bills</a>
-                <a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="/auth/logout" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
             `;
             
             // Append elements
@@ -199,6 +199,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     dropdownContent.classList.remove('show');
                 }
             });
+
+            // Add logout functionality
+            const logoutLink = document.getElementById('logoutLink');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Logging out user');
+                    fetch('/auth/logout')
+                        .then(() => {
+                            window.location.href = '/';
+                        })
+                        .catch(error => {
+                            console.error('Error during logout:', error);
+                        });
+                });
+            }
         }
     }
 

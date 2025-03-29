@@ -88,11 +88,13 @@ app.get('/auth/google/callback',
     }
 );
 
-// Check if user is authenticated
+// API endpoint to get current user
 app.get('/api/user', (req, res) => {
     if (req.isAuthenticated()) {
+        console.log('User is authenticated, returning user data');
         res.json({ user: req.user });
     } else {
+        console.log('User is not authenticated');
         res.json({ user: null });
     }
 });
