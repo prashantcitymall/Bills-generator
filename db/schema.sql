@@ -5,10 +5,12 @@ CREATE TABLE IF NOT EXISTS "session" (
   "sid" varchar NOT NULL COLLATE "default",
   "sess" json NOT NULL,
   "expire" timestamp(6) NOT NULL,
+  "status" varchar NOT NULL DEFAULT 'active',
   CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
 );
 
 CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
+CREATE INDEX IF NOT EXISTS "IDX_session_status" ON "session" ("status");
 
 -- Create users table for profile management
 CREATE TABLE IF NOT EXISTS "users" (

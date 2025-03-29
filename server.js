@@ -7,6 +7,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
 import connectPgSimple from "connect-pg-simple";
 import { testConnection, users, bills, pgConfig, db } from "./db/index.js";
+import sessionManager from "./db/session-manager.js";
 
 // Load environment variables if .env file exists
 try {
@@ -20,12 +21,17 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Enable CORS with credentials support
-app.use(cors({
-  origin: process.env.NODE_ENV === "production" ? 'https://billcreator.store' : 'http://localhost:3001',
-  credentials: true, // Allow cookies to be sent with requests
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://billcreator.store"
+        : "http://localhost:3001",
+    credentials: true, // Allow cookies to be sent with requests
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Parse JSON bodies
 app.use(express.json());
@@ -83,7 +89,7 @@ app.use(
       secure: isProduction, // Only use secure cookies in production
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: isProduction ? 'none' : 'lax', // Use 'none' in production for cross-site requests
+      sameSite: isProduction ? "none" : "lax", // Use 'none' in production for cross-site requests
     },
     name: "bills.session", // Custom session name
   })
@@ -161,10 +167,23 @@ app.get(
   "/auth/google/callback",
   (req, res, next) => {
     console.log("AUTH: Google callback received");
-    passport.authenticate("google", { failureRedirect: "/signin", failWithError: true })(req, res, next);
+    passport.authenticate("google", {
+      failureRedirect: "/signin",
+      failWithError: true,
+    })(req, res, next);
   },
-  (req, res) => {
+  async (req, res) => {
     try {
+      // Check if user already has an active session
+      const userId = req.user?.id;
+      if (userId) {
+        const existingSession = await sessionManager.findActiveSessionForUser(userId);
+        if (existingSession) {
+          console.log(`AUTH: User ${userId} already has active session ${existingSession.sid}, reusing`);
+          // We'll still save the current session to ensure it's updated
+        }
+      }
+
       // Ensure session is saved before redirect
       req.session.save((err) => {
         if (err) {
@@ -172,10 +191,12 @@ app.get(
           if (err.stack) {
             console.error(err.stack.split("\n").slice(0, 3).join("\n"));
           }
-          return res.redirect('/signin?error=session_error');
+          return res.redirect("/signin?error=session_error");
         }
-        
-        console.log(`AUTH: Login successful for user ${req.user?.id || "unknown"}`);
+
+        console.log(
+          `AUTH: Login successful for user ${req.user?.id || "unknown"}`
+        );
         res.redirect("/");
       });
     } catch (err) {
@@ -199,65 +220,107 @@ app.get("/api/user", (req, res) => {
   }
 });
 
-// Logout route
-app.get('/auth/logout', (req, res) => {
+// API endpoint to check session status
+app.get("/api/session/status", async (req, res) => {
   try {
-    const userId = req.user?.id || 'unknown';
-    console.log(`AUTH: Logging out user ${userId}`);
+    if (!req.sessionID) {
+      return res.json({ active: false, message: "No session ID found" });
+    }
     
-    // Destroy the session
-    req.logout(function(err) {
-      if (err) {
-        console.error(`AUTH: Error during logout - ${err.message}`);
-        return res.status(500).json({ error: 'Failed to logout' });
-      }
-      
-      req.session.destroy(function(err) {
-        if (err) {
-          console.error(`SESSION: Error destroying session - ${err.message}`);
-        }
-        
-        // Clear the session cookie
-        res.clearCookie('bills.session', {
-          path: '/',
-          httpOnly: true,
-          secure: isProduction,
-          sameSite: isProduction ? 'none' : 'lax'
-        });
-        
-        console.log('AUTH: User logged out successfully');
-        res.redirect('/');
-      });
+    // Get session info from database
+    const sessionInfo = await sessionManager.getSessionInfo(req.sessionID);
+    
+    if (!sessionInfo) {
+      return res.json({ active: false, message: "Session not found" });
+    }
+    
+    // Check if session is active and not expired
+    const isActive = sessionInfo.status === 'active' && new Date(sessionInfo.expire) > new Date();
+    
+    res.json({
+      active: isActive,
+      status: sessionInfo.status,
+      expires: sessionInfo.expire,
+      message: isActive ? "Session is active" : "Session is inactive or expired"
     });
   } catch (err) {
-    console.error(`AUTH: Unexpected error during logout - ${err.message}`);
+    console.error(`API: Error checking session status - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).json({ error: 'Internal server error during logout' });
+    res.status(500).json({ error: "Error checking session status" });
+  }
+});
+
+// Logout route
+app.get("/auth/logout", async (req, res) => {
+  try {
+    const userId = req.user?.id || "unknown";
+    console.log(`AUTH: Logging out user ${userId}`);
+
+    // Mark all user sessions as logged out in the database
+    if (userId && userId !== "unknown") {
+      await sessionManager.logoutAllUserSessions(userId);
+    }
+
+    // Mark current session as logged out if we have a session ID
+    if (req.sessionID) {
+      await sessionManager.updateSessionStatus(req.sessionID, "logged_out");
+    }
+
+    // Destroy the session
+    req.logout(function (err) {
+      if (err) {
+        console.error(`AUTH: Error during logout - ${err.message}`);
+        return res.status(500).json({ error: "Failed to logout" });
+      }
+
+      req.session.destroy(function (err) {
+        if (err) {
+          console.error(`SESSION: Error destroying session - ${err.message}`);
+        }
+
+        // Clear the session cookie
+        res.clearCookie("bills.session", {
+          path: "/",
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: isProduction ? "none" : "lax",
+        });
+
+        console.log("AUTH: User logged out successfully");
+        res.redirect("/");
+      });
+    });
+  } catch (err) {
+    console.error(`AUTH: Error in logout handler - ${err.message}`);
+    if (err.stack) {
+      console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+    }
+    res.status(500).json({ error: "Internal server error during logout" });
   }
 });
 
 // API endpoint to get user profile data
-app.get('/api/profile', (req, res) => {
+app.get("/api/profile", (req, res) => {
   try {
     // Check if user is authenticated
     if (!req.isAuthenticated()) {
-      console.log('API: Unauthenticated request to /api/profile');
-      return res.status(401).json({ error: 'Not authenticated' });
+      console.log("API: Unauthenticated request to /api/profile");
+      return res.status(401).json({ error: "Not authenticated" });
     }
-    
+
     const userId = req.user.id;
     console.log(`API: Fetching profile data for user ${userId}`);
-    
+
     // Query the database for user profile
-    db.oneOrNone('SELECT * FROM users WHERE id = $1', [userId])
-      .then(user => {
+    db.oneOrNone("SELECT * FROM users WHERE id = $1", [userId])
+      .then((user) => {
         if (!user) {
           console.error(`API: User ${userId} not found in database`);
-          return res.status(404).json({ error: 'User not found' });
+          return res.status(404).json({ error: "User not found" });
         }
-        
+
         // Return user profile data
         res.json({
           profile: {
@@ -265,200 +328,218 @@ app.get('/api/profile', (req, res) => {
             email: user.email,
             display_name: user.display_name,
             profile_picture: user.profile_picture,
-            created_at: user.created_at
-          }
+            created_at: user.created_at,
+          },
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(`DATABASE: Error fetching user profile - ${err.message}`);
         if (err.stack) {
           console.error(err.stack.split("\n").slice(0, 3).join("\n"));
         }
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: "Database error" });
       });
   } catch (err) {
     console.error(`API: Unexpected error in /api/profile - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // API endpoint to get user's bills
-app.get('/api/bills', (req, res) => {
+app.get("/api/bills", (req, res) => {
   try {
     // Check if user is authenticated
     if (!req.isAuthenticated()) {
-      console.log('API: Unauthenticated request to /api/bills');
-      return res.status(401).json({ error: 'Not authenticated' });
+      console.log("API: Unauthenticated request to /api/bills");
+      return res.status(401).json({ error: "Not authenticated" });
     }
-    
+
     const userId = req.user.id;
     console.log(`API: Fetching bills for user ${userId}`);
-    
+
     // Query the database for user's bills
-    db.any('SELECT * FROM bills WHERE user_id = $1 ORDER BY created_at DESC', [userId])
-      .then(bills => {
+    db.any("SELECT * FROM bills WHERE user_id = $1 ORDER BY created_at DESC", [
+      userId,
+    ])
+      .then((bills) => {
         res.json({ bills });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(`DATABASE: Error fetching user bills - ${err.message}`);
         if (err.stack) {
           console.error(err.stack.split("\n").slice(0, 3).join("\n"));
         }
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: "Database error" });
       });
   } catch (err) {
     console.error(`API: Unexpected error in /api/bills - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // API endpoint to get a specific bill
-app.get('/api/bills/:id', (req, res) => {
+app.get("/api/bills/:id", (req, res) => {
   try {
     // Check if user is authenticated
     if (!req.isAuthenticated()) {
-      console.log('API: Unauthenticated request to /api/bills/:id');
-      return res.status(401).json({ error: 'Not authenticated' });
+      console.log("API: Unauthenticated request to /api/bills/:id");
+      return res.status(401).json({ error: "Not authenticated" });
     }
-    
+
     const billId = req.params.id;
     const userId = req.user.id;
     console.log(`API: Fetching bill ${billId} for user ${userId}`);
-    
+
     // Query the database for the bill
-    db.oneOrNone('SELECT * FROM bills WHERE id = $1 AND user_id = $2', [billId, userId])
-      .then(bill => {
+    db.oneOrNone("SELECT * FROM bills WHERE id = $1 AND user_id = $2", [
+      billId,
+      userId,
+    ])
+      .then((bill) => {
         if (!bill) {
           console.error(`API: Bill ${billId} not found for user ${userId}`);
-          return res.status(404).json({ error: 'Bill not found' });
+          return res.status(404).json({ error: "Bill not found" });
         }
-        
+
         // Return the bill
         res.json({ bill });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(`DATABASE: Error fetching bill - ${err.message}`);
         if (err.stack) {
           console.error(err.stack.split("\n").slice(0, 3).join("\n"));
         }
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: "Database error" });
       });
   } catch (err) {
     console.error(`API: Unexpected error in /api/bills/:id - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // API endpoint to create a new bill
-app.post('/api/bills', (req, res) => {
+app.post("/api/bills", (req, res) => {
   try {
     // Check if user is authenticated
     if (!req.isAuthenticated()) {
-      console.log('API: Unauthenticated request to /api/bills');
-      return res.status(401).json({ error: 'Not authenticated' });
+      console.log("API: Unauthenticated request to /api/bills");
+      return res.status(401).json({ error: "Not authenticated" });
     }
-    
+
     const userId = req.user.id;
     console.log(`API: Creating new bill for user ${userId}`);
-    
+
     // Create a new bill
-    db.none('INSERT INTO bills (user_id, name, amount, due_date) VALUES ($1, $2, $3, $4)', [userId, req.body.name, req.body.amount, req.body.due_date])
+    db.none(
+      "INSERT INTO bills (user_id, name, amount, due_date) VALUES ($1, $2, $3, $4)",
+      [userId, req.body.name, req.body.amount, req.body.due_date]
+    )
       .then(() => {
         console.log(`API: Bill created successfully for user ${userId}`);
-        res.status(201).json({ message: 'Bill created successfully' });
+        res.status(201).json({ message: "Bill created successfully" });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(`DATABASE: Error creating bill - ${err.message}`);
         if (err.stack) {
           console.error(err.stack.split("\n").slice(0, 3).join("\n"));
         }
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: "Database error" });
       });
   } catch (err) {
     console.error(`API: Unexpected error in /api/bills - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // API endpoint to update a bill
-app.put('/api/bills/:id', (req, res) => {
+app.put("/api/bills/:id", (req, res) => {
   try {
     // Check if user is authenticated
     if (!req.isAuthenticated()) {
-      console.log('API: Unauthenticated request to /api/bills/:id');
-      return res.status(401).json({ error: 'Not authenticated' });
+      console.log("API: Unauthenticated request to /api/bills/:id");
+      return res.status(401).json({ error: "Not authenticated" });
     }
-    
+
     const billId = req.params.id;
     const userId = req.user.id;
     console.log(`API: Updating bill ${billId} for user ${userId}`);
-    
+
     // Update the bill
-    db.none('UPDATE bills SET name = $1, amount = $2, due_date = $3 WHERE id = $4 AND user_id = $5', [req.body.name, req.body.amount, req.body.due_date, billId, userId])
+    db.none(
+      "UPDATE bills SET name = $1, amount = $2, due_date = $3 WHERE id = $4 AND user_id = $5",
+      [req.body.name, req.body.amount, req.body.due_date, billId, userId]
+    )
       .then(() => {
-        console.log(`API: Bill ${billId} updated successfully for user ${userId}`);
-        res.json({ message: 'Bill updated successfully' });
+        console.log(
+          `API: Bill ${billId} updated successfully for user ${userId}`
+        );
+        res.json({ message: "Bill updated successfully" });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(`DATABASE: Error updating bill - ${err.message}`);
         if (err.stack) {
           console.error(err.stack.split("\n").slice(0, 3).join("\n"));
         }
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: "Database error" });
       });
   } catch (err) {
     console.error(`API: Unexpected error in /api/bills/:id - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // API endpoint to delete a bill
-app.delete('/api/bills/:id', (req, res) => {
+app.delete("/api/bills/:id", (req, res) => {
   try {
     // Check if user is authenticated
     if (!req.isAuthenticated()) {
-      console.log('API: Unauthenticated request to /api/bills/:id');
-      return res.status(401).json({ error: 'Not authenticated' });
+      console.log("API: Unauthenticated request to /api/bills/:id");
+      return res.status(401).json({ error: "Not authenticated" });
     }
-    
+
     const billId = req.params.id;
     const userId = req.user.id;
     console.log(`API: Deleting bill ${billId} for user ${userId}`);
-    
+
     // Delete the bill
-    db.none('DELETE FROM bills WHERE id = $1 AND user_id = $2', [billId, userId])
+    db.none("DELETE FROM bills WHERE id = $1 AND user_id = $2", [
+      billId,
+      userId,
+    ])
       .then(() => {
-        console.log(`API: Bill ${billId} deleted successfully for user ${userId}`);
-        res.json({ message: 'Bill deleted successfully' });
+        console.log(
+          `API: Bill ${billId} deleted successfully for user ${userId}`
+        );
+        res.json({ message: "Bill deleted successfully" });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(`DATABASE: Error deleting bill - ${err.message}`);
         if (err.stack) {
           console.error(err.stack.split("\n").slice(0, 3).join("\n"));
         }
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: "Database error" });
       });
   } catch (err) {
     console.error(`API: Unexpected error in /api/bills/:id - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -480,22 +561,26 @@ app.get("/signup", (req, res) => {
 });
 
 // Serve profile page
-app.get('/profile', (req, res) => {
+app.get("/profile", (req, res) => {
   try {
     // Check if user is authenticated
     if (!req.isAuthenticated()) {
-      console.log('AUTH: Unauthenticated user attempted to access profile page');
-      return res.redirect('/signin.html');
+      console.log(
+        "AUTH: Unauthenticated user attempted to access profile page"
+      );
+      return res.redirect("/signin.html");
     }
-    
-    console.log(`AUTH: Serving profile page for user ${req.user?.id || 'unknown'}`);
-    res.sendFile(join(process.cwd(), 'profile.html'));
+
+    console.log(
+      `AUTH: Serving profile page for user ${req.user?.id || "unknown"}`
+    );
+    res.sendFile(join(process.cwd(), "profile.html"));
   } catch (err) {
     console.error(`SERVER: Error serving profile page - ${err.message}`);
     if (err.stack) {
       console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
-    res.status(500).send('Internal server error');
+    res.status(500).send("Internal server error");
   }
 });
 
@@ -505,19 +590,27 @@ app.get("*", (req, res) => {
 });
 
 // Start the server
-const startServer = async () => {
+async function startServer() {
   try {
-    // Test database connection
-    console.log("DB: Testing PostgreSQL connection...");
-    const connected = await testConnection();
-
-    if (!connected) {
-      console.error("DB: PostgreSQL connection test failed");
-      console.log("SESSION: Using MemoryStore as fallback");
-    } else {
-      console.log("DB: PostgreSQL connection test successful");
+    console.log("SERVER: Testing database connection...");
+    const dbConnected = await testConnection();
+    if (!dbConnected) {
+      throw new Error("Database connection failed");
     }
 
+    // Clean up expired sessions on server start
+    const cleanedSessions = await sessionManager.cleanupExpiredSessions();
+    console.log(`SERVER: Cleaned up ${cleanedSessions} expired sessions`);
+
+    // Schedule periodic session cleanup
+    setInterval(async () => {
+      const cleanedSessions = await sessionManager.cleanupExpiredSessions();
+      if (cleanedSessions > 0) {
+        console.log(`SERVER: Cleaned up ${cleanedSessions} expired sessions`);
+      }
+    }, 60 * 60 * 1000); // Run every hour
+
+    // Start the server
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`SERVER: Running on http://0.0.0.0:${PORT}`);
     });
@@ -525,15 +618,17 @@ const startServer = async () => {
     console.error(`SERVER: Failed to start - ${err.message}`);
     if (err.stack) {
       console.error("SERVER: Error stack trace:");
-      console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+      console.error(err.stack.split("\n").slice(0, 5).join("\n"));
     }
+    process.exit(1);
   }
-};
+}
 
 startServer().catch((err) => {
   console.error(`SERVER: Failed to start - ${err.message}`);
   if (err.stack) {
     console.error("SERVER: Error stack trace:");
-    console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+    console.error(err.stack.split("\n").slice(0, 5).join("\n"));
   }
+  process.exit(1);
 });
