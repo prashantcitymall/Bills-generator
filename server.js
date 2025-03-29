@@ -60,6 +60,16 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'YOUR_GOOGLE_CLIENT_SECRET',
     callbackURL: callbackURL
 }, (accessToken, refreshToken, profile, done) => {
+    // Log detailed information about the user profile
+    console.log('Google authentication successful');
+    console.log('User profile:', {
+        id: profile.id,
+        displayName: profile.displayName,
+        name: profile.name,
+        emails: profile.emails,
+        photos: profile.photos
+    });
+    
     // Here you would typically save the user to your database
     // For now, we'll just pass the profile info
     return done(null, profile);

@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update UI for logged in user
     function updateUIForLoggedInUser(user) {
+        console.log('Updating UI for logged in user:', user);
         const authButtons = document.querySelector('.auth-buttons');
         if (authButtons) {
             // Clear existing buttons
@@ -153,12 +154,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const userDropdown = document.createElement('div');
             userDropdown.className = 'user-dropdown';
             
+            // Get user display name or email
+            let displayName = 'User';
+            if (user.displayName) {
+                displayName = user.displayName;
+            } else if (user.emails && user.emails.length > 0) {
+                displayName = user.emails[0].value;
+            } else if (user.name && user.name.givenName) {
+                displayName = user.name.givenName;
+            }
+            
             // Create dropdown button with user name/email
             const dropdownBtn = document.createElement('button');
             dropdownBtn.className = 'user-dropdown-btn';
             dropdownBtn.innerHTML = `
                 <i class="fas fa-user-circle"></i>
-                <span>${user.displayName || user.emails[0].value}</span>
+                <span>Hi, ${displayName}</span>
                 <i class="fas fa-chevron-down"></i>
             `;
             
