@@ -54,10 +54,22 @@ if (isProduction) {
       throw new Error("MongoDB URI is not defined. Check environment variables.");
     }
     
+    // Configure MongoStore with SSL options
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
-      collectionName: "user_session", // Use the collection name provided
+      collectionName: "user_session",
       ttl: 24 * 60 * 60, // 1 day in seconds
+      crypto: {
+        secret: process.env.SESSION_SECRET || "your-session-secret"
+      },
+      mongoOptions: {
+        ssl: true,
+        tls: true,
+        tlsAllowInvalidCertificates: false,
+        tlsAllowInvalidHostnames: false,
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      }
     });
     console.log("SESSION: Using MongoStore for storage");
   } catch (err) {
@@ -73,10 +85,22 @@ if (isProduction) {
       throw new Error("MongoDB URI is not defined. Check environment variables.");
     }
     
+    // Configure MongoStore with SSL options
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
       collectionName: "user_session",
       ttl: 24 * 60 * 60, // 1 day in seconds
+      crypto: {
+        secret: process.env.SESSION_SECRET || "your-session-secret"
+      },
+      mongoOptions: {
+        ssl: true,
+        tls: true,
+        tlsAllowInvalidCertificates: false,
+        tlsAllowInvalidHostnames: false,
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      }
     });
     console.log("SESSION: Using MongoStore for storage in development");
   } catch (err) {
@@ -96,7 +120,9 @@ app.use(
     cookie: {
       secure: isProduction,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax', // Helps with cross-site request issues
     },
+    name: 'bills.session' // Custom session name
   })
 );
 
@@ -123,13 +149,28 @@ passport.use(
       clientSecret:
         process.env.GOOGLE_CLIENT_SECRET || "YOUR_GOOGLE_CLIENT_SECRET",
       callbackURL: callbackURL,
+      proxy: true, // Add proxy support for production environments behind proxies
+      // Add additional options to handle SSL/TLS issues
+      userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
+      passReqToCallback: true // Pass request object to callback
     },
-    (accessToken, refreshToken, profile, done) => {
-      console.log("AUTH: Google authentication successful");
-      console.log(
-        `AUTH: User profile id=${profile.id}, name=${profile.displayName}`
-      );
-      return done(null, profile);
+    (req, accessToken, refreshToken, profile, done) => {
+      try {
+        console.log("AUTH: Google authentication strategy executing");
+        if (!profile || !profile.id) {
+          console.error("AUTH: Invalid profile received from Google");
+          return done(new Error("Invalid profile received from Google"), null);
+        }
+        
+        console.log("AUTH: Google authentication successful");
+        console.log(
+          `AUTH: User profile id=${profile.id}, name=${profile.displayName || 'unknown'}`
+        );
+        return done(null, profile);
+      } catch (err) {
+        console.error(`AUTH: Error in Google strategy - ${err.message}`);
+        return done(err, null);
+      }
     }
   )
 );
@@ -144,10 +185,18 @@ app.get(
 
 app.get(
   "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/signin" }),
+  (req, res, next) => {
+    console.log("AUTH: Google callback received");
+    passport.authenticate("google", { failureRedirect: "/signin" })(req, res, next);
+  },
   (req, res) => {
-    console.log(`AUTH: Login successful for user ${req.user.id}`);
-    res.redirect("/");
+    try {
+      console.log(`AUTH: Login successful for user ${req.user?.id || 'unknown'}`);
+      res.redirect("/");
+    } catch (err) {
+      console.error(`AUTH: Error in callback handler - ${err.message}`);
+      res.redirect("/signin?error=callback_error");
+    }
   }
 );
 
@@ -219,7 +268,14 @@ const startServer = async () => {
     }
     
     console.log("MONGODB: Attempting to connect to MongoDB...");
-    const client = new MongoClient(mongoURI);
+    const client = new MongoClient(mongoURI, {
+      ssl: true,
+      tls: true,
+      tlsInsecure: false,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000 // 5 seconds timeout for server selection
+    });
     await client.connect();
     console.log("MONGODB: Connection established successfully");
     await client.close();
