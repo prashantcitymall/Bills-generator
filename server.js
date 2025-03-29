@@ -39,16 +39,21 @@ const callbackURL = isProduction
 console.log(`AUTH: Using callback URL ${callbackURL}`);
 
 // MongoDB connection string
-const mongoURI = process.env.MONGODB_URI;
+const mongoURI = process.env.MONGODB_URI || "mongodb+srv://sushant:2TQ67U0Mo8kyEVwk@billcreator.imovr7t.mongodb.net/?retryWrites=true&w=majority&appName=billcreator";
+console.log(`MONGODB: URI ${mongoURI ? "is set" : "is NOT set"} (${mongoURI ? mongoURI.substring(0, 20) + '...' : 'undefined'})`); // Log partial URI for debugging
 let mongoClient;
 let sessionStore;
 
 // Setup session store based on environment
 if (isProduction) {
-  console.log(`MONGODB: Configuring connection to MongoDB Atlas`);
+  console.log(`MONGODB: Configuring connection to MongoDB Atlas for production`);
 
   // Create MongoDB session store
   try {
+    if (!mongoURI) {
+      throw new Error("MongoDB URI is not defined. Check environment variables.");
+    }
+    
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
       collectionName: "user_session", // Use the collection name provided
@@ -64,6 +69,10 @@ if (isProduction) {
   console.log("SESSION: Development environment using MongoStore");
   // Even in development, use MongoStore for consistency
   try {
+    if (!mongoURI) {
+      throw new Error("MongoDB URI is not defined. Check environment variables.");
+    }
+    
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
       collectionName: "user_session",
@@ -205,12 +214,18 @@ app.get("*", (req, res) => {
 const startServer = async () => {
   try {
     // Test MongoDB connection
+    if (!mongoURI) {
+      throw new Error("MongoDB URI is not defined. Check environment variables.");
+    }
+    
+    console.log("MONGODB: Attempting to connect to MongoDB...");
     const client = new MongoClient(mongoURI);
     await client.connect();
     console.log("MONGODB: Connection established successfully");
     await client.close();
   } catch (err) {
     console.error(`MONGODB: Connection test failed - ${err.message}`);
+    console.error(`MONGODB: URI value type: ${typeof mongoURI}, length: ${mongoURI ? mongoURI.length : 0}`);
     console.log("SESSION: Using MemoryStore as fallback");
   }
 
