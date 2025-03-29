@@ -65,8 +65,8 @@ if (isProduction) {
       mongoOptions: {
         ssl: true,
         tls: true,
-        tlsAllowInvalidCertificates: false,
-        tlsAllowInvalidHostnames: false,
+        tlsAllowInvalidCertificates: true,
+        tlsAllowInvalidHostnames: true,
         useNewUrlParser: true,
         useUnifiedTopology: true
       }
@@ -96,8 +96,8 @@ if (isProduction) {
       mongoOptions: {
         ssl: true,
         tls: true,
-        tlsAllowInvalidCertificates: false,
-        tlsAllowInvalidHostnames: false,
+        tlsAllowInvalidCertificates: true,
+        tlsAllowInvalidHostnames: true,
         useNewUrlParser: true,
         useUnifiedTopology: true
       }
@@ -271,7 +271,8 @@ const startServer = async () => {
     const client = new MongoClient(mongoURI, {
       ssl: true,
       tls: true,
-      tlsInsecure: false,
+      tlsAllowInvalidCertificates: true,
+      tlsAllowInvalidHostnames: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000 // 5 seconds timeout for server selection
