@@ -462,6 +462,186 @@ th {
     text-align: center;
 }
 
+/* Flipkart Template Styles */
+.flipkart-template {
+    font-family: Arial, sans-serif;
+    color: #000;
+    padding: 1rem;
+    background: #fff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.flipkart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    border-bottom: none;
+    padding: 0;
+    background: transparent;
+}
+
+.flipkart-logo {
+    height: 153px; /* Increased by 50% from 102px (102 * 1.5 = 153) */
+    width: auto;
+    margin-top: -53px; /* Shift upward by approximately 35% of the logo height */
+    position: relative; /* Added to ensure the margin-top works properly */
+}
+
+.flipkart-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.flipkart-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0;
+    font-size: 0.75rem;
+    table-layout: fixed;
+}
+
+.flipkart-items th {
+    background: #f5f5f5;
+    padding: 0.3rem;
+    border: 1px solid #ddd;
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.flipkart-items td {
+    padding: 0.3rem;
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.2;
+}
+
+/* Adjust column widths for better fit */
+.flipkart-items th:nth-child(1) { width: 4%; }  /* Sl. No */
+.flipkart-items th:nth-child(2) { width: 20%; } /* Description */
+.flipkart-items th:nth-child(3) { width: 8%; } /* Unit Price */
+.flipkart-items th:nth-child(4) { width: 7%; }  /* Discount */
+.flipkart-items th:nth-child(5) { width: 5%; }  /* Qty */
+.flipkart-items th:nth-child(6) { width: 9%; } /* Net Amount */
+.flipkart-items th:nth-child(7) { width: 6%; }  /* Tax Rate */
+.flipkart-items th:nth-child(8) { width: 8%; }  /* Tax Type */
+.flipkart-items th:nth-child(9) { width: 8%; }  /* Tax Amount */
+.flipkart-items th:nth-child(10) { width: 8%; } /* Total Amount */
+
+/* Prevent text overflow */
+.flipkart-items td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+/* Allow description column to wrap */
+.flipkart-items td:nth-child(2) {
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* Myntra Template Styles */
+.myntra-template {
+    font-family: Arial, sans-serif;
+    color: #000;
+    padding: 1rem;
+    background: #fff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.myntra-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    border-bottom: none;
+    padding: 0;
+    background: transparent;
+}
+
+.myntra-logo {
+    height: 78px; /* Increased by 30% from 60px (60 * 1.3 = 78) */
+    width: auto;
+}
+
+.myntra-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.myntra-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0;
+    font-size: 0.75rem;
+    table-layout: fixed;
+}
+
+.myntra-items th {
+    background: #f5f5f5;
+    padding: 0.3rem;
+    border: 1px solid #ddd;
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.myntra-items td {
+    padding: 0.3rem;
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.2;
+}
+
+/* Adjust column widths for better fit */
+.myntra-items th:nth-child(1) { width: 4%; }  /* Sl. No */
+.myntra-items th:nth-child(2) { width: 20%; } /* Description */
+.myntra-items th:nth-child(3) { width: 8%; } /* Unit Price */
+.myntra-items th:nth-child(4) { width: 7%; }  /* Discount */
+.myntra-items th:nth-child(5) { width: 5%; }  /* Qty */
+.myntra-items th:nth-child(6) { width: 9%; } /* Net Amount */
+.myntra-items th:nth-child(7) { width: 6%; }  /* Tax Rate */
+.myntra-items th:nth-child(8) { width: 8%; }  /* Tax Type */
+.myntra-items th:nth-child(9) { width: 8%; }  /* Tax Amount */
+.myntra-items th:nth-child(10) { width: 8%; } /* Total Amount */
+
+/* Prevent text overflow */
+.myntra-items td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+/* Allow description column to wrap */
+.myntra-items td:nth-child(2) {
+    white-space: normal;
+    word-break: break-word;
+}
+
 /* Add print-specific styles */
 @media print {
     @page {
@@ -494,7 +674,7 @@ th {
         -webkit-print-color-adjust: exact;
     }
 
-    .amazon-items {
+    .amazon-items, .flipkart-items, .myntra-items {
         page-break-inside: avoid;
         break-inside: avoid;
     }
