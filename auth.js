@@ -143,11 +143,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateUIForLoggedInUser(data.user);
                 } else {
                     console.log('User is not authenticated');
+                    // Make sure auth buttons are visible if not logged in
+                    showAuthButtons();
                 }
             })
             .catch(error => {
                 console.error('Error checking authentication status:', error);
+                // On error, ensure auth buttons are visible
+                showAuthButtons();
             });
+    }
+    
+    // Show auth buttons (sign in/sign up)
+    function showAuthButtons() {
+        const authButtonsContainers = document.querySelectorAll('.auth-buttons');
+        authButtonsContainers.forEach(container => {
+            container.innerHTML = `
+                <a href="signin.html" class="auth-button signin-button">Sign In</a>
+                <a href="signup.html" class="auth-button signup-button">Sign Up</a>
+            `;
+            container.style.display = 'flex';
+        });
     }
 
     // Update UI for logged in user
@@ -218,13 +234,30 @@ document.addEventListener('DOMContentLoaded', function() {
             authButtons.appendChild(userDropdown);
             
             // Toggle dropdown on click
-            dropdownBtn.addEventListener('click', function() {
+            dropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent event from bubbling up
                 dropdownContent.classList.toggle('show');
             });
+            
+            // Add logout functionality
+            const logoutLink = dropdownContent.querySelector('#logoutLink');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Logging out user');
+                    fetch('/auth/logout')
+                        .then(() => {
+                            window.location.href = '/';
+                        })
+                        .catch(error => {
+                            console.error('Error during logout:', error);
+                        });
+                });
+            }
         });
         
         // Close dropdown when clicking outside
-        window.addEventListener('click', function(e) {
+        document.addEventListener('click', function(e) {
             if (!e.target.matches('.user-dropdown-btn') && 
                 !e.target.matches('.user-dropdown-btn *')) {
                 document.querySelectorAll('.user-dropdown-content').forEach(content => {
