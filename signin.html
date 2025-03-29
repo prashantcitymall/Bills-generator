@@ -114,5 +114,28 @@
 
     <script src="auth.js"></script>
     <script src="shared-header.js"></script>
+    <script>
+        // Check if user is already authenticated
+        document.addEventListener('DOMContentLoaded', function() {
+            // Try to get auth state from localStorage first for immediate redirect
+            const storedAuthState = localStorage.getItem('authState');
+            if (storedAuthState) {
+                try {
+                    const authData = JSON.parse(storedAuthState);
+                    if (authData && authData.isAuthenticated) {
+                        console.log('User already authenticated, redirecting to home page');
+                        window.location.href = '/';
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Error parsing stored auth state:', e);
+                    localStorage.removeItem('authState');
+                }
+            }
+            
+            // If no stored state, the shared-header.js will check with the server
+            // and redirect if needed
+        });
+    </script>
 </body>
 </html>

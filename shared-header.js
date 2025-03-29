@@ -78,6 +78,12 @@ async function checkAuthStatus() {
             }));
             
             showAuthenticatedUI(data.profile);
+            
+            // If on signin or signup page, redirect to home
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('signin.html') || currentPath.includes('signup.html')) {
+                window.location.href = '/';
+            }
         } else {
             // User is not authenticated
             console.log('User not authenticated, status:', response.status);
@@ -111,6 +117,10 @@ function showAuthenticatedUI(profile) {
     if (userProfile) {
         userProfile.style.display = 'flex';
         console.log('User profile shown');
+    } else {
+        // If the user-profile element doesn't exist, we need to create it
+        createUserProfileElement(profile);
+        return; // After creating the element, return as we'll rerun this function
     }
     
     if (userName && profile && profile.display_name) {
@@ -166,15 +176,21 @@ function showAuthenticatedUI(profile) {
             
             // Add event listeners to the new element
             newProfileDropdown.addEventListener('mouseenter', function() {
-                profileDropdownContent.style.opacity = '1';
-                profileDropdownContent.style.visibility = 'visible';
-                profileDropdownContent.style.transform = 'translateY(0)';
+                const dropdownContent = newProfileDropdown.querySelector('.profile-dropdown-content');
+                if (dropdownContent) {
+                    dropdownContent.style.opacity = '1';
+                    dropdownContent.style.visibility = 'visible';
+                    dropdownContent.style.transform = 'translateY(0)';
+                }
             });
 
             newProfileDropdown.addEventListener('mouseleave', function() {
-                profileDropdownContent.style.opacity = '0';
-                profileDropdownContent.style.visibility = 'hidden';
-                profileDropdownContent.style.transform = 'translateY(10px)';
+                const dropdownContent = newProfileDropdown.querySelector('.profile-dropdown-content');
+                if (dropdownContent) {
+                    dropdownContent.style.opacity = '0';
+                    dropdownContent.style.visibility = 'hidden';
+                    dropdownContent.style.transform = 'translateY(10px)';
+                }
             });
             
             // Re-add click event to logout link
@@ -192,6 +208,74 @@ function showAuthenticatedUI(profile) {
             }
         }
     }
+}
+
+// Create user profile element if it doesn't exist
+function createUserProfileElement(profile) {
+    console.log('Creating user profile element for:', profile.display_name);
+    
+    const navRight = document.querySelector('.nav-right');
+    if (!navRight) {
+        console.error('Nav right element not found');
+        return;
+    }
+    
+    // Create user profile element
+    const userProfile = document.createElement('div');
+    userProfile.className = 'user-profile';
+    userProfile.style.display = 'flex';
+    
+    // Create dropdown
+    const dropdown = document.createElement('div');
+    dropdown.className = 'dropdown';
+    
+    // Create dropdown button
+    const dropdownBtn = document.createElement('button');
+    dropdownBtn.className = 'profile-dropdown-btn';
+    
+    // Create profile picture if available
+    if (profile.profile_picture) {
+        const profilePic = document.createElement('img');
+        profilePic.className = 'profile-pic';
+        profilePic.src = profile.profile_picture;
+        profilePic.alt = 'Profile';
+        dropdownBtn.appendChild(profilePic);
+    }
+    
+    // Create greeting span
+    const greeting = document.createElement('span');
+    greeting.className = 'user-greeting';
+    greeting.innerHTML = `Hi, <span class="user-name">${profile.display_name}</span> <i class="fas fa-chevron-down"></i>`;
+    dropdownBtn.appendChild(greeting);
+    
+    // Create dropdown content
+    const dropdownContent = document.createElement('div');
+    dropdownContent.className = 'profile-dropdown-content dropdown-content';
+    dropdownContent.setAttribute('role', 'menu');
+    dropdownContent.setAttribute('aria-label', 'User Menu');
+    
+    // Add menu items
+    dropdownContent.innerHTML = `
+        <a href="/profile.html" role="menuitem"><i class="fas fa-user"></i>My Profile</a>
+        <a href="/my-bills.html" role="menuitem"><i class="fas fa-file-invoice"></i>My Bills</a>
+        <a href="#" class="logout-link" role="menuitem"><i class="fas fa-sign-out-alt"></i>Logout</a>
+    `;
+    
+    // Assemble the elements
+    dropdown.appendChild(dropdownBtn);
+    dropdown.appendChild(dropdownContent);
+    userProfile.appendChild(dropdown);
+    
+    // Find the auth buttons element and replace it
+    const authButtons = navRight.querySelector('.auth-buttons');
+    if (authButtons) {
+        navRight.replaceChild(userProfile, authButtons);
+    } else {
+        navRight.appendChild(userProfile);
+    }
+    
+    // Now that we've created the element, call showAuthenticatedUI again
+    showAuthenticatedUI(profile);
 }
 
 // Show UI for unauthenticated users
