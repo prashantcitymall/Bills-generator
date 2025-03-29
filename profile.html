@@ -213,22 +213,30 @@
                 <div>
                     <h1 class="profile-name" id="profile-name">Loading...</h1>
                     <p class="profile-email" id="profile-email">Loading...</p>
+                    <div class="profile-actions">
+                        <button class="profile-action-btn"><i class="fas fa-edit"></i> Edit Profile</button>
+                        <button class="profile-action-btn secondary"><i class="fas fa-key"></i> Change Password</button>
+                    </div>
                 </div>
             </div>
 
             <div class="profile-section">
                 <h2>Account Information</h2>
                 <div class="profile-info-item">
-                    <div class="profile-info-label">Account ID</div>
-                    <div class="profile-info-value" id="profile-id">Loading...</div>
-                </div>
-                <div class="profile-info-item">
                     <div class="profile-info-label">Account Type</div>
-                    <div class="profile-info-value">Google Account</div>
+                    <div class="profile-info-value" data-field="accountType">Google Account</div>
                 </div>
                 <div class="profile-info-item">
-                    <div class="profile-info-label">Joined</div>
-                    <div class="profile-info-value" id="joined-date">-</div>
+                    <div class="profile-info-label">Member Since</div>
+                    <div class="profile-info-value" data-field="memberSince" id="joined-date">-</div>
+                </div>
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Subscription</div>
+                    <div class="profile-info-value" data-field="subscription">Free</div>
+                </div>
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Account ID</div>
+                    <div class="profile-info-value" data-field="id" id="profile-id">Loading...</div>
                 </div>
             </div>
 

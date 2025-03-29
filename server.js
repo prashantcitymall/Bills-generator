@@ -88,8 +88,8 @@ app.get('/auth/google', passport.authenticate('google', {
 app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/signin' }),
     (req, res) => {
-        // Successful authentication, redirect home.
-        res.redirect('/');
+        // Successful authentication, redirect to profile page
+        res.redirect('/profile.html');
     }
 );
 
@@ -127,6 +127,15 @@ app.get('/signin', (req, res) => {
 
 app.get('/signup', (req, res) => {
     res.sendFile(join(process.cwd(), 'signup.html'));
+});
+
+// Serve profile page
+app.get('/profile', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.sendFile(join(process.cwd(), 'profile.html'));
+    } else {
+        res.redirect('/signin');
+    }
 });
 
 // Fallback route - redirect all unmatched routes to index
