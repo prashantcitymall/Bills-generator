@@ -40,7 +40,7 @@ console.log(`AUTH: Using callback URL ${callbackURL}`);
 
 // MongoDB connection string
 const mongoURI = process.env.MONGODB_URI || "mongodb+srv://sushant:2TQ67U0Mo8kyEVwk@billcreator.imovr7t.mongodb.net/?retryWrites=true&w=majority&appName=billcreator";
-console.log(`MONGODB: URI ${mongoURI ? "is set" : "is NOT set"} (${mongoURI ? mongoURI.substring(0, 20) + '...' : 'undefined'})`); // Log partial URI for debugging
+console.log(`MONGODB: URI ${mongoURI ? "is set" : "is NOT set"} (${mongoURI ? mongoURI.substring(0, 20) + '...' : 'undefined'})`);
 let mongoClient;
 let sessionStore;
 
@@ -54,15 +54,11 @@ if (isProduction) {
       throw new Error("MongoDB URI is not defined. Check environment variables.");
     }
     
-    // Configure MongoStore with simplified SSL options
+    // Configure MongoStore with minimal options - let the driver handle connection details
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
       collectionName: "user_session",
-      ttl: 24 * 60 * 60, // 1 day in seconds
-      crypto: {
-        secret: process.env.SESSION_SECRET || "your-session-secret"
-      }
-      // Removed explicit mongoOptions to use driver defaults
+      ttl: 24 * 60 * 60 // 1 day in seconds
     });
     console.log("SESSION: Using MongoStore for storage");
   } catch (err) {
@@ -78,15 +74,11 @@ if (isProduction) {
       throw new Error("MongoDB URI is not defined. Check environment variables.");
     }
     
-    // Configure MongoStore with simplified SSL options
+    // Configure MongoStore with minimal options - let the driver handle connection details
     sessionStore = MongoStore.create({
       mongoUrl: mongoURI,
       collectionName: "user_session",
-      ttl: 24 * 60 * 60, // 1 day in seconds
-      crypto: {
-        secret: process.env.SESSION_SECRET || "your-session-secret"
-      }
-      // Removed explicit mongoOptions to use driver defaults
+      ttl: 24 * 60 * 60 // 1 day in seconds
     });
     console.log("SESSION: Using MongoStore for storage in development");
   } catch (err) {
@@ -254,17 +246,24 @@ const startServer = async () => {
     }
     
     console.log("MONGODB: Attempting to connect to MongoDB...");
-    // Use a simpler connection approach without explicit SSL options
-    // Let the connection string parameters handle the SSL configuration
-    const client = new MongoClient(mongoURI, {
-      serverSelectionTimeoutMS: 5000 // 5 seconds timeout for server selection
-    });
+    // Use minimal configuration like in our test script
+    const client = new MongoClient(mongoURI);
     await client.connect();
     console.log("MONGODB: Connection established successfully");
+    
+    // List databases to verify connection is working properly
+    const databasesList = await client.db().admin().listDatabases();
+    console.log("MONGODB: Available databases:");
+    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+    
     await client.close();
+    console.log("MONGODB: Test connection closed");
   } catch (err) {
     console.error(`MONGODB: Connection test failed - ${err.message}`);
-    console.error(`MONGODB: URI value type: ${typeof mongoURI}, length: ${mongoURI ? mongoURI.length : 0}`);
+    if (err.stack) {
+      console.error("MONGODB: Error stack trace:");
+      console.error(err.stack.split('\n').slice(0, 3).join('\n'));
+    }
     console.log("SESSION: Using MemoryStore as fallback");
   }
 
