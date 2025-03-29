@@ -240,6 +240,11 @@ function createUserProfileElement(profile) {
         profilePic.src = profile.profile_picture;
         profilePic.alt = 'Profile';
         dropdownBtn.appendChild(profilePic);
+    } else {
+        // If no profile picture, use a user icon
+        const userIcon = document.createElement('i');
+        userIcon.className = 'fas fa-user-circle';
+        dropdownBtn.appendChild(userIcon);
     }
     
     // Create greeting span
@@ -250,7 +255,7 @@ function createUserProfileElement(profile) {
     
     // Create dropdown content
     const dropdownContent = document.createElement('div');
-    dropdownContent.className = 'profile-dropdown-content dropdown-content';
+    dropdownContent.className = 'profile-dropdown-content';
     dropdownContent.setAttribute('role', 'menu');
     dropdownContent.setAttribute('aria-label', 'User Menu');
     
@@ -272,6 +277,17 @@ function createUserProfileElement(profile) {
         navRight.replaceChild(userProfile, authButtons);
     } else {
         navRight.appendChild(userProfile);
+    }
+    
+    // Add event listener for logout link
+    const logoutLink = dropdownContent.querySelector('.logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Clear stored auth state before logout
+            localStorage.removeItem('authState');
+            window.location.href = '/auth/logout';
+        });
     }
     
     // Now that we've created the element, call showAuthenticatedUI again
