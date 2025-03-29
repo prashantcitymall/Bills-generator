@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="shared-header.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <style>
         .profile-container {
             max-width: 800px;
@@ -204,45 +206,46 @@
         </nav>
     </header>
 
-    <main>
+    <main class="main-content">
         <div class="profile-container">
             <div class="profile-header">
-                <img src="" alt="Profile Picture" class="profile-picture" id="profilePicture">
+                <img src="" alt="Profile Picture" class="profile-picture" id="profile-picture">
                 <div>
-                    <h1 class="profile-name" id="profileName">Loading...</h1>
-                    <p class="profile-email" id="profileEmail">Loading...</p>
+                    <h1 class="profile-name" id="profile-name">Loading...</h1>
+                    <p class="profile-email" id="profile-email">Loading...</p>
                 </div>
             </div>
 
             <div class="profile-section">
-                <h2>Personal Information</h2>
-                <div class="profile-info-item">
-                    <div class="profile-info-label">Full Name</div>
-                    <div class="profile-info-value" id="fullName">Loading...</div>
-                </div>
-                <div class="profile-info-item">
-                    <div class="profile-info-label">Email</div>
-                    <div class="profile-info-value" id="email">Loading...</div>
-                </div>
+                <h2>Account Information</h2>
                 <div class="profile-info-item">
                     <div class="profile-info-label">Account ID</div>
-                    <div class="profile-info-value" id="accountId">Loading...</div>
+                    <div class="profile-info-value" id="profile-id">Loading...</div>
                 </div>
-                <div class="profile-actions">
-                    <button class="profile-action-btn secondary">
-                        <i class="fas fa-pencil-alt"></i> Edit Profile
-                    </button>
-                    <button class="profile-action-btn secondary">
-                        <i class="fas fa-key"></i> Change Password
-                    </button>
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Account Type</div>
+                    <div class="profile-info-value">Google Account</div>
+                </div>
+                <div class="profile-info-item">
+                    <div class="profile-info-label">Joined</div>
+                    <div class="profile-info-value" id="joined-date">-</div>
                 </div>
             </div>
 
             <div class="profile-section">
                 <h2>Recent Bills</h2>
-                <div class="recent-bills" id="recentBills">
-                    <div class="no-bills">No bills created yet. Start generating bills from the menu above!</div>
+                <div class="recent-bills" id="recent-bills">
+                    <div class="no-bills">You haven't created any bills yet.</div>
                 </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="/" class="profile-action-btn">
+                    <i class="fas fa-plus"></i> Create New Bill
+                </a>
+                <a href="/auth/logout" id="logoutBtn" class="profile-action-btn secondary">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
             </div>
         </div>
     </main>
@@ -255,51 +258,12 @@
                     <span>Bill Creator</span>
                 </div>
                 <p>Generate professional bills, invoices, and receipts with our AI-powered platform.</p>
-            </div>
-            <div class="footer-links">
-                <div class="footer-column">
-                    <h3>Bill Types</h3>
-                    <ul>
-                        <li><a href="general-bill.html">General Bill</a></li>
-                        <li><a href="hotel-bill.html">Hotel Stay Bill</a></li>
-                        <li><a href="restaurant-bill.html">Restaurant Bill</a></li>
-                        <li><a href="internet-bill.html">Internet Bill</a></li>
-                        <li><a href="fuel-bill.html">Fuel Receipt</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>More Bills</h3>
-                    <ul>
-                        <li><a href="book-invoice.html">Book Invoice</a></li>
-                        <li><a href="driver-salary.html">Driver Salary</a></li>
-                        <li><a href="ecommerce-bill.html">E-commerce Bill</a></li>
-                        <li><a href="rent-receipt.html">Rent Receipt</a></li>
-                        <li><a href="donation-receipt.html">Donation Receipt</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Company</h3>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Service</a></li>
-                        <li><a href="faq.html">FAQ</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Bill Creator. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <p class="tech-stack">Built with <i class="fas fa-heart"></i> using modern tech</p>
             </div>
         </div>
     </footer>
 
+    <script src="shared-header.js"></script>
     <script src="auth.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -307,61 +271,68 @@
             fetch('/api/user')
                 .then(response => response.json())
                 .then(data => {
+                    console.log('User data:', data);
                     if (data.user) {
                         // Update profile information
-                        updateProfileUI(data.user);
+                        const user = data.user;
+                        
+                        // Set profile picture if available
+                        if (user.photos && user.photos.length > 0) {
+                            document.getElementById('profile-picture').src = user.photos[0].value;
+                        } else {
+                            document.getElementById('profile-picture').src = 'https://via.placeholder.com/100?text=User';
+                        }
+                        
+                        // Set name
+                        if (user.displayName) {
+                            document.getElementById('profile-name').textContent = user.displayName;
+                        } else if (user.name && user.name.givenName) {
+                            document.getElementById('profile-name').textContent = `${user.name.givenName} ${user.name.familyName || ''}`;
+                        } else {
+                            document.getElementById('profile-name').textContent = 'User';
+                        }
+                        
+                        // Set email
+                        if (user.emails && user.emails.length > 0) {
+                            document.getElementById('profile-email').textContent = user.emails[0].value;
+                        } else {
+                            document.getElementById('profile-email').textContent = 'No email available';
+                        }
+                        
+                        // Set ID
+                        document.getElementById('profile-id').textContent = user.id || 'Unknown';
+                        
+                        // Set joined date (placeholder for now)
+                        const joinedDate = new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        document.getElementById('joined-date').textContent = joinedDate;
                     } else {
                         // Redirect to login if not authenticated
                         window.location.href = '/signin.html';
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching user profile:', error);
+                    console.error('Error fetching user data:', error);
                     window.location.href = '/signin.html';
                 });
-
-            function updateProfileUI(user) {
-                console.log('Updating profile UI with user data:', user);
                 
-                // Update profile picture
-                const profilePicture = document.getElementById('profilePicture');
-                if (user.photos && user.photos.length > 0) {
-                    profilePicture.src = user.photos[0].value;
-                } else {
-                    profilePicture.src = 'https://via.placeholder.com/100?text=User';
-                }
-
-                // Update profile name
-                const profileName = document.getElementById('profileName');
-                profileName.textContent = user.displayName || 'User';
-
-                // Update profile email
-                const profileEmail = document.getElementById('profileEmail');
-                if (user.emails && user.emails.length > 0) {
-                    profileEmail.textContent = user.emails[0].value;
-                } else {
-                    profileEmail.textContent = 'No email available';
-                }
-
-                // Update full name
-                const fullName = document.getElementById('fullName');
-                if (user.name) {
-                    fullName.textContent = `${user.name.givenName || ''} ${user.name.familyName || ''}`;
-                } else {
-                    fullName.textContent = user.displayName || 'Not available';
-                }
-
-                // Update email
-                const email = document.getElementById('email');
-                if (user.emails && user.emails.length > 0) {
-                    email.textContent = user.emails[0].value;
-                } else {
-                    email.textContent = 'Not available';
-                }
-
-                // Update account ID
-                const accountId = document.getElementById('accountId');
-                accountId.textContent = user.id || 'Not available';
+            // Add logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Logging out user');
+                    fetch('/auth/logout')
+                        .then(() => {
+                            window.location.href = '/';
+                        })
+                        .catch(error => {
+                            console.error('Error during logout:', error);
+                        });
+                });
             }
         });
     </script>

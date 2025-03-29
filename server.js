@@ -23,12 +23,27 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Set up session
+// Check if we're in production mode
+const isProduction = process.env.NODE_ENV === 'production';
+console.log(`NODE_ENV: ${process.env.NODE_ENV}, isProduction: ${isProduction}`);
+
+// Set the callback URL based on environment
+const callbackURL = isProduction
+    ? 'https://billcreator.store/auth/google/callback'
+    : 'http://localhost:3001/auth/google/callback';
+
+console.log(`Using Google OAuth callback URL: ${callbackURL}`);
+
+// Set up session middleware
+// NOTE: MemoryStore is used for development only. For production, use a persistent store like MongoDB
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-session-secret',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    cookie: { 
+        secure: isProduction,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
 // Initialize Passport
@@ -43,16 +58,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
     done(null, user);
 });
-
-// Determine the appropriate callback URL based on environment
-const isProduction = process.env.NODE_ENV === 'production';
-console.log(`NODE_ENV: ${process.env.NODE_ENV}, isProduction: ${isProduction}`);
-
-const callbackURL = isProduction
-    ? 'https://billcreator.store/auth/google/callback'
-    : 'http://localhost:3001/auth/google/callback';
-
-console.log(`Using Google OAuth callback URL: ${callbackURL}`);
 
 // Set up Google Strategy
 passport.use(new GoogleStrategy({

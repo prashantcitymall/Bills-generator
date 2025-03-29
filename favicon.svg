@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#2c3e50"/>
+  
+  <!-- Bill/invoice icon -->
+  <g fill="#ecf0f1">
+    <!-- Paper -->
+    <path d="M150 120h212c5.5 0 10 4.5 10 10v252c0 5.5-4.5 10-10 10H150c-5.5 0-10-4.5-10-10V130c0-5.5 4.5-10 10-10z"/>
+    
+    <!-- Lines for text -->
+    <rect x="170" y="160" width="172" height="10" rx="5" ry="5"/>
+    <rect x="170" y="190" width="172" height="10" rx="5" ry="5"/>
+    <rect x="170" y="220" width="172" height="10" rx="5" ry="5"/>
+    <rect x="170" y="250" width="120" height="10" rx="5" ry="5"/>
+    
+    <!-- Total line -->
+    <rect x="170" y="310" width="172" height="20" rx="5" ry="5" fill="#3498db"/>
+  </g>
+</svg>
