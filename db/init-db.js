@@ -1,8 +1,8 @@
-import pg from 'pg';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import pg from "pg";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
@@ -13,9 +13,9 @@ const logger = {
   error: (message, error) => {
     console.error(`DB-INIT ERROR: ${message}`);
     if (error && error.stack) {
-      console.error(error.stack.split('\n').slice(0, 3).join('\n'));
+      console.error(error.stack.split("\n").slice(0, 3).join("\n"));
     }
-  }
+  },
 };
 
 // Get the directory name
@@ -23,16 +23,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Database connection string
-const dbUrl = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/billgenerator';
+const dbUrl =
+  process.env.DATABASE_URL ||
+  "postgres://sushant:8JDxnvrjwCHid7g@billcreator.cb6aeu424474.eu-north-1.rds.amazonaws.com:5432/bc";
 
 // Read the schema SQL file
 async function readSchemaFile() {
   try {
-    const schemaPath = path.join(__dirname, 'schema.sql');
+    const schemaPath = path.join(__dirname, "schema.sql");
     logger.info(`Reading schema from ${schemaPath}`);
-    return fs.readFileSync(schemaPath, 'utf8');
+    return fs.readFileSync(schemaPath, "utf8");
   } catch (error) {
-    logger.error('Failed to read schema file', error);
+    logger.error("Failed to read schema file", error);
     throw error;
   }
 }
@@ -40,39 +42,42 @@ async function readSchemaFile() {
 // Initialize the database
 async function initializeDatabase() {
   let client;
-  
+
   try {
     logger.info(`Connecting to PostgreSQL at ${dbUrl.substring(0, 20)}...`);
-    
+
     // Create a new client
     client = new pg.Client({
       connectionString: dbUrl,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+      ssl:
+        process.env.NODE_ENV === "production"
+          ? { rejectUnauthorized: false }
+          : false,
     });
-    
+
     // Connect to the database
     await client.connect();
-    logger.info('Connected to PostgreSQL');
-    
+    logger.info("Connected to PostgreSQL");
+
     // Read the schema SQL
     const schemaSql = await readSchemaFile();
-    
+
     // Execute the schema SQL
-    logger.info('Executing schema SQL...');
+    logger.info("Executing schema SQL...");
     await client.query(schemaSql);
-    
-    logger.info('Database schema initialized successfully');
+
+    logger.info("Database schema initialized successfully");
     return true;
   } catch (error) {
-    logger.error('Failed to initialize database', error);
+    logger.error("Failed to initialize database", error);
     return false;
   } finally {
     if (client) {
       try {
         await client.end();
-        logger.info('Database connection closed');
+        logger.info("Database connection closed");
       } catch (err) {
-        logger.error('Error closing database connection', err);
+        logger.error("Error closing database connection", err);
       }
     }
   }
@@ -80,16 +85,16 @@ async function initializeDatabase() {
 
 // Run the initialization
 initializeDatabase()
-  .then(success => {
+  .then((success) => {
     if (success) {
-      logger.info('Database initialization completed successfully');
+      logger.info("Database initialization completed successfully");
       process.exit(0);
     } else {
-      logger.error('Database initialization failed');
+      logger.error("Database initialization failed");
       process.exit(1);
     }
   })
-  .catch(err => {
-    logger.error('Unexpected error during database initialization', err);
+  .catch((err) => {
+    logger.error("Unexpected error during database initialization", err);
     process.exit(1);
   });
