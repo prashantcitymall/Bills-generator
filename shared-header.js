@@ -1,13 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initially hide both auth elements until we check status
-    const authButtons = document.querySelector('.auth-buttons');
+    // Get authentication elements
+    const googleSignInButton = document.querySelector('.google-signin-button');
     const userProfile = document.querySelector('.user-profile');
     
-    if (authButtons) authButtons.style.display = 'none';
+    // Initially hide both elements until we check status
+    if (googleSignInButton) googleSignInButton.style.display = 'none';
     if (userProfile) userProfile.style.display = 'none';
     
-    // Track authentication state globally
-    window.isAuthenticated = false;
+    // Track authentication state globally with a timestamp to prevent race conditions
+    window.authState = {
+        isAuthenticated: false,
+        lastUpdated: Date.now(),
+        profile: null
+    };
     
     // Dropdown functionality
     const dropdownBtn = document.querySelector('.dropdown-btn');
@@ -39,14 +44,25 @@ document.addEventListener('DOMContentLoaded', function() {
             if (authData && authData.isAuthenticated && authData.profile) {
                 // Show authenticated UI immediately with stored data
                 // This prevents flashing of login/signup during page reload
-                window.isAuthenticated = true;
+                window.authState = {
+                    isAuthenticated: true,
+                    lastUpdated: Date.now(),
+                    profile: authData.profile
+                };
                 showAuthenticatedUI(authData.profile);
+            } else {
+                // If stored data doesn't indicate authentication, show unauthenticated UI
+                showUnauthenticatedUI();
             }
         } catch (e) {
             console.error('Error parsing stored auth state:', e);
             // Clear invalid stored state
             localStorage.removeItem('authState');
+            showUnauthenticatedUI();
         }
+    } else {
+        // No stored auth state, show unauthenticated UI initially
+        showUnauthenticatedUI();
     }
 
     // Always check current auth status with server
@@ -81,7 +97,11 @@ async function checkAuthStatus() {
                 lastChecked: new Date().toISOString()
             }));
             
-            window.isAuthenticated = true;
+            window.authState = {
+                isAuthenticated: true,
+                lastUpdated: Date.now(),
+                profile: data.profile
+            };
             showAuthenticatedUI(data.profile);
             
             // If on signin or signup page, redirect to home
@@ -96,13 +116,21 @@ async function checkAuthStatus() {
             // Clear any stored auth state
             localStorage.removeItem('authState');
             
-            window.isAuthenticated = false;
+            window.authState = {
+                isAuthenticated: false,
+                lastUpdated: Date.now(),
+                profile: null
+            };
             showUnauthenticatedUI();
         }
     } catch (error) {
         console.error('Error checking authentication status:', error);
         // Default to unauthenticated UI on error
-        window.isAuthenticated = false;
+        window.authState = {
+            isAuthenticated: false,
+            lastUpdated: Date.now(),
+            profile: null
+        };
         showUnauthenticatedUI();
     }
 }
@@ -112,16 +140,21 @@ function showAuthenticatedUI(profile) {
     console.log('Showing authenticated UI for profile:', profile);
     
     // Set global authentication state
-    window.isAuthenticated = true;
+    window.authState = {
+        isAuthenticated: true,
+        lastUpdated: Date.now(),
+        profile: profile
+    };
     
-    const authButtons = document.querySelector('.auth-buttons');
+    const googleSignInButton = document.querySelector('.google-signin-button');
     const userProfile = document.querySelector('.user-profile');
     const userName = document.querySelector('.user-name');
     const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
 
-    if (authButtons) {
-        authButtons.style.display = 'none';
-        console.log('Auth buttons hidden');
+    // Always hide sign-in button when authenticated
+    if (googleSignInButton) {
+        googleSignInButton.style.display = 'none';
+        console.log('Sign-in button hidden');
     }
     
     if (userProfile) {
@@ -153,10 +186,7 @@ function showAuthenticatedUI(profile) {
         if (!profilePic) {
             profilePic = document.createElement('img');
             profilePic.className = 'profile-pic';
-            profilePic.style.width = '24px';
-            profilePic.style.height = '24px';
-            profilePic.style.borderRadius = '50%';
-            profilePic.style.marginRight = '8px';
+            profilePic.src = profile.profile_picture;
             profilePic.alt = 'Profile';
             
             // Insert before the greeting span
@@ -306,33 +336,33 @@ function createUserProfileElement(profile) {
 
 // Show UI for unauthenticated users
 function showUnauthenticatedUI() {
-    console.log('Showing unauthenticated UI, isAuthenticated:', window.isAuthenticated);
+    console.log('Showing unauthenticated UI, isAuthenticated:', window.authState.isAuthenticated);
     
-    const authButtons = document.querySelector('.auth-buttons');
+    const googleSignInButton = document.querySelector('.google-signin-button');
     const userProfile = document.querySelector('.user-profile');
 
-    // If user is authenticated, don't show auth buttons regardless of UI state
-    if (window.isAuthenticated) {
-        console.log('User is authenticated, not showing auth buttons');
-        if (authButtons) {
-            authButtons.style.display = 'none';
+    // If user is authenticated, don't show sign-in button regardless of UI state
+    if (window.authState.isAuthenticated) {
+        console.log('User is authenticated, not showing sign-in button');
+        if (googleSignInButton) {
+            googleSignInButton.style.display = 'none';
         }
         return;
     }
     
-    // First check if user profile is visible - if it is, don't show auth buttons
+    // First check if user profile is visible - if it is, don't show sign-in button
     if (userProfile && userProfile.style.display === 'flex') {
-        console.log('User profile is visible, not showing auth buttons');
-        if (authButtons) {
-            authButtons.style.display = 'none';
+        console.log('User profile is visible, not showing sign-in button');
+        if (googleSignInButton) {
+            googleSignInButton.style.display = 'none';
         }
         return;
     }
     
-    // Only show auth buttons if user is not authenticated and profile is not visible
-    if (authButtons) {
-        authButtons.style.display = 'flex';
-        console.log('Auth buttons shown');
+    // Only show sign-in button if user is not authenticated and profile is not visible
+    if (googleSignInButton) {
+        googleSignInButton.style.display = 'inline-flex';
+        console.log('Sign-in button shown');
     }
     
     if (userProfile) {
