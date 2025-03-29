@@ -178,32 +178,7 @@
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3>Logo Details</h3>
-                    <div class="logo-options">
-                        <label class="radio-label">
-                            <input type="radio" name="logo" value="url" checked>
-                            <span class="radio-text">URL</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="logo" value="upload">
-                            <span class="radio-text">Upload From Device</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="logo" value="gallery">
-                            <span class="radio-text">Gallery</span>
-                        </label>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="logoUrl" placeholder="Please enter a valid image URL">
-                    </div>
-                    <div class="checkbox-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="logoAuth">
-                            <span class="checkbox-text">I am authorized to use the logo for generating this bill.</span>
-                        </label>
-                    </div>
-                </div>
+
 
                 <div class="form-section">
                     <h3>File Details</h3>
@@ -230,7 +205,12 @@
                 <div class="preview-card">
                     <div class="preview-content">
                         <div class="title-section">
-                            <h1>Fuel Receipt</h1>
+                            <div class="title-with-logo">
+                                <div class="logo-container">
+                                    <img src="images/bpcl.png" alt="BPCL Logo" class="bpcl-logo">
+                                </div>
+                                <h1>Fuel Receipt</h1>
+                            </div>
                             <hr class="title-divider">
                         </div>
                         <div class="receipt-header">
@@ -283,10 +263,7 @@
                             <p class="footer-note">FOR ANY QUERIES AND COMPLAINT VISIT OUR<br>CUSTOMER CARE</p>
                             <p class="footer-slogan">SAVE FUEL, SECURE THE FUTURE!</p>
                             <p class="footer-time">TIME: <span id="previewFooterTime">13:11</span></p>
-                            <div class="footer-logo">
-                                <i class="fas fa-file-invoice"></i>
-                                <span>Bill Creator</span>
-                            </div>
+
                         </div>
 
                         <div class="watermark">Watermark will be removed from actual pdf</div>

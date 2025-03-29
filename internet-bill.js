@@ -149,17 +149,18 @@ function updatePreview() {
             
             <div style="margin-top: 30px; margin-bottom: 40px; color: #000;">
                 <div style="float: left;">
-                    <strong>${providerName}</strong><br>
-                    ${providerAddress}
+                    <img src="images/airtel.png" alt="Airtel Logo" style="width: 80px; margin-bottom: 10px; display: block;"><br>
+                    <strong style="font-weight: bold; color: #000000;">${providerName}</strong><br>
+                    <span style="font-weight: bold; color: #000000;">${providerAddress}</span>
                 </div>
                 <div style="float: right; text-align: right;">
-                    <div>Name: ${customerName}</div>
-                    <div>Account No: ${accountNumber}</div>
+                    <div>Name: <span style="font-weight: bold; color: #000000;">${customerName}</span></div>
+                    <div>Account No: <span style="font-weight: bold; color: #000000;">${accountNumber}</span></div>
                 </div>
                 <div style="float: right; text-align: right; margin-right: 50px;">
-                    <div>Invoice No: ${invoiceNo}</div>
-                    <div>Account No: ${accountNumber}</div>
-                    <div>Bill Date: ${formattedDate}</div>
+                    <div>Invoice No: <span style="font-weight: bold; color: #000000;">${invoiceNo}</span></div>
+                    <div>Account No: <span style="font-weight: bold; color: #000000;">${accountNumber}</span></div>
+                    <div>Bill Date: <span style="font-weight: bold; color: #000000;">${formattedDate}</span></div>
                 </div>
                 <div style="clear: both;"></div>
             </div>
@@ -178,12 +179,12 @@ function updatePreview() {
                     <th style="border: 1px solid #ff9800; padding: 8px; text-align: center; color: #000;">Payments Received ₹</th>
                 </tr>
                 <tr style="color: #000;">
-                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${taxableAmount.toFixed(2)}</td>
-                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${cgstRate}%</td>
-                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${cgstAmount}</td>
-                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${sgstRate}%</td>
-                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${sgstAmount}</td>
-                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${totalAmount}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${taxableAmount.toFixed(2)}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${cgstRate}%</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${cgstAmount}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${sgstRate}%</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${sgstAmount}</td>
+                    <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${totalAmount}</td>
                 </tr>
             </table>
 
@@ -201,11 +202,11 @@ function updatePreview() {
                         <th style="border: 1px solid #ff9800; padding: 8px; color: #000;">Plan Amount</th>
                     </tr>
                     <tr style="color: #000;">
-                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${planSpeed}</td>
-                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${planPackage}</td>
-                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">${tarrifPlan || '-'}</td>
-                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">0</td>
-                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center;">₹${planAmount}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${planSpeed}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${planPackage}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">${tarrifPlan || '-'}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">0</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; text-align: center; font-weight: bold; color: #000000;">₹${planAmount}</td>
                     </tr>
                 </table>
             </div>
@@ -222,15 +223,15 @@ function updatePreview() {
                         <th style="border: 1px solid #ff9800; padding: 8px; color: #000;">Amount Incl. Tax</th>
                     </tr>
                     <tr style="color: #000;">
-                        <td style="border: 1px solid #ff9800; padding: 8px;">${invoiceNo}</td>
-                        <td style="border: 1px solid #ff9800; padding: 8px;">${description}</td>
-                        <td style="border: 1px solid #ff9800; padding: 8px;">₹${totalAmount}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; font-weight: bold; color: #000000; text-align: center;">${invoiceNo}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; font-weight: bold; color: #000000; text-align: center;">${description}</td>
+                        <td style="border: 1px solid #ff9800; padding: 8px; font-weight: bold; color: #000000; text-align: center;">₹${totalAmount}</td>
                     </tr>
                 </table>
             </div>
 
             <div style="text-align: center; margin: 20px 0; color: #000;">
-                Registered office address: ${providerAddress}
+                Registered office address: <span style="font-weight: bold; color: #000000;">${providerAddress}</span>
             </div>
 
             <div style="margin: 20px 0;">
@@ -238,7 +239,7 @@ function updatePreview() {
                     Terms and Conditions
                 </div>
                 <ol style="color: #666; margin-top: 10px;">
-                    <li>Cheques to be in favour of "${providerName}"</li>
+                    <li>Cheques to be in favour of "<span style="font-weight: bold; color: #000000;">${providerName}</span>"</li>
                     <li>In case of cheque bounce, ₹ 500/- penalty will be applicable.</li>
                     <li>Service provider shall levy late fee charge in case the bill is paid after the due date</li>
                     <li>In case of overdue, the right to deactivate your services is reserved.</li>
@@ -252,13 +253,13 @@ function updatePreview() {
                 </div>
                 <table style="width: 100%; margin-top: 10px; color: #000;">
                     <tr>
-                        <td>AccountNo : ${accountNumber}</td>
-                        <td>Subscriber Name : ${customerName}</td>
-                        <td>Payment Method : ${paymentMethod}</td>
+                        <td style="text-align: center;">AccountNo : <span style="font-weight: bold; color: #000000;">${accountNumber}</span></td>
+                        <td style="text-align: center;">Subscriber Name : <span style="font-weight: bold; color: #000000;">${customerName}</span></td>
+                        <td style="text-align: center;">Payment Method : <span style="font-weight: bold; color: #000000;">${paymentMethod}</span></td>
                     </tr>
                     <tr>
-                        <td>Invoice No : ${invoiceNo}</td>
-                        <td colspan="2">${description}</td>
+                        <td style="text-align: center;">Invoice No : <span style="font-weight: bold; color: #000000;">${invoiceNo}</span></td>
+                        <td colspan="2" style="text-align: center;"><span style="font-weight: bold; color: #000000;">${description}</span></td>
                     </tr>
                 </table>
             </div>

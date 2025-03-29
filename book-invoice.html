@@ -105,6 +105,12 @@
                 <h3>Payment Details</h3>
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="receiptNo">Receipt No</label>
+                        <input type="text" id="receiptNo" placeholder="Enter Receipt Number">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <label for="currency">Currency</label>
                         <select id="currency">
                             <option value="INR">Indian Rupee - ₹</option>
@@ -167,7 +173,10 @@
             <h2>Live Preview</h2>
             <div class="preview-frame">
                 <div class="receipt-preview">
-                    <h2>Book Receipt</h2>
+                    <div class="receipt-logo-header">
+                        <img src="images/book_invoice.png" alt="Book Invoice Logo" class="book-invoice-logo">
+                        <h2>Book Receipt</h2>
+                    </div>
                     <div class="header-divider"></div>
                     <div class="receipt-header">
                         <div class="receipt-info">

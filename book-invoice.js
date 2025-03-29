@@ -112,6 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updatePreview() {
+    // Update receipt number
+    const receiptNo = document.getElementById('receiptNo').value || 'R06044';
+    document.getElementById('previewReceiptNo').textContent = receiptNo;
+
     // Update customer name
     const customerName = document.getElementById('customerName').value || '';
     document.getElementById('previewCustomerName').textContent = customerName;

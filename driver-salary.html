@@ -54,8 +54,6 @@
     </header>
 
     <main class="driver-salary-container">
-        <h1 class="title">Generate <span class="highlight">Driver Salary</span></h1>
-        
         <div class="form-container">
             <div class="template-selector">
                 <h2>Select Template</h2>
@@ -77,26 +75,30 @@
                         Template 4
                     </label>
                 </div>
-                <p class="template-note">This template supports bulk receipts, allowing either a single PDF with all receipts combined or a ZIP file containing individual receipts.</p>
+
             </div>
 
             <div class="form-section driver-details">
                 <h3>Driver Details</h3>
-                <div class="form-group">
-                    <label for="driverName">Driver Name</label>
-                    <input type="text" id="driverName" placeholder="Enter the name">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="driverName">Driver Name</label>
+                        <input type="text" id="driverName" placeholder="Enter the name">
+                    </div>
+                    <div class="form-group">
+                        <label for="employeeName">Employee Name</label>
+                        <input type="text" id="employeeName" placeholder="Enter employee name">
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-section employee-details">
-                <h3>Employee Details</h3>
-                <div class="form-group">
-                    <label for="employeeName">Employee Name</label>
-                    <input type="text" id="employeeName" placeholder="Enter employee name">
-                </div>
-                <div class="form-group">
-                    <label for="vehicleNumber">Vehicle Number</label>
-                    <input type="text" id="vehicleNumber" placeholder="Vehicle number">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicleNumber">Vehicle Number</label>
+                        <input type="text" id="vehicleNumber" placeholder="Vehicle number">
+                    </div>
+                    <div class="form-group">
+                        <label for="printDate">Print Date</label>
+                        <input type="date" id="printDate">
+                    </div>
                 </div>
             </div>
 
@@ -134,12 +136,7 @@
                         <option value="daily">Daily</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="generateZip">
-                        By default, we generate everything in single PDF. Check here to generate multiple PDF files in zip.
-                    </label>
-                </div>
+
             </div>
 
             <div class="form-section signature-details">
@@ -171,9 +168,17 @@
 
             <div class="form-section file-details">
                 <h3>File Details</h3>
-                <div class="form-group">
-                    <label for="downloadFileName">Download File Name</label>
-                    <input type="text" id="downloadFileName" placeholder="Driver Salary Template 4">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="downloadFileName">Download File Name</label>
+                        <input type="text" id="downloadFileName" placeholder="Driver Salary Template 4">
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="generateZip">
+                            Generate multiple PDF files in zip
+                        </label>
+                    </div>
                 </div>
                 <p class="file-note">This will be used as name of the generated PDF file</p>
                 <div class="form-group">
@@ -193,7 +198,7 @@
             <div class="preview-frame">
                 <div class="receipt-preview">
                     <div class="receipt-date">
-                        <span>Date: 25 Feb 2025</span>
+                        <span>Date: <span id="previewPrintDate">25 Feb 2025</span></span>
                     </div>
                     
                     <h2>Driver Salary Receipt</h2>
@@ -243,10 +248,7 @@
         </div>
     </main>
 
-    <div class="footer-logo">
-        <i class="fas fa-file-invoice"></i>
-        <span>Bill Creator</span>
-    </div>
+
 
     <script src="shared-header.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

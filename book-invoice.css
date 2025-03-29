@@ -117,6 +117,44 @@ textarea {
     margin-top: 2rem;
 }
 
+.form-actions .btn {
+    font-size: 1.4rem;
+    padding: 1.2rem 2rem;
+    border-radius: 1rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.form-actions .btn-primary {
+    background: #ff5a5f;
+    color: white;
+}
+
+.form-actions .btn-primary:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-actions .btn-secondary {
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.form-actions .btn-secondary:hover {
+    background: #f5f5f5;
+}
+
+.form-actions i {
+    font-size: 1.4rem;
+    transform: scale(1) !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .book-invoice-container {
@@ -149,9 +187,22 @@ textarea {
     padding: 10mm;
 }
 
+.receipt-logo-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.book-invoice-logo {
+    width: 50px;
+    height: auto;
+    margin-right: 15px;
+}
+
 .receipt-preview h2 {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 1.26rem; /* Reduced by 30% from 1.8rem */
     margin: 1rem 0 0.5rem;
     color: #000000;
     font-weight: 600;
@@ -213,11 +264,13 @@ textarea {
     color: #000000;
     font-weight: normal;
     min-width: auto;
+    font-size: 0.77rem; /* Reduced by 30% from default */
 }
 
 .info-item .value {
     color: #000000;
     font-weight: normal;
+    font-size: 0.77rem; /* Reduced by 30% from default */
 }
 
 .billing-details {
@@ -237,7 +290,7 @@ textarea {
 }
 
 .bill-to h3, .sold-by h3 {
-    font-size: 1.4rem;
+    font-size: 0.98rem; /* Reduced by 30% from 1.4rem */
     margin-bottom: 1rem;
     color: #000000;
     font-weight: 600;
@@ -260,14 +313,14 @@ textarea {
     color: #000000;
     min-width: auto;
     margin-right: 0;
-    font-size: 1.1rem;
+    font-size: 0.77rem; /* Reduced by 30% from 1.1rem */
 }
 
 .detail-row .value {
     color: #000000;
     margin-left: 0;
     padding-left: 0;
-    font-size: 1.1rem;
+    font-size: 0.77rem; /* Reduced by 30% from 1.1rem */
 }
 
 .receipt-summary {
@@ -275,7 +328,7 @@ textarea {
 }
 
 .receipt-summary h3 {
-    font-size: 1.4rem;
+    font-size: 0.98rem; /* Reduced by 30% from 1.4rem */
     margin-bottom: 1rem;
     color: #000000;
     font-weight: 600;

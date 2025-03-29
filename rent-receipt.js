@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Script loaded');
     // Initialize date fields with current date
     const today = new Date().toISOString().split('T')[0];
+    document.getElementById('printDate').value = today;
     document.getElementById('fromDate').value = today;
     document.getElementById('toDate').value = today;
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Reset dates to today
+        document.getElementById('printDate').value = today;
         document.getElementById('fromDate').value = today;
         document.getElementById('toDate').value = today;
         
@@ -153,6 +155,10 @@ function updatePreview() {
     const toDate = formatDate(document.getElementById('toDate').value);
     document.getElementById('previewDates').textContent = `${fromDate} - ${toDate}`;
     document.getElementById('previewPeriod').textContent = `${fromDate} to ${toDate}`;
+    
+    // Update the date in the header of the preview
+    const currentDate = formatDate(document.getElementById('printDate').value);
+    document.getElementById('previewDate').textContent = currentDate;
 }
 
 function formatDate(dateString) {
