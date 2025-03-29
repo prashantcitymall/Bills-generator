@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to check authentication status
 async function checkAuthStatus() {
     try {
-        // Fetch user profile data
+        // Fetch user profile data with proper credentials
         const response = await fetch('/api/profile', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include' // Important for cookies/session
+            credentials: 'include' // Critical for sending cookies with the request
         });
 
         if (response.ok) {

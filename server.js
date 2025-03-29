@@ -19,8 +19,13 @@ try {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Enable CORS
-app.use(cors());
+// Enable CORS with credentials support
+app.use(cors({
+  origin: process.env.NODE_ENV === "production" ? 'https://billcreator.store' : 'http://localhost:3001',
+  credentials: true, // Allow cookies to be sent with requests
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Parse JSON bodies
 app.use(express.json());
@@ -75,9 +80,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: isProduction,
+      secure: isProduction, // Only use secure cookies in production
+      httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: "lax", // Helps with cross-site request issues
+      sameSite: isProduction ? 'none' : 'lax', // Use 'none' in production for cross-site requests
     },
     name: "bills.session", // Custom session name
   })
@@ -155,20 +161,28 @@ app.get(
   "/auth/google/callback",
   (req, res, next) => {
     console.log("AUTH: Google callback received");
-    passport.authenticate("google", { failureRedirect: "/signin" })(
-      req,
-      res,
-      next
-    );
+    passport.authenticate("google", { failureRedirect: "/signin", failWithError: true })(req, res, next);
   },
   (req, res) => {
     try {
-      console.log(
-        `AUTH: Login successful for user ${req.user?.id || "unknown"}`
-      );
-      res.redirect("/");
+      // Ensure session is saved before redirect
+      req.session.save((err) => {
+        if (err) {
+          console.error(`SESSION: Error saving session - ${err.message}`);
+          if (err.stack) {
+            console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+          }
+          return res.redirect('/signin?error=session_error');
+        }
+        
+        console.log(`AUTH: Login successful for user ${req.user?.id || "unknown"}`);
+        res.redirect("/");
+      });
     } catch (err) {
       console.error(`AUTH: Error in callback handler - ${err.message}`);
+      if (err.stack) {
+        console.error(err.stack.split("\n").slice(0, 3).join("\n"));
+      }
       res.redirect("/signin?error=callback_error");
     }
   }
@@ -204,7 +218,13 @@ app.get('/auth/logout', (req, res) => {
         }
         
         // Clear the session cookie
-        res.clearCookie('bills.session');
+        res.clearCookie('bills.session', {
+          path: '/',
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: isProduction ? 'none' : 'lax'
+        });
+        
         console.log('AUTH: User logged out successfully');
         res.redirect('/');
       });
