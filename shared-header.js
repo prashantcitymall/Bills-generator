@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Always check current auth status with server
     checkAuthStatus();
-}
+});
 
 // Function to check authentication status
 async function checkAuthStatus() {
@@ -193,6 +193,8 @@ function showAuthenticatedUI(profile) {
             }
         }
         
+        // Find auth buttons container
+        const authButtons = document.querySelector('.auth-buttons');
         if (authButtons) {
             authButtons.style.display = 'none';
             console.log('Auth buttons hidden');
@@ -204,22 +206,9 @@ function showAuthenticatedUI(profile) {
         } else {
             // If the user-profile element doesn't exist, we need to create it
             createUserProfileElement(profile);
-            return false; // Return false to continue retrying
+            return; // Exit after creating the element
         }
-        
-        if (userName && profile && profile.display_name) {
-            userName.textContent = profile.display_name;
-            console.log('Username set to:', profile.display_name);
-        } else {
-            console.log('Could not set username', { 
-                userNameExists: !!userName, 
-                profileExists: !!profile, 
-                displayNameExists: profile ? !!profile.display_name : false 
-            });
-        }
-        
-        return true; // Elements found and updated
-    });
+    }
 
     // Add profile picture if available
     if (profile && profile.profile_picture) {
@@ -409,5 +398,9 @@ function showUnauthenticatedUI() {
         console.log('Sign-in button shown');
     }
     
-    attempt();
+    // Hide user profile if it exists
+    if (userProfile) {
+        userProfile.style.display = 'none';
+        console.log('User profile hidden');
+    }
 }
