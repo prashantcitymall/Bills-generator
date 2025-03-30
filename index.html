@@ -283,21 +283,7 @@
         </div>
     </footer>
 
-    <script>
-        // Load the header template dynamically
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('header_template.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-container').innerHTML = data;
-                    // After loading the header template, initialize the header functionality
-                    const headerScript = document.createElement('script');
-                    headerScript.src = 'shared-header.js';
-                    document.body.appendChild(headerScript);
-                })
-                .catch(error => console.error('Error loading header template:', error));
-        });
-    </script>
+    <script src="shared-header.js"></script>
     <script src="script.js"></script>
     <script src="auth.js"></script>
 </body>

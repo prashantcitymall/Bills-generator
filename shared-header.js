@@ -96,16 +96,16 @@ async function checkAuthStatus() {
             // Store authentication state in localStorage
             localStorage.setItem('authState', JSON.stringify({
                 isAuthenticated: true,
-                profile: data.user,
+                profile: data.user || data.profile,
                 lastChecked: new Date().toISOString()
             }));
             
             window.authState = {
                 isAuthenticated: true,
                 lastUpdated: Date.now(),
-                profile: data.profile
+                profile: data.user || data.profile
             };
-            showAuthenticatedUI(data.profile);
+            showAuthenticatedUI(data.user || data.profile);
             
             // If on signin or signup page, redirect to home
             const currentPath = window.location.pathname;
