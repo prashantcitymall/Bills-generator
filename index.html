@@ -61,6 +61,18 @@
                     <img src="images/google logo.png" alt="Google" class="google-icon">
                     <span>Sign in</span>
                 </a>
+                
+                <!-- User Profile Dropdown (shown when logged in) -->
+                <div class="user-profile" style="display: none;">
+                    <button class="profile-btn">
+                        <span class="user-greeting">Hi, <span class="user-name">User</span> <i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="profile-menu">
+                        <a href="/profile" role="menuitem"><i class="fas fa-user"></i>My Profile</a>
+                        <a href="/my-bills" role="menuitem"><i class="fas fa-file-invoice"></i>My Bills</a>
+                        <a href="#" class="logout-link" role="menuitem"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
