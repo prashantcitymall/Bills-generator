@@ -298,13 +298,9 @@ function createUserProfileElement(profile) {
     userProfile.className = 'user-profile';
     userProfile.style.display = 'flex';
     
-    // Create dropdown
-    const dropdown = document.createElement('div');
-    dropdown.className = 'dropdown';
-    
-    // Create dropdown button
-    const dropdownBtn = document.createElement('button');
-    dropdownBtn.className = 'profile-dropdown-btn';
+    // Create profile button
+    const profileBtn = document.createElement('button');
+    profileBtn.className = 'profile-btn';
     
     // Create profile picture if available
     if (profile.profile_picture) {
@@ -312,37 +308,36 @@ function createUserProfileElement(profile) {
         profilePic.className = 'profile-pic';
         profilePic.src = profile.profile_picture;
         profilePic.alt = 'Profile';
-        dropdownBtn.appendChild(profilePic);
+        profileBtn.appendChild(profilePic);
     } else {
         // If no profile picture, use a user icon
         const userIcon = document.createElement('i');
         userIcon.className = 'fas fa-user-circle';
-        dropdownBtn.appendChild(userIcon);
+        profileBtn.appendChild(userIcon);
     }
     
     // Create greeting span
     const greeting = document.createElement('span');
     greeting.className = 'user-greeting';
     greeting.innerHTML = `Hi, <span class="user-name">${profile.display_name}</span> <i class="fas fa-chevron-down"></i>`;
-    dropdownBtn.appendChild(greeting);
+    profileBtn.appendChild(greeting);
     
-    // Create dropdown content
-    const dropdownContent = document.createElement('div');
-    dropdownContent.className = 'profile-dropdown-content';
-    dropdownContent.setAttribute('role', 'menu');
-    dropdownContent.setAttribute('aria-label', 'User Menu');
+    // Create profile menu
+    const profileMenu = document.createElement('div');
+    profileMenu.className = 'profile-menu';
+    profileMenu.setAttribute('role', 'menu');
+    profileMenu.setAttribute('aria-label', 'User Menu');
     
     // Add menu items
-    dropdownContent.innerHTML = `
+    profileMenu.innerHTML = `
         <a href="/profile.html" role="menuitem"><i class="fas fa-user"></i>My Profile</a>
         <a href="/my-bills.html" role="menuitem"><i class="fas fa-file-invoice"></i>My Bills</a>
         <a href="#" class="logout-link" role="menuitem"><i class="fas fa-sign-out-alt"></i>Logout</a>
     `;
     
     // Assemble the elements
-    dropdown.appendChild(dropdownBtn);
-    dropdown.appendChild(dropdownContent);
-    userProfile.appendChild(dropdown);
+    userProfile.appendChild(profileBtn);
+    userProfile.appendChild(profileMenu);
     
     // Find the auth buttons element and replace it
     const authButtons = navRight.querySelector('.auth-buttons');

@@ -24,6 +24,7 @@
     max-width: 1200px;
     position: relative;
     gap: 1.2rem;
+    isolation: isolate;
 }
 
 .nav-right {
@@ -31,6 +32,7 @@
     align-items: center;
     gap: 1.2rem;
     position: relative;
+    isolation: isolate;
 }
 
 /* Google Sign In Button Styles */
@@ -304,7 +306,7 @@
 .dropdown-content {
     position: absolute;
     top: 120%;
-    left: -150%;  /* Adjusted from -160% to -150% to shift right by 10% */
+    left: -150%;
     transform: translateX(0);
     width: max-content;
     background: rgba(17, 25, 40, 0.95);
@@ -318,6 +320,7 @@
     gap: 1rem;
     visibility: hidden;
     opacity: 0;
+    z-index: 5;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -481,16 +484,16 @@
 
 .user-dropdown-content {
     display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
+    position: fixed;
+    right: 1.6rem;
+    top: 3.7rem;
     margin-top: 5px;
     background-color: white;
     min-width: 180px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    z-index: 100;
     overflow: hidden;
+    z-index: 100;
 }
 
 .user-dropdown-content.show {
@@ -529,8 +532,74 @@
     position: relative;
     perspective: 1000px;
     margin: 0 0.8rem;
+    z-index: 9999;
 }
 
+/* New Profile Button and Menu Styles */
+.profile-btn {
+    height: 2.4rem;
+    min-width: 8.5rem;
+    padding: 0 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 0.5rem;
+    background-color: rgba(17, 25, 40, 0.95);
+    backdrop-filter: blur(16px);
+    min-width: 180px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.user-profile:hover .profile-menu {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.profile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 1.2rem;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85);
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.profile-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-menu a i {
+    width: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    transform: scale(1) !important;
+}
+
+/* Original Profile Dropdown Button Styles (keeping for compatibility) */
 .profile-dropdown-btn {
     height: 2.4rem;
     min-width: 8.5rem;
