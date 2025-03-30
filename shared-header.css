@@ -563,6 +563,8 @@
     right: 0;
     top: 100%;
     margin-top: 0.5rem;
+    padding-top: 10px; /* Add padding to create hover bridge */
+    margin-top: -10px; /* Offset the padding to maintain visual position */
     background-color: rgba(17, 25, 40, 0.95);
     backdrop-filter: blur(16px);
     min-width: 180px;
@@ -576,6 +578,11 @@
 .user-profile:hover .profile-menu {
     display: block;
     animation: fadeIn 0.2s ease;
+}
+
+/* Keep menu open when hovering over the menu itself */
+.profile-menu:hover {
+    display: block;
 }
 
 .profile-menu a {
