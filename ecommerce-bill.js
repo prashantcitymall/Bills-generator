@@ -50,8 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const templateRadios = document.querySelectorAll('input[name="template"]');
     const form = document.querySelector('.input-form');
 
-    // Amazon logo URL
+    // E-commerce logos URLs
     const amazonLogoUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/320px-Amazon_logo.svg.png';
+    const flipkartLogoUrl = 'images/flipkart.png';
+    const myntraLogoUrl = 'https://aartisto.com/wp-content/uploads/2020/11/myntra.png';
 
     // Initialize dates
     const today = new Date().toISOString().split('T')[0];
@@ -79,36 +81,47 @@ document.addEventListener('DOMContentLoaded', function() {
         const previewCard = document.getElementById('previewCard');
         const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
         
-        if (selectedTemplate === 'amazon') {
-            const customerName = document.getElementById('customerName').value || '[Customer Name]';
-            const invoiceNumber = document.getElementById('invoiceNumber').value || '[Invoice Number]';
-            const orderNumber = document.getElementById('orderNumber').value || '[Order Number]';
-            const soldBy = document.getElementById('soldBy').value || '[Seller Name]';
-            const shippingAddress = document.getElementById('shippingAddress').value || '[Shipping Address]';
-            const soldByDetails = document.getElementById('soldByDetails').value || '[Seller Details]';
-            const panNo = document.getElementById('panNo').value || '[PAN Number]';
-            const gstin = document.getElementById('gstin').value || '[GSTIN]';
-            const placeOfSupply = document.getElementById('placeOfSupply').value || '[Place of Supply]';
-            const placeOfDelivery = document.getElementById('placeOfDelivery').value || '[Place of Delivery]';
-            const orderDate = document.getElementById('orderDate').value;
-            const invoiceDate = document.getElementById('invoiceDate').value;
-            const paymentMethod = document.getElementById('paymentMethod').value || 'Cash';
+        // Common data extraction for all templates
+        const customerName = document.getElementById('customerName').value || '[Customer Name]';
+        const invoiceNumber = document.getElementById('invoiceNumber').value || '[Invoice Number]';
+        const orderNumber = document.getElementById('orderNumber').value || '[Order Number]';
+        const soldBy = document.getElementById('soldBy').value || '[Seller Name]';
+        const shippingAddress = document.getElementById('shippingAddress').value || '[Shipping Address]';
+        const soldByDetails = document.getElementById('soldByDetails').value || '[Seller Details]';
+        const panNo = document.getElementById('panNo').value || '[PAN Number]';
+        const gstin = document.getElementById('gstin').value || '[GSTIN]';
+        const placeOfSupply = document.getElementById('placeOfSupply').value || '[Place of Supply]';
+        const placeOfDelivery = document.getElementById('placeOfDelivery').value || '[Place of Delivery]';
+        const orderDate = document.getElementById('orderDate').value;
+        const invoiceDate = document.getElementById('invoiceDate').value;
+        const paymentMethod = document.getElementById('paymentMethod').value || 'Cash';
 
-            // Get items
-            const items = [];
-            const itemEntries = document.getElementById('itemsContainer').querySelectorAll('.item-entry');
-            itemEntries.forEach(entry => {
-                const description = entry.querySelector('.item-description').value;
-                if (description) {
-                    items.push({
-                        description: description,
-                        price: entry.querySelector('.item-price').value || '0',
-                        quantity: entry.querySelector('.item-quantity').value || '1',
-                        tax: entry.querySelector('.item-tax').value || '2',
-                        discount: entry.querySelector('.item-discount').value || '0'
-                    });
-                }
-            });
+        // Get items - common for all templates
+        const items = [];
+        const itemEntries = document.getElementById('itemsContainer').querySelectorAll('.item-entry');
+        itemEntries.forEach(entry => {
+            const description = entry.querySelector('.item-description').value;
+            if (description) {
+                items.push({
+                    description: description,
+                    price: entry.querySelector('.item-price').value || '0',
+                    quantity: entry.querySelector('.item-quantity').value || '1',
+                    tax: entry.querySelector('.item-tax').value || '2',
+                    discount: entry.querySelector('.item-discount').value || '0'
+                });
+            }
+        });
+        
+        // Calculate totals - common for all templates
+        const totalAmount = items.reduce((sum, item) => {
+            const netAmount = parseFloat(item.price) * parseFloat(item.quantity);
+            const taxAmount = netAmount * (parseFloat(item.tax) / 100);
+            return sum + netAmount + taxAmount;
+        }, 0);
+        
+        const amountInWords = totalAmount > 0 ? numberToWords(totalAmount) + ' rupees only' : 'zero rupees only';
+        
+        if (selectedTemplate === 'amazon') {
 
             previewCard.innerHTML = `
                 <div class="amazon-template">
@@ -242,6 +255,252 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         <div class="footer-note">
                             *ABPL-Amazon Seller Services Pvt. Ltd., ARIPL-Amazon Retail India Pvt. Ltd. (only where Amazon Retail India Pvt. Ltd. fulfillment center is co-located)<br>
+                            Please note that this invoice is not a demand for payment
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (selectedTemplate === 'flipkart') {
+            previewCard.innerHTML = `
+                <div class="flipkart-template">
+                    <div class="flipkart-header">
+                        <img src="${flipkartLogoUrl}" alt="Flipkart" class="flipkart-logo">
+                        <div class="invoice-title">
+                            Tax Invoice/Bill of Supply/Cash Memo<br>
+                            (Original for Recipient)
+                        </div>
+                    </div>
+
+                    <div class="flipkart-details">
+                        <div class="seller-details">
+                            <strong>Sold By:</strong><br>
+                            ${soldBy}<br>
+                            IN<br><br>
+                            <strong>PAN No:</strong> ${panNo}<br>
+                            <strong>GST Registration No:</strong> ${gstin}
+                        </div>
+                        <div class="billing-details">
+                            <strong>Billing Address:</strong><br>
+                            ${customerName}<br>
+                            ${shippingAddress}<br>
+                            IN<br>
+                            <strong>State/UT Code:</strong> ${placeOfSupply}<br><br>
+                            <strong>Shipping Address:</strong><br>
+                            ${customerName}<br>
+                            ${shippingAddress}<br>
+                            IN<br>
+                            <strong>State/UT Code:</strong> ${placeOfDelivery}<br>
+                            <strong>Place of Supply:</strong> ${placeOfSupply}<br>
+                            <strong>Place of delivery:</strong> ${placeOfDelivery}
+                        </div>
+                    </div>
+
+                    <div class="order-details">
+                        <strong>Order Number:</strong> ${orderNumber}
+                        <strong style="margin-left: 2rem;">Order Date:</strong> ${orderDate}
+                        <div style="float: right;">
+                            <strong>Invoice Number:</strong> ${invoiceNumber}<br>
+                            <strong>Invoice Details:</strong> ${soldByDetails}<br>
+                            <strong>Invoice Date:</strong> ${invoiceDate}
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto; width: 100%;">
+                        <table class="flipkart-items">
+                            <thead>
+                                <tr>
+                                    <th>Sl.No</th>
+                                    <th>Description</th>
+                                    <th>Unit Price</th>
+                                    <th>Discount</th>
+                                    <th>Qty</th>
+                                    <th>Net Amount</th>
+                                    <th>Tax Rate</th>
+                                    <th>Tax Type</th>
+                                    <th>Tax Amount</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                        <tbody>
+                            ${items.map((item, index) => {
+                                const netAmount = parseFloat(item.price) * parseFloat(item.quantity);
+                                const taxAmount = netAmount * (parseFloat(item.tax) / 100);
+                                const totalAmount = netAmount + taxAmount;
+                                return `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${item.description}</td>
+                                        <td>₹${item.price}</td>
+                                        <td>₹${item.discount}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>₹${netAmount.toFixed(2)}</td>
+                                        <td>${item.tax}%</td>
+                                        <td>CGST<br>SGST</td>
+                                        <td>₹${(taxAmount/2).toFixed(2)}<br>₹${(taxAmount/2).toFixed(2)}</td>
+                                        <td>₹${totalAmount.toFixed(2)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                            <tr>
+                                <td colspan="9" style="text-align: right;"><strong>Total:</strong></td>
+                                <td>₹${totalAmount.toFixed(2)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                        <div class="amount-words">
+                            <strong>Amount in words</strong><br>
+                            ${amountInWords}
+                            <div class="signature-section">
+                                ${soldBy}<br>
+                                Authorized Signatory
+                            </div>
+                        </div>
+
+                        <div class="tax-note">
+                            Whether tax is payable under reverse charge - No
+                        </div>
+                        
+                        <div class="payment-details">
+                            <table>
+                                <tr>
+                                    <td><strong>Payment ID:</strong> ${orderNumber}</td>
+                                    <td><strong>Date:</strong> ${invoiceDate}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Invoice Value:</strong> ₹${totalAmount.toFixed(2)}</td>
+                                    <td><strong>Payment:</strong> ${paymentMethod}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="footer-note">
+                            *Flipkart Internet Private Limited<br>
+                            Please note that this invoice is not a demand for payment
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (selectedTemplate === 'myntra') {
+            previewCard.innerHTML = `
+                <div class="myntra-template">
+                    <div class="myntra-header">
+                        <img src="${myntraLogoUrl}" alt="Myntra" class="myntra-logo">
+                        <div class="invoice-title">
+                            Tax Invoice/Bill of Supply/Cash Memo<br>
+                            (Original for Recipient)
+                        </div>
+                    </div>
+
+                    <div class="myntra-details">
+                        <div class="seller-details">
+                            <strong>Sold By:</strong><br>
+                            ${soldBy}<br>
+                            IN<br><br>
+                            <strong>PAN No:</strong> ${panNo}<br>
+                            <strong>GST Registration No:</strong> ${gstin}
+                        </div>
+                        <div class="billing-details">
+                            <strong>Billing Address:</strong><br>
+                            ${customerName}<br>
+                            ${shippingAddress}<br>
+                            IN<br>
+                            <strong>State/UT Code:</strong> ${placeOfSupply}<br><br>
+                            <strong>Shipping Address:</strong><br>
+                            ${customerName}<br>
+                            ${shippingAddress}<br>
+                            IN<br>
+                            <strong>State/UT Code:</strong> ${placeOfDelivery}<br>
+                            <strong>Place of Supply:</strong> ${placeOfSupply}<br>
+                            <strong>Place of delivery:</strong> ${placeOfDelivery}
+                        </div>
+                    </div>
+
+                    <div class="order-details">
+                        <strong>Order Number:</strong> ${orderNumber}
+                        <strong style="margin-left: 2rem;">Order Date:</strong> ${orderDate}
+                        <div style="float: right;">
+                            <strong>Invoice Number:</strong> ${invoiceNumber}<br>
+                            <strong>Invoice Details:</strong> ${soldByDetails}<br>
+                            <strong>Invoice Date:</strong> ${invoiceDate}
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto; width: 100%;">
+                        <table class="myntra-items">
+                            <thead>
+                                <tr>
+                                    <th>Sl.No</th>
+                                    <th>Description</th>
+                                    <th>Unit Price</th>
+                                    <th>Discount</th>
+                                    <th>Qty</th>
+                                    <th>Net Amount</th>
+                                    <th>Tax Rate</th>
+                                    <th>Tax Type</th>
+                                    <th>Tax Amount</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                        <tbody>
+                            ${items.map((item, index) => {
+                                const netAmount = parseFloat(item.price) * parseFloat(item.quantity);
+                                const taxAmount = netAmount * (parseFloat(item.tax) / 100);
+                                const totalAmount = netAmount + taxAmount;
+                                return `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${item.description}</td>
+                                        <td>₹${item.price}</td>
+                                        <td>₹${item.discount}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>₹${netAmount.toFixed(2)}</td>
+                                        <td>${item.tax}%</td>
+                                        <td>CGST<br>SGST</td>
+                                        <td>₹${(taxAmount/2).toFixed(2)}<br>₹${(taxAmount/2).toFixed(2)}</td>
+                                        <td>₹${totalAmount.toFixed(2)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                            <tr>
+                                <td colspan="9" style="text-align: right;"><strong>Total:</strong></td>
+                                <td>₹${totalAmount.toFixed(2)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <div style="flex: 1; display: flex; flex-direction: column;">
+                        <div class="amount-words">
+                            <strong>Amount in words</strong><br>
+                            ${amountInWords}
+                            <div class="signature-section">
+                                ${soldBy}<br>
+                                Authorized Signatory
+                            </div>
+                        </div>
+
+                        <div class="tax-note">
+                            Whether tax is payable under reverse charge - No
+                        </div>
+                        
+                        <div class="payment-details">
+                            <table>
+                                <tr>
+                                    <td><strong>Payment ID:</strong> ${orderNumber}</td>
+                                    <td><strong>Date:</strong> ${invoiceDate}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Invoice Value:</strong> ₹${totalAmount.toFixed(2)}</td>
+                                    <td><strong>Payment:</strong> ${paymentMethod}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="footer-note">
+                            *Myntra Designs Private Limited<br>
                             Please note that this invoice is not a demand for payment
                         </div>
                     </div>
