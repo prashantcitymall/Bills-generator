@@ -551,6 +551,8 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
 }
 
 .profile-btn:hover {
@@ -562,9 +564,9 @@
     position: absolute;
     right: 0;
     top: 100%;
-    margin-top: 0.5rem;
+    margin-top: 2.5rem;
     padding-top: 10px; /* Add padding to create hover bridge */
-    margin-top: -10px; /* Offset the padding to maintain visual position */
+    margin-top: 0.5rem; /* Adjusted to position below button */
     background-color: rgba(17, 25, 40, 0.95);
     backdrop-filter: blur(16px);
     min-width: 180px;
