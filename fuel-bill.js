@@ -11,6 +11,12 @@ const customerName = document.getElementById('customerName');
 const vehicleNumber = document.getElementById('vehicleNumber');
 const vehicleType = document.getElementById('vehicleType');
 
+// Load saved form data from localStorage
+loadFormData();
+
+// Set up form data persistence
+setupFormPersistence();
+
 // Calculate quantity function
 function calculateQuantity() {
     const rate = parseFloat(fuelRate.value) || 0;
@@ -23,11 +29,6 @@ function calculateQuantity() {
         document.getElementById('previewQuantity').textContent = '1L';
     }
 }
-
-// Set current date and time
-const now = new Date();
-billDate.value = now.toISOString().split('T')[0];
-billTime.value = now.toTimeString().split(' ')[0].slice(0, 5);
 
 // Preview update function
 function updatePreview() {
@@ -222,3 +223,127 @@ templateRadios.forEach(radio => {
 
 // Initial preview update
 updatePreview();
+
+// Function to save form data to localStorage
+function saveFormData() {
+    const formData = {
+        stationName: stationName.value,
+        stationAddress: stationAddress.value,
+        paymentMethod: paymentMethod.value,
+        invoiceNumber: invoiceNumber.value,
+        fuelRate: fuelRate.value,
+        totalAmount: totalAmount.value,
+        billDate: billDate.value,
+        billTime: billTime.value,
+        customerName: customerName.value,
+        vehicleNumber: vehicleNumber.value,
+        vehicleType: vehicleType.value,
+        taxType: document.querySelector('input[name="tax"]:checked')?.value || 'none',
+        template: document.querySelector('input[name="template"]:checked')?.value || '1'
+    };
+    
+    localStorage.setItem('fuelBillFormData', JSON.stringify(formData));
+}
+
+// Function to load form data from localStorage
+function loadFormData() {
+    const savedData = localStorage.getItem('fuelBillFormData');
+    if (!savedData) {
+        // If no saved data, set default date and time
+        const now = new Date();
+        billDate.value = now.toISOString().split('T')[0];
+        billTime.value = now.toTimeString().split(' ')[0].slice(0, 5);
+        return;
+    }
+    
+    const formData = JSON.parse(savedData);
+    
+    // Restore form fields
+    stationName.value = formData.stationName || '';
+    stationAddress.value = formData.stationAddress || '';
+    paymentMethod.value = formData.paymentMethod || '';
+    invoiceNumber.value = formData.invoiceNumber || '';
+    fuelRate.value = formData.fuelRate || '';
+    totalAmount.value = formData.totalAmount || '';
+    customerName.value = formData.customerName || '';
+    vehicleNumber.value = formData.vehicleNumber || '';
+    vehicleType.value = formData.vehicleType || '';
+    
+    // Set date and time - use saved values or defaults
+    if (formData.billDate) {
+        billDate.value = formData.billDate;
+    } else {
+        const now = new Date();
+        billDate.value = now.toISOString().split('T')[0];
+    }
+    
+    if (formData.billTime) {
+        billTime.value = formData.billTime;
+    } else {
+        const now = new Date();
+        billTime.value = now.toTimeString().split(' ')[0].slice(0, 5);
+    }
+    
+    // Set tax type
+    const taxTypeRadio = document.querySelector(`input[name="tax"][value="${formData.taxType || 'none'}"]`);
+    if (taxTypeRadio) {
+        taxTypeRadio.checked = true;
+    }
+    
+    // Set template
+    const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || '1'}"]`);
+    if (templateRadio) {
+        templateRadio.checked = true;
+        
+        // Update logo based on template selection
+        const logoImage = document.querySelector('.bpcl-logo');
+        if (logoImage) {
+            if (formData.template === '2') {
+                logoImage.src = 'images/hp.png';
+                logoImage.alt = 'HP Logo';
+            } else if (formData.template === '3') {
+                logoImage.src = 'images/iocl.png';
+                logoImage.alt = 'IOCL Logo';
+            } else if (formData.template === '4') {
+                logoImage.src = 'images/relience.png';
+                logoImage.alt = 'Reliance Logo';
+            } else {
+                logoImage.src = 'images/bpcl.png';
+                logoImage.alt = 'BPCL Logo';
+            }
+        }
+    }
+}
+
+// Function to set up form persistence
+function setupFormPersistence() {
+    // Get the form element
+    const form = document.querySelector('.input-form');
+    
+    // Save form data on input changes
+    form.addEventListener('input', function() {
+        saveFormData();
+    });
+    
+    form.addEventListener('change', function() {
+        saveFormData();
+    });
+    
+    // Update the download button to store current page URL before redirecting to login
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.addEventListener('click', function() {
+        if (!window.authState || !window.authState.isAuthenticated) {
+            // Save the current URL to return after login
+            sessionStorage.setItem('redirectAfterLogin', window.location.href);
+        }
+    }, true); // Use capture phase to ensure this runs before the download handler
+    
+    // Update clear button to also clear localStorage
+    const clearBtn = document.getElementById('clearBtn');
+    clearBtn.addEventListener('click', function(e) {
+        if (confirm('Are you sure you want to clear the form?')) {
+            // Remove the saved form data from localStorage
+            localStorage.removeItem('fuelBillFormData');
+        }
+    }, true); // Use capture phase to ensure this runs before other clear handlers
+}

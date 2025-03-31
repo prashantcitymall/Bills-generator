@@ -1,5 +1,10 @@
 // E-commerce Invoice Generator
 document.addEventListener('DOMContentLoaded', function() {
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form data persistence
+    setupFormPersistence();
     // Function to convert number to words (simplified format)
     function numberToWords(num) {
         const single = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
@@ -640,6 +645,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.downloadPDF = function() {
         // Check if user is logged in
         if (!window.authState || !window.authState.isAuthenticated) {
+            // Save the current URL to return after login
+            sessionStorage.setItem('redirectAfterLogin', window.location.href);
             // User is not logged in, show alert
             alert('Please sign in to download bills');
             return;
@@ -684,4 +691,172 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize preview
     window.updatePreview();
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        // Get items
+        const items = [];
+        const itemEntries = document.getElementById('itemsContainer').querySelectorAll('.item-entry');
+        itemEntries.forEach(entry => {
+            items.push({
+                description: entry.querySelector('.item-description')?.value || '',
+                price: entry.querySelector('.item-price')?.value || '0',
+                quantity: entry.querySelector('.item-quantity')?.value || '1',
+                tax: entry.querySelector('.item-tax')?.value || '2',
+                discount: entry.querySelector('.item-discount')?.value || '0'
+            });
+        });
+        
+        const formData = {
+            // Template
+            template: document.querySelector('input[name="template"]:checked')?.value || 'amazon',
+            
+            // Customer and order details
+            customerName: document.getElementById('customerName').value,
+            invoiceNumber: document.getElementById('invoiceNumber').value,
+            soldBy: document.getElementById('soldBy').value,
+            orderNumber: document.getElementById('orderNumber').value,
+            shippingAddress: document.getElementById('shippingAddress').value,
+            soldByDetails: document.getElementById('soldByDetails').value,
+            panNo: document.getElementById('panNo').value,
+            gstin: document.getElementById('gstin').value,
+            placeOfSupply: document.getElementById('placeOfSupply').value,
+            placeOfDelivery: document.getElementById('placeOfDelivery').value,
+            
+            // Payment and dates
+            paymentMethod: document.getElementById('paymentMethod').value,
+            orderDate: document.getElementById('orderDate').value,
+            invoiceDate: document.getElementById('invoiceDate').value,
+            
+            // Terms checkbox
+            termsCheckbox: document.getElementById('termsCheckbox').checked,
+            
+            // Items
+            items: items
+        };
+        
+        localStorage.setItem('ecommerceBillFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('ecommerceBillFormData');
+        if (!savedData) {
+            // If no saved data, set default date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('orderDate').value = today;
+            document.getElementById('invoiceDate').value = today;
+            return;
+        }
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore template selection
+        const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || 'amazon'}"]`);
+        if (templateRadio) {
+            templateRadio.checked = true;
+        }
+        
+        // Restore customer and order details
+        document.getElementById('customerName').value = formData.customerName || '';
+        document.getElementById('invoiceNumber').value = formData.invoiceNumber || '';
+        document.getElementById('soldBy').value = formData.soldBy || '';
+        document.getElementById('orderNumber').value = formData.orderNumber || '';
+        document.getElementById('shippingAddress').value = formData.shippingAddress || '';
+        document.getElementById('soldByDetails').value = formData.soldByDetails || '';
+        document.getElementById('panNo').value = formData.panNo || '';
+        document.getElementById('gstin').value = formData.gstin || '';
+        document.getElementById('placeOfSupply').value = formData.placeOfSupply || '';
+        document.getElementById('placeOfDelivery').value = formData.placeOfDelivery || '';
+        
+        // Restore payment and dates
+        document.getElementById('paymentMethod').value = formData.paymentMethod || 'Cash';
+        document.getElementById('orderDate').value = formData.orderDate || new Date().toISOString().split('T')[0];
+        document.getElementById('invoiceDate').value = formData.invoiceDate || new Date().toISOString().split('T')[0];
+        
+        // Restore terms checkbox
+        document.getElementById('termsCheckbox').checked = formData.termsCheckbox || false;
+        
+        // Restore items
+        if (formData.items && formData.items.length > 0) {
+            const itemsContainer = document.getElementById('itemsContainer');
+            
+            // Clear existing items
+            itemsContainer.innerHTML = '';
+            
+            // Add items from saved data
+            formData.items.forEach((item, index) => {
+                const itemEntry = document.createElement('div');
+                itemEntry.className = 'item-entry';
+                itemEntry.dataset.itemId = index + 1;
+                
+                itemEntry.innerHTML = `
+                    <div class="item-row">
+                        <div class="input-field">
+                            <label>Description</label>
+                            <input type="text" class="item-description" placeholder="Item description" oninput="updatePreview()" value="${item.description || ''}">
+                        </div>
+                        <div class="input-field">
+                            <label>Unit Price</label>
+                            <input type="number" class="item-price" placeholder="0" min="0" oninput="updatePreview()" value="${item.price || '0'}">
+                        </div>
+                        <div class="input-field">
+                            <label>Quantity</label>
+                            <input type="number" class="item-quantity" placeholder="1" min="0" oninput="updatePreview()" value="${item.quantity || '1'}">
+                        </div>
+                    </div>
+                    <div class="item-row">
+                        <div class="input-field">
+                            <label>Tax %</label>
+                            <input type="number" class="item-tax" placeholder="2" min="0" oninput="updatePreview()" value="${item.tax || '2'}">
+                        </div>
+                        <div class="input-field">
+                            <label>Discount</label>
+                            <input type="number" class="item-discount" placeholder="0" min="0" oninput="updatePreview()" value="${item.discount || '0'}">
+                        </div>
+                        <div class="input-field action-field">
+                            ${index === 0 ? 
+                                `<button class="add-item-btn" onclick="addNewItemRow(this)">Add</button>` : 
+                                `<button class="add-item-btn" onclick="addNewItemRow(this)">Add</button>
+                                <button class="remove-item-btn" onclick="removeItemRow(this)">Remove</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+                
+                itemsContainer.appendChild(itemEntry);
+            });
+            
+            // Set up listeners for the new rows
+            const rows = itemsContainer.querySelectorAll('.item-entry');
+            rows.forEach(row => {
+                setupNewItemRowListeners(row);
+            });
+        }
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Get the form element
+        const form = document.getElementById('ecommerceForm');
+        
+        // Save form data on input changes
+        form.addEventListener('input', function() {
+            saveFormData();
+        });
+        
+        form.addEventListener('change', function() {
+            saveFormData();
+        });
+        
+        // Override clear form function to also clear localStorage
+        const originalClearForm = window.clearForm;
+        window.clearForm = function() {
+            // Remove the saved form data from localStorage
+            localStorage.removeItem('ecommerceBillFormData');
+            
+            // Call the original clearForm function
+            originalClearForm();
+        };
+    }
 });

@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Debug log to check if script is loading
     console.log('Script loaded');
-    // Initialize date fields with current date
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('printDate').value = today;
-    document.getElementById('fromDate').value = today;
-    document.getElementById('toDate').value = today;
+    
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form data persistence
+    setupFormPersistence();
 
     // Update preview when form fields change
     const formElements = document.querySelectorAll('input, select, textarea');
@@ -122,6 +123,135 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial preview update
     updatePreview();
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            employeeName: document.getElementById('employeeName').value,
+            rentAddress: document.getElementById('rentAddress').value,
+            landlordName: document.getElementById('landlordName').value,
+            panNo: document.getElementById('panNo').value,
+            printDate: document.getElementById('printDate').value,
+            fromDate: document.getElementById('fromDate').value,
+            toDate: document.getElementById('toDate').value,
+            billBy: document.getElementById('billBy').value,
+            paymentMethod: document.getElementById('paymentMethod').value,
+            currency: document.getElementById('currency').value,
+            rentAmount: document.getElementById('rentAmount').value,
+            downloadFileName: document.getElementById('downloadFileName').value,
+            template: document.querySelector('input[name="template"]:checked')?.value || 'template3',
+            signature: document.querySelector('input[name="signature"]:checked')?.value || 'url',
+            generateMultiple: document.getElementById('generateMultiple').checked,
+            authorizedLogo: document.getElementById('authorizedLogo').checked
+        };
+        
+        localStorage.setItem('rentReceiptFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('rentReceiptFormData');
+        if (!savedData) {
+            // If no saved data, set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('printDate').value = today;
+            document.getElementById('fromDate').value = today;
+            document.getElementById('toDate').value = today;
+            return;
+        }
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore form fields
+        document.getElementById('employeeName').value = formData.employeeName || '';
+        document.getElementById('rentAddress').value = formData.rentAddress || '';
+        document.getElementById('landlordName').value = formData.landlordName || '';
+        document.getElementById('panNo').value = formData.panNo || '';
+        document.getElementById('billBy').value = formData.billBy || 'monthly';
+        document.getElementById('paymentMethod').value = formData.paymentMethod || '';
+        document.getElementById('currency').value = formData.currency || 'INR';
+        document.getElementById('rentAmount').value = formData.rentAmount || '';
+        document.getElementById('downloadFileName').value = formData.downloadFileName || '';
+        
+        // Set dates - use saved values or defaults
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('printDate').value = formData.printDate || today;
+        document.getElementById('fromDate').value = formData.fromDate || today;
+        document.getElementById('toDate').value = formData.toDate || today;
+        
+        // Set template
+        const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || 'template3'}"]`);
+        if (templateRadio) {
+            templateRadio.checked = true;
+        }
+        
+        // Set signature type
+        const signatureRadio = document.querySelector(`input[name="signature"][value="${formData.signature || 'url'}"]`);
+        if (signatureRadio) {
+            signatureRadio.checked = true;
+        }
+        
+        // Set checkboxes
+        document.getElementById('generateMultiple').checked = formData.generateMultiple || false;
+        document.getElementById('authorizedLogo').checked = formData.authorizedLogo || false;
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Get the form element
+        const form = document.querySelector('.form-container');
+        
+        // Save form data on input changes
+        form.addEventListener('input', function() {
+            saveFormData();
+        });
+        
+        form.addEventListener('change', function() {
+            saveFormData();
+        });
+        
+        // Update the download button to store current page URL before redirecting to login
+        const downloadBtn = document.getElementById('downloadBtn');
+        downloadBtn.addEventListener('click', function() {
+            if (!window.authState || !window.authState.isAuthenticated) {
+                // Save the current URL to return after login
+                sessionStorage.setItem('redirectAfterLogin', window.location.href);
+            }
+        }, true); // Use capture phase to ensure this runs before the download handler
+        
+        // Update clear button to also clear localStorage
+        const clearBtn = document.getElementById('clearBtn');
+        const originalClearBtnClick = clearBtn.onclick;
+        clearBtn.onclick = function(e) {
+            if (confirm('Are you sure you want to clear the form?')) {
+                // Remove the saved form data from localStorage
+                localStorage.removeItem('rentReceiptFormData');
+                
+                // Reset dates to today
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('printDate').value = today;
+                document.getElementById('fromDate').value = today;
+                document.getElementById('toDate').value = today;
+                
+                // Reset radio buttons to defaults
+                document.querySelector('input[name="template"][value="template3"]').checked = true;
+                document.querySelector('input[name="signature"][value="url"]').checked = true;
+                
+                // Reset checkboxes
+                document.getElementById('generateMultiple').checked = false;
+                document.getElementById('authorizedLogo').checked = false;
+                
+                // Clear other form fields
+                const inputs = form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="date"]), select, textarea');
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                updatePreview();
+            }
+            return false; // Prevent the original click handler from running
+        };
+    }
 });
 
 function updatePreview() {

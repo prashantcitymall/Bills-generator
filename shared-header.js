@@ -250,9 +250,19 @@ async function checkAuthStatus(forceCheck = false) {
                 // Show authenticated UI immediately
                 showAuthenticatedUI(data.user);
                 
-                // If on signin or signup page, redirect to home
+                // Handle redirects after login
                 const currentPath = window.location.pathname;
-                if (currentPath.includes('signin.html') || currentPath.includes('signup.html')) {
+                
+                // Check if there's a saved redirect URL in sessionStorage
+                const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
+                
+                if (redirectUrl) {
+                    // Clear the saved redirect URL
+                    sessionStorage.removeItem('redirectAfterLogin');
+                    // Redirect to the saved URL
+                    window.location.href = redirectUrl;
+                } else if (currentPath.includes('signin.html') || currentPath.includes('signup.html')) {
+                    // Default redirect to home if on signin/signup page
                     window.location.href = '/';
                 }
             } catch (parseError) {

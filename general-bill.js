@@ -7,9 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const orderItems = document.getElementById('orderItems');
     const downloadBtn = document.getElementById('downloadBtn');
     const clearBtn = document.getElementById('clearBtn');
-
-    // Set default date to today
-    document.getElementById('date').valueAsDate = new Date();
+    
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form data persistence
+    setupFormPersistence();
 
     // Validate form function
     function validateForm() {
@@ -251,4 +254,166 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial preview update
     updatePreview();
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            customerName: document.getElementById('customerName').value,
+            customerLocation: document.getElementById('customerLocation').value,
+            shippingAddress: document.getElementById('shippingAddress').value,
+            shopName: document.getElementById('shopName').value,
+            shopAddress: document.getElementById('shopAddress').value,
+            soldByDetails: document.getElementById('soldByDetails').value,
+            taxType: document.querySelector('input[name="taxType"]:checked').value,
+            taxNumber: document.getElementById('taxNumber').value,
+            currency: document.getElementById('currency').value,
+            paymentMethod: document.getElementById('paymentMethod').value,
+            invoiceNumber: document.getElementById('invoiceNumber').value,
+            orderNumber: document.getElementById('orderNumber').value,
+            date: document.getElementById('date').value,
+            orderItems: []
+        };
+        
+        // Save order items
+        orderItems.querySelectorAll('tr').forEach(row => {
+            formData.orderItems.push({
+                description: row.querySelector('.item-description').value,
+                price: row.querySelector('.item-price').value,
+                quantity: row.querySelector('.item-quantity').value,
+                tax: row.querySelector('.item-tax').value
+            });
+        });
+        
+        localStorage.setItem('generalBillFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('generalBillFormData');
+        if (!savedData) {
+            // If no saved data, set default date to today
+            document.getElementById('date').valueAsDate = new Date();
+            return;
+        }
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore form fields
+        document.getElementById('customerName').value = formData.customerName || '';
+        document.getElementById('customerLocation').value = formData.customerLocation || '';
+        document.getElementById('shippingAddress').value = formData.shippingAddress || '';
+        document.getElementById('shopName').value = formData.shopName || '';
+        document.getElementById('shopAddress').value = formData.shopAddress || '';
+        document.getElementById('soldByDetails').value = formData.soldByDetails || '';
+        document.getElementById('taxNumber').value = formData.taxNumber || '';
+        document.getElementById('currency').value = formData.currency || 'INR';
+        document.getElementById('paymentMethod').value = formData.paymentMethod || '';
+        document.getElementById('invoiceNumber').value = formData.invoiceNumber || '';
+        document.getElementById('orderNumber').value = formData.orderNumber || '';
+        
+        // Set date - use saved date or today if no saved date
+        if (formData.date) {
+            document.getElementById('date').value = formData.date;
+        } else {
+            document.getElementById('date').valueAsDate = new Date();
+        }
+        
+        // Set tax type
+        const taxTypeRadio = document.querySelector(`input[name="taxType"][value="${formData.taxType || 'none'}"]`);
+        if (taxTypeRadio) {
+            taxTypeRadio.checked = true;
+            // Show/hide tax input based on selection
+            if (formData.taxType !== 'none') {
+                taxInput.style.display = 'block';
+                taxInput.placeholder = `Enter ${formData.taxType.toUpperCase()} Number`;
+            } else {
+                taxInput.style.display = 'none';
+            }
+        }
+        
+        // Restore order items
+        if (formData.orderItems && formData.orderItems.length > 0) {
+            // Clear existing rows except the first one
+            const rows = orderItems.querySelectorAll('tr');
+            for (let i = 1; i < rows.length; i++) {
+                rows[i].remove();
+            }
+            
+            // Fill the first row
+            const firstRow = orderItems.querySelector('tr');
+            firstRow.querySelector('.item-description').value = formData.orderItems[0].description || '';
+            firstRow.querySelector('.item-price').value = formData.orderItems[0].price || '';
+            firstRow.querySelector('.item-quantity').value = formData.orderItems[0].quantity || '';
+            firstRow.querySelector('.item-tax').value = formData.orderItems[0].tax || '';
+            
+            // Add additional rows if needed
+            for (let i = 1; i < formData.orderItems.length; i++) {
+                const newRow = firstRow.cloneNode(true);
+                newRow.querySelector('.item-description').value = formData.orderItems[i].description || '';
+                newRow.querySelector('.item-price').value = formData.orderItems[i].price || '';
+                newRow.querySelector('.item-quantity').value = formData.orderItems[i].quantity || '';
+                newRow.querySelector('.item-tax').value = formData.orderItems[i].tax || '';
+                orderItems.appendChild(newRow);
+            }
+        }
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Save form data on input changes
+        form.addEventListener('input', function() {
+            saveFormData();
+        });
+        
+        form.addEventListener('change', function() {
+            saveFormData();
+        });
+        
+        // Update clear button to also clear localStorage
+        const originalClearBtnClick = clearBtn.onclick;
+        clearBtn.onclick = function(e) {
+            if (confirm('Are you sure you want to clear the form?')) {
+                // Reset all input fields
+                form.querySelectorAll('input:not([type="radio"]), select, textarea').forEach(input => {
+                    input.value = '';
+                });
+                
+                // Reset radio buttons
+                form.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    if (radio.value === 'none') {
+                        radio.checked = true;
+                    } else {
+                        radio.checked = false;
+                    }
+                });
+
+                // Reset tax input display
+                taxInput.style.display = 'none';
+                
+                // Keep only one empty row in order items
+                const rows = orderItems.querySelectorAll('tr');
+                for (let i = 1; i < rows.length; i++) {
+                    rows[i].remove();
+                }
+                rows[0].querySelectorAll('input').forEach(input => input.value = '');
+
+                // Reset date to today
+                document.getElementById('date').valueAsDate = new Date();
+                
+                // Clear localStorage
+                localStorage.removeItem('generalBillFormData');
+                
+                // Update preview
+                updatePreview();
+            }
+        };
+        
+        // Store current page URL in sessionStorage before redirecting to sign-in
+        downloadBtn.addEventListener('click', function() {
+            if (!window.authState || !window.authState.isAuthenticated) {
+                // Save the current URL to return after login
+                sessionStorage.setItem('redirectAfterLogin', window.location.href);
+            }
+        }, true); // Use capture phase to ensure this runs before the download handler
+    }
 });

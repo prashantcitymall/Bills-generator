@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoUrlInput = document.getElementById('logoUrlInput');
     const logoFileInput = document.getElementById('logoFileInput');
     const logoTypeRadios = document.getElementsByName('logoType');
+    
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form persistence
+    setupFormPersistence();
 
     // Handle logo input type toggle
     logoTypeRadios.forEach(radio => {
@@ -254,6 +260,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('downloadBtn').addEventListener('click', () => {
         // Check if user is logged in
         if (!window.authState || !window.authState.isAuthenticated) {
+            // Save the current URL to return after login
+            sessionStorage.setItem('redirectAfterLogin', window.location.href);
             // User is not logged in, show alert
             alert('Please sign in to download bills');
             return;
@@ -296,6 +304,114 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle form reset
     form.addEventListener('reset', function() {
+        // Clear localStorage when form is reset
+        localStorage.removeItem('donationReceiptFormData');
         setTimeout(updatePreview, 0);
     });
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            // Template selection
+            template: document.querySelector('input[name="template"]:checked')?.value || 'template1',
+            
+            // Temple/Trust details
+            templeName: document.getElementById('templeName').value,
+            trustPan: document.getElementById('trustPan').value,
+            templeAddress: document.getElementById('templeAddress').value,
+            phoneNo: document.getElementById('phoneNo').value,
+            email: document.getElementById('email').value,
+            website: document.getElementById('website').value,
+            
+            // Receipt details
+            receiptNo: document.getElementById('receiptNo').value,
+            amount: document.getElementById('amount').value,
+            receivedFrom: document.getElementById('receivedFrom').value,
+            donatorPan: document.getElementById('donatorPan').value,
+            receivedBy: document.getElementById('receivedBy').value,
+            description: document.getElementById('description').value,
+            date: document.getElementById('date').value,
+            paymentMethod: document.getElementById('paymentMethod').value,
+            
+            // Logo details
+            logoType: document.querySelector('input[name="logoType"]:checked')?.value || 'url',
+            logoUrl: document.getElementById('logoUrlField').value,
+            
+            // Terms checkbox
+            terms: document.getElementById('terms').checked
+        };
+        
+        localStorage.setItem('donationReceiptFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('donationReceiptFormData');
+        if (!savedData) {
+            // If no saved data, set default date to today
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            return;
+        }
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore template selection
+        const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || 'template1'}"]`);
+        if (templateRadio) {
+            templateRadio.checked = true;
+        }
+        
+        // Restore temple/trust details
+        document.getElementById('templeName').value = formData.templeName || '';
+        document.getElementById('trustPan').value = formData.trustPan || '';
+        document.getElementById('templeAddress').value = formData.templeAddress || '';
+        document.getElementById('phoneNo').value = formData.phoneNo || '';
+        document.getElementById('email').value = formData.email || '';
+        document.getElementById('website').value = formData.website || '';
+        
+        // Restore receipt details
+        document.getElementById('receiptNo').value = formData.receiptNo || '';
+        document.getElementById('amount').value = formData.amount || '';
+        document.getElementById('receivedFrom').value = formData.receivedFrom || '';
+        document.getElementById('donatorPan').value = formData.donatorPan || '';
+        document.getElementById('receivedBy').value = formData.receivedBy || '';
+        document.getElementById('description').value = formData.description || '';
+        document.getElementById('date').value = formData.date || new Date().toISOString().split('T')[0];
+        document.getElementById('paymentMethod').value = formData.paymentMethod || '';
+        
+        // Restore logo details
+        const logoTypeRadio = document.querySelector(`input[name="logoType"][value="${formData.logoType || 'url'}"]`);
+        if (logoTypeRadio) {
+            logoTypeRadio.checked = true;
+            // Show/hide logo input fields based on selection
+            if (formData.logoType === 'url') {
+                logoUrlInput.style.display = 'block';
+                logoFileInput.style.display = 'none';
+            } else {
+                logoUrlInput.style.display = 'none';
+                logoFileInput.style.display = 'block';
+            }
+        }
+        document.getElementById('logoUrlField').value = formData.logoUrl || '';
+        
+        // Restore terms checkbox
+        document.getElementById('terms').checked = formData.terms || false;
+        
+        // Update the preview with the restored data
+        updatePreview();
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Save form data on input changes
+        form.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('input', saveFormData);
+            input.addEventListener('change', saveFormData);
+        });
+        
+        // Save form data when logo type changes
+        logoTypeRadios.forEach(radio => {
+            radio.addEventListener('change', saveFormData);
+        });
+    }
 });

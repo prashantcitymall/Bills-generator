@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form data persistence
+    setupFormPersistence();
+    
     // Handle GST radio buttons
     const gstRadios = document.querySelectorAll('input[name="gstType"]');
     const gstInput = document.querySelector('.gst-input');
@@ -9,16 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
             updatePreview();
         });
     });
-
-    // Initialize date and time with current values
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().split(' ')[0];
-    
-    document.getElementById('checkInDate').value = today;
-    document.getElementById('checkInTime').value = currentTime;
-    document.getElementById('checkOutDate').value = today;
-    document.getElementById('checkOutTime').value = currentTime;
 
     // Handle form inputs for live preview
     const formInputs = document.querySelectorAll('input, select, textarea');
@@ -110,6 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('downloadBtn').addEventListener('click', () => {
         // Check if user is logged in
         if (!window.authState || !window.authState.isAuthenticated) {
+            // Save the current URL to return after login
+            sessionStorage.setItem('redirectAfterLogin', window.location.href);
             // User is not logged in, show alert
             alert('Please sign in to download bills');
             return;
@@ -192,6 +190,280 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial preview update
     updatePreview();
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        // Get room table items
+        const roomItems = [];
+        const roomRows = document.querySelectorAll('#roomTableBody tr');
+        roomRows.forEach(row => {
+            roomItems.push({
+                description: row.querySelector('.room-description')?.value || '',
+                rate: row.querySelector('.room-rate')?.value || '0',
+                days: row.querySelector('.room-days')?.value || '0'
+            });
+        });
+        
+        const formData = {
+            // Hotel details
+            hotelName: document.getElementById('hotelName').value,
+            hotelAddress: document.getElementById('hotelAddress').value,
+            checkInDate: document.getElementById('checkInDate').value,
+            checkInTime: document.getElementById('checkInTime').value,
+            checkOutDate: document.getElementById('checkOutDate').value,
+            checkOutTime: document.getElementById('checkOutTime').value,
+            billNo: document.getElementById('billNo').value,
+            nationality: document.getElementById('nationality').value,
+            roomNo: document.getElementById('roomNo').value,
+            roomType: document.getElementById('roomType').value,
+            
+            // GST details
+            gstType: document.querySelector('input[name="gstType"]:checked')?.value || 'none',
+            gstNumber: document.getElementById('gstNumber').value,
+            
+            // Logo details
+            logoSource: document.querySelector('input[name="logoSource"]:checked')?.value || 'url',
+            logoUrl: document.getElementById('logoUrlInput').value,
+            logoAuth: document.getElementById('logoAuth').checked,
+            
+            // Room details
+            roomItems: roomItems,
+            
+            // Payment details
+            currency: document.getElementById('currency').value,
+            paymentType: document.getElementById('paymentType').value,
+            taxPercent: document.getElementById('taxPercent').value,
+            advanceAmount: document.getElementById('advanceAmount').value,
+            
+            // Signature details
+            signatureSource: document.querySelector('input[name="signatureSource"]:checked')?.value || 'url',
+            signatureUrl: document.getElementById('signatureUrlInput').value,
+            signatureAuth: document.getElementById('signatureAuth').checked,
+            
+            // Guest details
+            guestName: document.getElementById('guestName').value,
+            guestGender: document.getElementById('guestGender').value,
+            guestAge: document.getElementById('guestAge').value,
+            guestAddress: document.getElementById('guestAddress').value,
+            
+            // File details
+            fileName: document.getElementById('fileName').value,
+            
+            // Template
+            template: document.querySelector('input[name="template"]:checked')?.value || '1'
+        };
+        
+        localStorage.setItem('hotelBillFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('hotelBillFormData');
+        if (!savedData) {
+            // If no saved data, set default date and time
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const currentTime = now.toTimeString().split(' ')[0];
+            
+            document.getElementById('checkInDate').value = today;
+            document.getElementById('checkInTime').value = currentTime;
+            document.getElementById('checkOutDate').value = today;
+            document.getElementById('checkOutTime').value = currentTime;
+            return;
+        }
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore hotel details
+        document.getElementById('hotelName').value = formData.hotelName || '';
+        document.getElementById('hotelAddress').value = formData.hotelAddress || '';
+        document.getElementById('billNo').value = formData.billNo || '';
+        document.getElementById('nationality').value = formData.nationality || 'Indian';
+        document.getElementById('roomNo').value = formData.roomNo || '';
+        document.getElementById('roomType').value = formData.roomType || 'AC';
+        
+        // Restore dates and times
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+        const currentTime = now.toTimeString().split(' ')[0];
+        document.getElementById('checkInDate').value = formData.checkInDate || today;
+        document.getElementById('checkInTime').value = formData.checkInTime || currentTime;
+        document.getElementById('checkOutDate').value = formData.checkOutDate || today;
+        document.getElementById('checkOutTime').value = formData.checkOutTime || currentTime;
+        
+        // Restore GST details
+        const gstTypeRadio = document.querySelector(`input[name="gstType"][value="${formData.gstType || 'none'}"]`);
+        if (gstTypeRadio) {
+            gstTypeRadio.checked = true;
+            // Show/hide GST input field based on selection
+            const gstInput = document.querySelector('.gst-input');
+            gstInput.style.display = formData.gstType === 'gst' ? 'block' : 'none';
+        }
+        document.getElementById('gstNumber').value = formData.gstNumber || '';
+        
+        // Restore logo details
+        const logoSourceRadio = document.querySelector(`input[name="logoSource"][value="${formData.logoSource || 'url'}"]`);
+        if (logoSourceRadio) {
+            logoSourceRadio.checked = true;
+        }
+        document.getElementById('logoUrlInput').value = formData.logoUrl || '';
+        document.getElementById('logoAuth').checked = formData.logoAuth || false;
+        
+        // Restore payment details
+        document.getElementById('currency').value = formData.currency || 'INR';
+        document.getElementById('paymentType').value = formData.paymentType || 'Cash';
+        document.getElementById('taxPercent').value = formData.taxPercent || '0';
+        document.getElementById('advanceAmount').value = formData.advanceAmount || '0';
+        
+        // Restore signature details
+        const signatureSourceRadio = document.querySelector(`input[name="signatureSource"][value="${formData.signatureSource || 'url'}"]`);
+        if (signatureSourceRadio) {
+            signatureSourceRadio.checked = true;
+        }
+        document.getElementById('signatureUrlInput').value = formData.signatureUrl || '';
+        document.getElementById('signatureAuth').checked = formData.signatureAuth || false;
+        
+        // Restore guest details
+        document.getElementById('guestName').value = formData.guestName || '';
+        document.getElementById('guestGender').value = formData.guestGender || 'Male';
+        document.getElementById('guestAge').value = formData.guestAge || '';
+        document.getElementById('guestAddress').value = formData.guestAddress || '';
+        
+        // Restore file details
+        document.getElementById('fileName').value = formData.fileName || '';
+        
+        // Restore template
+        const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || '1'}"]`);
+        if (templateRadio) {
+            templateRadio.checked = true;
+        }
+        
+        // Restore room items
+        if (formData.roomItems && formData.roomItems.length > 0) {
+            const roomTable = document.getElementById('roomTableBody');
+            
+            // Clear existing rows except the first one
+            while (roomTable.children.length > 1) {
+                roomTable.removeChild(roomTable.lastChild);
+            }
+            
+            // Populate the first row
+            const firstRow = roomTable.firstElementChild;
+            if (firstRow && formData.roomItems[0]) {
+                firstRow.querySelector('.room-description').value = formData.roomItems[0].description || '';
+                firstRow.querySelector('.room-rate').value = formData.roomItems[0].rate || '0';
+                firstRow.querySelector('.room-days').value = formData.roomItems[0].days || '0';
+                
+                const rate = parseFloat(formData.roomItems[0].rate) || 0;
+                const days = parseFloat(formData.roomItems[0].days) || 0;
+                const total = rate * days;
+                firstRow.querySelector('.room-total').textContent = `₹${total.toFixed(2)}`;
+            }
+            
+            // Add additional rows if needed
+            for (let i = 1; i < formData.roomItems.length; i++) {
+                const item = formData.roomItems[i];
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><input type="text" class="room-description" value="${item.description || ''}"></td>
+                    <td><input type="number" class="room-rate" value="${item.rate || '0'}"></td>
+                    <td><input type="number" class="room-days" value="${item.days || '0'}"></td>
+                    <td class="room-total">₹${((parseFloat(item.rate) || 0) * (parseFloat(item.days) || 0)).toFixed(2)}</td>
+                    <td>
+                        <button class="add-row">+</button>
+                        <button class="remove-row">-</button>
+                    </td>
+                `;
+                roomTable.appendChild(newRow);
+            }
+        }
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Get the form element
+        const form = document.querySelector('.form-container');
+        
+        // Save form data on input changes
+        form.addEventListener('input', function() {
+            saveFormData();
+        });
+        
+        form.addEventListener('change', function() {
+            saveFormData();
+        });
+        
+        // Save form data when room table changes
+        const roomTable = document.getElementById('roomTableBody');
+        roomTable.addEventListener('input', function() {
+            saveFormData();
+        });
+        
+        // Update clear button to also clear localStorage
+        const clearBtn = document.getElementById('clearBtn');
+        const originalClearBtnClick = clearBtn.onclick;
+        clearBtn.onclick = function(e) {
+            // Remove the saved form data from localStorage
+            localStorage.removeItem('hotelBillFormData');
+            
+            // Reset dates and times to current values
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const currentTime = now.toTimeString().split(' ')[0];
+            
+            document.getElementById('checkInDate').value = today;
+            document.getElementById('checkInTime').value = currentTime;
+            document.getElementById('checkOutDate').value = today;
+            document.getElementById('checkOutTime').value = currentTime;
+            
+            // Reset radio buttons to defaults
+            document.querySelector('input[name="template"][value="1"]').checked = true;
+            document.querySelector('input[name="gstType"][value="none"]').checked = true;
+            document.querySelector('input[name="logoSource"][value="url"]').checked = true;
+            document.querySelector('input[name="signatureSource"][value="url"]').checked = true;
+            
+            // Hide GST input
+            document.querySelector('.gst-input').style.display = 'none';
+            
+            // Reset checkboxes
+            document.getElementById('logoAuth').checked = false;
+            document.getElementById('signatureAuth').checked = false;
+            
+            // Reset room table
+            const roomTable = document.getElementById('roomTableBody');
+            while (roomTable.children.length > 1) {
+                roomTable.removeChild(roomTable.lastChild);
+            }
+            const firstRow = roomTable.firstElementChild;
+            firstRow.querySelector('.room-description').value = '';
+            firstRow.querySelector('.room-rate').value = '0';
+            firstRow.querySelector('.room-days').value = '0';
+            firstRow.querySelector('.room-total').textContent = '₹0';
+            
+            // Reset other form fields
+            document.getElementById('hotelName').value = '';
+            document.getElementById('hotelAddress').value = '';
+            document.getElementById('billNo').value = '';
+            document.getElementById('nationality').value = 'Indian';
+            document.getElementById('roomNo').value = '';
+            document.getElementById('roomType').value = 'AC';
+            document.getElementById('gstNumber').value = '';
+            document.getElementById('logoUrlInput').value = '';
+            document.getElementById('signatureUrlInput').value = '';
+            document.getElementById('currency').value = 'INR';
+            document.getElementById('paymentType').value = 'Cash';
+            document.getElementById('taxPercent').value = '0';
+            document.getElementById('advanceAmount').value = '0';
+            document.getElementById('guestName').value = '';
+            document.getElementById('guestGender').value = 'Male';
+            document.getElementById('guestAge').value = '';
+            document.getElementById('guestAddress').value = '';
+            document.getElementById('fileName').value = '';
+            
+            updatePreview();
+            return false; // Prevent the original click handler from running
+        };
+    }
 });
 
 function updatePreview() {

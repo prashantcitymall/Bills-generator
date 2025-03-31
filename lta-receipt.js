@@ -3,6 +3,148 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.form-container');
     const inputs = form.querySelectorAll('input, select');
     
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form data persistence
+    setupFormPersistence();
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        // Get all form inputs
+        const travelName = document.querySelector('input[placeholder="Travel agency name"]').value;
+        const travelType = document.querySelector('select[name="travel-type"]').value;
+        const location = document.querySelector('input[name="location"]').value;
+        const landmark = document.querySelector('input[placeholder="Landmark..."]').value;
+        const address = document.querySelector('input[placeholder="Address..."]').value;
+        const reportingDate = document.querySelector('input[type="date"]').value;
+        const departureTime = document.querySelector('input[type="time"]').value;
+        
+        // Get dropping point details
+        const droppingDate = document.querySelector('input[placeholder="Dropping Point Date"]').value;
+        const droppingTime = document.querySelector('input[placeholder="Dropping Point Time"]').value;
+        const droppingAddress = document.querySelector('input[placeholder="Enter address"]').value;
+        
+        // Get passenger details
+        const passengerDetails = document.querySelector('input[placeholder="Name, Age, Gender"]').value;
+        const numPassengers = document.querySelector('input[placeholder="Number of passengers"]').value;
+        const seatNo = document.querySelector('input[placeholder="Seat number"]').value;
+        
+        // Get ticket details
+        const ticketNo = document.querySelector('input[placeholder="Ticket number"]').value;
+        const boardingPointNo = document.querySelector('input[placeholder="Boarding point number"]').value;
+        const customerCareNo = document.querySelector('input[placeholder="Customer care number"]').value;
+        
+        // Get payment details
+        const paymentMethod = document.querySelector('select[name="payment-method"]').value;
+        const amount = document.querySelector('input[placeholder="Enter amount"]').value;
+        const tax = document.querySelector('input[placeholder="Tax percentage"]').value;
+        
+        // Get selected logo
+        const selectedLogo = document.querySelector('input[name="logo"]:checked').value;
+        
+        // Get template selection
+        const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
+        
+        // Create form data object
+        const formData = {
+            travelName,
+            travelType,
+            location,
+            landmark,
+            address,
+            reportingDate,
+            departureTime,
+            droppingDate,
+            droppingTime,
+            droppingAddress,
+            passengerDetails,
+            numPassengers,
+            seatNo,
+            ticketNo,
+            boardingPointNo,
+            customerCareNo,
+            paymentMethod,
+            amount,
+            tax,
+            selectedLogo,
+            selectedTemplate
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('ltaReceiptFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('ltaReceiptFormData');
+        if (!savedData) return;
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore form fields
+        if (formData.travelName) document.querySelector('input[placeholder="Travel agency name"]').value = formData.travelName;
+        if (formData.travelType) document.querySelector('select[name="travel-type"]').value = formData.travelType;
+        if (formData.location) document.querySelector('input[name="location"]').value = formData.location;
+        if (formData.landmark) document.querySelector('input[placeholder="Landmark..."]').value = formData.landmark;
+        if (formData.address) document.querySelector('input[placeholder="Address..."]').value = formData.address;
+        if (formData.reportingDate) document.querySelector('input[type="date"]').value = formData.reportingDate;
+        if (formData.departureTime) document.querySelector('input[type="time"]').value = formData.departureTime;
+        
+        // Restore dropping point details
+        if (formData.droppingDate) document.querySelector('input[placeholder="Dropping Point Date"]').value = formData.droppingDate;
+        if (formData.droppingTime) document.querySelector('input[placeholder="Dropping Point Time"]').value = formData.droppingTime;
+        if (formData.droppingAddress) document.querySelector('input[placeholder="Enter address"]').value = formData.droppingAddress;
+        
+        // Restore passenger details
+        if (formData.passengerDetails) document.querySelector('input[placeholder="Name, Age, Gender"]').value = formData.passengerDetails;
+        if (formData.numPassengers) document.querySelector('input[placeholder="Number of passengers"]').value = formData.numPassengers;
+        if (formData.seatNo) document.querySelector('input[placeholder="Seat number"]').value = formData.seatNo;
+        
+        // Restore ticket details
+        if (formData.ticketNo) document.querySelector('input[placeholder="Ticket number"]').value = formData.ticketNo;
+        if (formData.boardingPointNo) document.querySelector('input[placeholder="Boarding point number"]').value = formData.boardingPointNo;
+        if (formData.customerCareNo) document.querySelector('input[placeholder="Customer care number"]').value = formData.customerCareNo;
+        
+        // Restore payment details
+        if (formData.paymentMethod) document.querySelector('select[name="payment-method"]').value = formData.paymentMethod;
+        if (formData.amount) document.querySelector('input[placeholder="Enter amount"]').value = formData.amount;
+        if (formData.tax) document.querySelector('input[placeholder="Tax percentage"]').value = formData.tax;
+        
+        // Restore selected logo
+        if (formData.selectedLogo) {
+            const logoRadio = document.querySelector(`input[name="logo"][value="${formData.selectedLogo}"]`);
+            if (logoRadio) {
+                logoRadio.checked = true;
+                updateLogo(formData.selectedLogo);
+            }
+        }
+        
+        // Restore template selection
+        if (formData.selectedTemplate) {
+            const templateRadio = document.querySelector(`input[name="template"][value="${formData.selectedTemplate}"]`);
+            if (templateRadio) templateRadio.checked = true;
+        }
+        
+        // Update preview with loaded data
+        updatePreview();
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Save form data on input changes
+        inputs.forEach(input => {
+            input.addEventListener('input', saveFormData);
+            input.addEventListener('change', saveFormData);
+        });
+        
+        // Handle clear button to also clear localStorage
+        const clearBtn = document.querySelector('.btn-clear');
+        clearBtn.addEventListener('click', function() {
+            localStorage.removeItem('ltaReceiptFormData');
+        });
+    }
+    
     // Function to update preview
     function updatePreview() {
         // Get form values
@@ -111,6 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.btn-download').addEventListener('click', async function() {
         // Check if user is logged in
         if (!window.authState || !window.authState.isAuthenticated) {
+            // Save the current URL to return after login
+            sessionStorage.setItem('redirectAfterLogin', window.location.href);
             // User is not logged in, show alert
             alert('Please sign in to download bills');
             return;

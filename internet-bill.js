@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize date input with current date
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('billingDate').value = today;
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form data persistence
+    setupFormPersistence();
 
     // Handle logo source selection
     const urlInput = document.getElementById('urlInput');
@@ -119,6 +121,139 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial preview update
     updatePreview();
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            providerName: document.getElementById('providerName').value,
+            providerAddress: document.getElementById('providerAddress').value,
+            description: document.getElementById('description').value,
+            accountNumber: document.getElementById('accountNumber').value,
+            billingDate: document.getElementById('billingDate').value,
+            customerName: document.getElementById('customerName').value,
+            customerAddress: document.getElementById('customerAddress').value,
+            planSpeed: document.getElementById('planSpeed').value,
+            planPackage: document.getElementById('planPackage').value,
+            tarrifPlan: document.getElementById('tarrifPlan').value,
+            logoSource: document.querySelector('input[name="logoSource"]:checked')?.value || 'url',
+            logoUrl: document.getElementById('logoUrl').value,
+            logoAuthorization: document.getElementById('logoAuthorization').checked,
+            currency: document.getElementById('currency').value,
+            paymentMethod: document.getElementById('paymentMethod').value,
+            planAmount: document.getElementById('planAmount').value,
+            fileName: document.getElementById('fileName').value,
+            invoiceNo: document.getElementById('invoiceNo').value,
+            template: document.querySelector('input[name="template"]:checked')?.value || '1'
+        };
+        
+        localStorage.setItem('internetBillFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('internetBillFormData');
+        if (!savedData) {
+            // If no saved data, set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('billingDate').value = today;
+            return;
+        }
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore form fields
+        document.getElementById('providerName').value = formData.providerName || '';
+        document.getElementById('providerAddress').value = formData.providerAddress || '';
+        document.getElementById('description').value = formData.description || '';
+        document.getElementById('accountNumber').value = formData.accountNumber || '';
+        document.getElementById('customerName').value = formData.customerName || '';
+        document.getElementById('customerAddress').value = formData.customerAddress || '';
+        document.getElementById('planSpeed').value = formData.planSpeed || '';
+        document.getElementById('planPackage').value = formData.planPackage || '';
+        document.getElementById('tarrifPlan').value = formData.tarrifPlan || '';
+        document.getElementById('logoUrl').value = formData.logoUrl || '';
+        document.getElementById('logoAuthorization').checked = formData.logoAuthorization || false;
+        document.getElementById('currency').value = formData.currency || 'INR';
+        document.getElementById('paymentMethod').value = formData.paymentMethod || '';
+        document.getElementById('planAmount').value = formData.planAmount || '';
+        document.getElementById('fileName').value = formData.fileName || '';
+        document.getElementById('invoiceNo').value = formData.invoiceNo || '';
+        
+        // Set date - use saved value or default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('billingDate').value = formData.billingDate || today;
+        
+        // Set template
+        const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || '1'}"]`);
+        if (templateRadio) {
+            templateRadio.checked = true;
+        }
+        
+        // Set logo source
+        const logoSourceRadio = document.querySelector(`input[name="logoSource"][value="${formData.logoSource || 'url'}"]`);
+        if (logoSourceRadio) {
+            logoSourceRadio.checked = true;
+            // Trigger the change event to show/hide the appropriate input fields
+            logoSourceRadio.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Get the form element
+        const form = document.querySelector('.form-container');
+        
+        // Save form data on input changes
+        form.addEventListener('input', function() {
+            saveFormData();
+        });
+        
+        form.addEventListener('change', function() {
+            saveFormData();
+        });
+        
+        // Update the download button to store current page URL before redirecting to login
+        const downloadBtn = document.getElementById('downloadBtn');
+        downloadBtn.addEventListener('click', function() {
+            if (!window.authState || !window.authState.isAuthenticated) {
+                // Save the current URL to return after login
+                sessionStorage.setItem('redirectAfterLogin', window.location.href);
+            }
+        }, true); // Use capture phase to ensure this runs before the download handler
+        
+        // Update clear button to also clear localStorage
+        const clearBtn = document.getElementById('clearBtn');
+        const originalClearBtnClick = clearBtn.onclick;
+        clearBtn.onclick = function(e) {
+            // Remove the saved form data from localStorage
+            localStorage.removeItem('internetBillFormData');
+            
+            // Reset date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('billingDate').value = today;
+            
+            // Reset radio buttons to defaults
+            document.querySelector('input[name="template"][value="1"]').checked = true;
+            document.querySelector('input[name="logoSource"][value="url"]').checked = true;
+            
+            // Show/hide appropriate logo input fields
+            const urlInput = document.getElementById('urlInput');
+            const fileInput = document.getElementById('fileInput');
+            urlInput.style.display = 'block';
+            fileInput.style.display = 'none';
+            
+            // Reset checkbox
+            document.getElementById('logoAuthorization').checked = false;
+            
+            // Clear other form fields
+            document.querySelectorAll('input[type="text"], input[type="number"], select').forEach(input => {
+                input.value = '';
+            });
+            
+            updatePreview();
+            return false; // Prevent the original click handler from running
+        };
+    }
 });
 
 function updatePreview() {
