@@ -5,6 +5,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Download functionality
     document.getElementById('downloadBtn').addEventListener('click', async function() {
+        // Check if user is logged in
+        if (!window.authState || !window.authState.isAuthenticated) {
+            // User is not logged in, show alert
+            alert('Please sign in to download bills');
+            return;
+        }
+        
+        // Validate the form
+        if (!validateBookForm()) return;
+        
         const previewContent = document.querySelector('.receipt-preview');
         const fileName = document.getElementById('downloadFileName').value || 'book-invoice';
 
@@ -74,8 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePreview();
     });
 
-    // Download button functionality
-    document.getElementById('downloadBtn').addEventListener('click', function() {
+    // Validation function for required fields
+    function validateBookForm() {
         // Validate required fields
         const requiredFields = [
             'bookAuthor',
@@ -101,11 +111,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isValid) {
             alert('Please fill in all required fields');
-            return;
+            return false;
         }
-
-        alert('PDF generation will be implemented in the next phase');
-    });
+        return true;
+    }
 
     // Initial preview update
     updatePreview();
