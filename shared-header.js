@@ -101,6 +101,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Profile dropdown functionality - click-based toggle
+    function setupProfileDropdown() {
+        const userProfile = document.querySelector('.user-profile');
+        const profileMenu = document.querySelector('.profile-menu');
+        
+        if (userProfile && profileMenu) {
+            let isProfileMenuOpen = false;
+            
+            // Toggle dropdown on click
+            userProfile.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent event from bubbling to document
+                
+                // Toggle the dropdown visibility
+                if (isProfileMenuOpen) {
+                    profileMenu.classList.remove('active');
+                    isProfileMenuOpen = false;
+                } else {
+                    profileMenu.classList.add('active');
+                    isProfileMenuOpen = true;
+                }
+            });
+            
+            // Close dropdown when clicking elsewhere on the page
+            document.addEventListener('click', function() {
+                if (isProfileMenuOpen) {
+                    profileMenu.classList.remove('active');
+                    isProfileMenuOpen = false;
+                }
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            profileMenu.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent event from bubbling to document
+            });
+        }
+    }
+    
+    // Call the setup function after authentication is checked
+    setTimeout(setupProfileDropdown, 1000); // Give time for auth check to complete
+    
     logger.info('Initializing authentication state');
     
     // Force a fresh authentication check on every page load

@@ -33,7 +33,7 @@ app.use(
         : [
             "http://localhost:3001",
             "http://localhost:3000",
-            "https://7309-103-123-73-221.ngrok-free.app",
+            process.env.NGROK_HOSTNAME,
           ],
     credentials: true, // Allow cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -55,7 +55,7 @@ console.log(
 // Set the callback URL based on environment
 const callbackURL = isProduction
   ? "https://billcreator.store/auth/google/callback"
-  : "https://7309-103-123-73-221.ngrok-free.app/auth/google/callback";
+  : `${process.env.NGROK_HOSTNAME}/auth/google/callback`;
 
 console.log(`AUTH: Using callback URL ${callbackURL}`);
 
