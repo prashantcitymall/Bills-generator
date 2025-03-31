@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize dates with current date
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('fromDate').value = today;
-    document.getElementById('toDate').value = today;
-    document.getElementById('printDate').value = today;
+    // Load saved form data from localStorage
+    loadFormData();
+    
+    // Set up form data persistence
+    setupFormPersistence();
 
     // Update preview when form fields change
     const formElements = document.querySelectorAll('input, select, textarea');
@@ -116,6 +116,133 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial preview update
     updatePreview();
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            driverName: document.getElementById('driverName').value,
+            employeeName: document.getElementById('employeeName').value,
+            vehicleNumber: document.getElementById('vehicleNumber').value,
+            printDate: document.getElementById('printDate').value,
+            fromDate: document.getElementById('fromDate').value,
+            toDate: document.getElementById('toDate').value,
+            currency: document.getElementById('currency').value,
+            salaryAmount: document.getElementById('salaryAmount').value,
+            billBy: document.getElementById('billBy').value,
+            declaration: document.getElementById('declaration').value,
+            downloadFileName: document.getElementById('downloadFileName').value,
+            template: document.querySelector('input[name="template"]:checked')?.value || 'template4',
+            signatureType: document.querySelector('input[name="signatureType"]:checked')?.value || 'url',
+            generateZip: document.getElementById('generateZip').checked,
+            authorizedLogo: document.getElementById('authorizedLogo').checked
+        };
+        
+        localStorage.setItem('driverSalaryFormData', JSON.stringify(formData));
+    }
+    
+    // Function to load form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('driverSalaryFormData');
+        if (!savedData) {
+            // If no saved data, set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fromDate').value = today;
+            document.getElementById('toDate').value = today;
+            document.getElementById('printDate').value = today;
+            return;
+        }
+        
+        const formData = JSON.parse(savedData);
+        
+        // Restore form fields
+        document.getElementById('driverName').value = formData.driverName || '';
+        document.getElementById('employeeName').value = formData.employeeName || '';
+        document.getElementById('vehicleNumber').value = formData.vehicleNumber || '';
+        document.getElementById('currency').value = formData.currency || 'INR';
+        document.getElementById('salaryAmount').value = formData.salaryAmount || '';
+        document.getElementById('billBy').value = formData.billBy || 'monthly';
+        document.getElementById('declaration').value = formData.declaration || '';
+        document.getElementById('downloadFileName').value = formData.downloadFileName || '';
+        
+        // Set dates - use saved values or defaults
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('printDate').value = formData.printDate || today;
+        document.getElementById('fromDate').value = formData.fromDate || today;
+        document.getElementById('toDate').value = formData.toDate || today;
+        
+        // Set template
+        const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || 'template4'}"]`);
+        if (templateRadio) {
+            templateRadio.checked = true;
+        }
+        
+        // Set signature type
+        const signatureRadio = document.querySelector(`input[name="signatureType"][value="${formData.signatureType || 'url'}"]`);
+        if (signatureRadio) {
+            signatureRadio.checked = true;
+        }
+        
+        // Set checkboxes
+        document.getElementById('generateZip').checked = formData.generateZip || false;
+        document.getElementById('authorizedLogo').checked = formData.authorizedLogo || false;
+    }
+    
+    // Function to set up form persistence
+    function setupFormPersistence() {
+        // Get the form element
+        const form = document.querySelector('.form-container');
+        
+        // Save form data on input changes
+        form.addEventListener('input', function() {
+            saveFormData();
+        });
+        
+        form.addEventListener('change', function() {
+            saveFormData();
+        });
+        
+        // Update the download button to store current page URL before redirecting to login
+        const downloadBtn = document.getElementById('downloadBtn');
+        downloadBtn.addEventListener('click', function() {
+            if (!window.authState || !window.authState.isAuthenticated) {
+                // Save the current URL to return after login
+                sessionStorage.setItem('redirectAfterLogin', window.location.href);
+            }
+        }, true); // Use capture phase to ensure this runs before the download handler
+        
+        // Update clear button to also clear localStorage
+        const clearBtn = document.getElementById('clearBtn');
+        const originalClearBtnClick = clearBtn.onclick;
+        clearBtn.onclick = function(e) {
+            if (confirm('Are you sure you want to clear the form?')) {
+                // Remove the saved form data from localStorage
+                localStorage.removeItem('driverSalaryFormData');
+                
+                // Reset dates to today
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('fromDate').value = today;
+                document.getElementById('toDate').value = today;
+                document.getElementById('printDate').value = today;
+                
+                // Reset radio buttons to defaults
+                document.querySelector('input[name="template"][value="template4"]').checked = true;
+                document.querySelector('input[name="signatureType"][value="url"]').checked = true;
+                
+                // Reset checkboxes
+                document.getElementById('generateZip').checked = false;
+                document.getElementById('authorizedLogo').checked = false;
+                
+                // Clear other form fields
+                const inputs = form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="date"]), select, textarea');
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                updatePreview();
+            }
+            return false; // Prevent the original click handler from running
+        };
+    }
 });
 
 function updatePreview() {
