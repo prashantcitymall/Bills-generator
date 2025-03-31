@@ -577,14 +577,10 @@
     z-index: 9999;
 }
 
-.user-profile:hover .profile-menu {
+/* Profile menu display is now controlled by JavaScript */
+.profile-menu.active {
     display: block;
     animation: fadeIn 0.2s ease;
-}
-
-/* Keep menu open when hovering over the menu itself */
-.profile-menu:hover {
-    display: block;
 }
 
 .profile-menu a {
@@ -746,7 +742,8 @@
     color: #ffffff;
 }
 
-.user-profile:hover .profile-dropdown-content {
+/* Profile dropdown is now controlled by JavaScript click events instead of hover */
+.profile-dropdown-content.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
