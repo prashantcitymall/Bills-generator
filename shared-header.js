@@ -75,7 +75,28 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to check authentication status
 async function checkAuthStatus() {
     try {
-        console.log('Checking authentication status...');
+        // Create logger for this function
+        const logger = {
+            info: (message) => console.log(`AUTH-CLIENT: ${message}`),
+            debug: (message) => console.log(`AUTH-CLIENT-DEBUG: ${message}`),
+            error: (message) => console.error(`AUTH-CLIENT-ERROR: ${message}`)
+        };
+        
+        logger.info('Checking authentication status');
+        
+        // Check if we've already checked auth status recently (within last 30 seconds)
+        // This prevents redundant API calls during page load
+        const lastChecked = localStorage.getItem('authLastChecked');
+        if (lastChecked) {
+            const timeSinceLastCheck = Date.now() - parseInt(lastChecked);
+            if (timeSinceLastCheck < 30000) { // 30 seconds
+                logger.debug(`Auth check skipped - last checked ${timeSinceLastCheck}ms ago`);
+                return; // Skip check if we checked recently
+            }
+        }
+        
+        // Update last checked timestamp
+        localStorage.setItem('authLastChecked', Date.now().toString());
         
         // Fetch user profile data with proper credentials
         const response = await fetch('/api/user', {
@@ -86,61 +107,78 @@ async function checkAuthStatus() {
             credentials: 'include' // Critical for sending cookies with the request
         });
 
-        console.log('Auth status response:', response.status);
+        logger.debug(`Auth status response: ${response.status}`);
         
         if (response.ok) {
-            // User is authenticated
-            const data = await response.json();
-            console.log('Profile data received:', data);
-            
-            // Store authentication state in localStorage
-            localStorage.setItem('authState', JSON.stringify({
-                isAuthenticated: true,
-                profile: data.user || data.profile,
-                lastChecked: new Date().toISOString()
-            }));
-            
-            window.authState = {
-                isAuthenticated: true,
-                lastUpdated: Date.now(),
-                profile: data.user || data.profile
-            };
-            showAuthenticatedUI(data.user || data.profile);
-            
-            // If on signin or signup page, redirect to home
-            const currentPath = window.location.pathname;
-            if (currentPath.includes('signin.html') || currentPath.includes('signup.html')) {
-                window.location.href = '/';
+            try {
+                // User is authenticated
+                const data = await response.json();
+                logger.debug('Profile data received');
+                
+                if (!data || !data.user) {
+                    logger.info('No user data in response, treating as unauthenticated');
+                    handleUnauthenticatedState();
+                    return;
+                }
+                
+                // Store authentication state in localStorage
+                localStorage.setItem('authState', JSON.stringify({
+                    isAuthenticated: true,
+                    profile: data.user || data.profile,
+                    lastChecked: new Date().toISOString()
+                }));
+                
+                window.authState = {
+                    isAuthenticated: true,
+                    lastUpdated: Date.now(),
+                    profile: data.user || data.profile
+                };
+                showAuthenticatedUI(data.user || data.profile);
+                
+                // If on signin or signup page, redirect to home
+                const currentPath = window.location.pathname;
+                if (currentPath.includes('signin.html') || currentPath.includes('signup.html')) {
+                    window.location.href = '/';
+                }
+            } catch (parseError) {
+                logger.error(`Error parsing JSON response: ${parseError.message}`);
+                handleUnauthenticatedState();
             }
         } else {
             // User is not authenticated
-            console.log('User not authenticated, status:', response.status);
-            
-            // Clear any stored auth state
-            localStorage.removeItem('authState');
-            
-            window.authState = {
-                isAuthenticated: false,
-                lastUpdated: Date.now(),
-                profile: null
-            };
-            showUnauthenticatedUI();
+            logger.info(`User not authenticated, status: ${response.status}`);
+            handleUnauthenticatedState();
         }
     } catch (error) {
-        console.error('Error checking authentication status:', error);
+        console.error(`AUTH-CLIENT-ERROR: Error checking authentication status: ${error.message}`);
         // Default to unauthenticated UI on error
-        window.authState = {
-            isAuthenticated: false,
-            lastUpdated: Date.now(),
-            profile: null
-        };
-        showUnauthenticatedUI();
+        handleUnauthenticatedState();
     }
+}
+
+// Helper function to handle unauthenticated state
+function handleUnauthenticatedState() {
+    // Clear any stored auth state
+    localStorage.removeItem('authState');
+    
+    window.authState = {
+        isAuthenticated: false,
+        lastUpdated: Date.now(),
+        profile: null
+    };
+    showUnauthenticatedUI();
 }
 
 // Show UI for authenticated users
 function showAuthenticatedUI(profile) {
-    console.log('Showing authenticated UI for profile:', profile);
+    // Create logger for this function
+    const logger = {
+        info: (message) => console.log(`AUTH-UI: ${message}`),
+        debug: (message) => console.log(`AUTH-UI-DEBUG: ${message}`),
+        error: (message) => console.error(`AUTH-UI-ERROR: ${message}`)
+    };
+    
+    logger.info('Showing authenticated UI');
     
     // Set global authentication state
     window.authState = {
@@ -150,6 +188,7 @@ function showAuthenticatedUI(profile) {
     };
     
     const googleSignInButton = document.querySelector('.google-signin-button');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
     const userProfile = document.querySelector('.user-profile');
     const userName = document.querySelector('.user-name');
     const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
@@ -157,23 +196,29 @@ function showAuthenticatedUI(profile) {
     // Always hide sign-in button when authenticated
     if (googleSignInButton) {
         googleSignInButton.style.display = 'none';
-        console.log('Sign-in button hidden');
+        logger.debug('Sign-in button hidden');
+    }
+    
+    if (googleSignInBtn) {
+        googleSignInBtn.style.display = 'none';
+        logger.debug('Google sign-in button (by ID) hidden');
     }
     
     if (userProfile) {
         userProfile.style.display = 'flex';
-        console.log('User profile shown');
+        logger.debug('User profile shown');
     } else {
         // If the user-profile element doesn't exist, we need to create it
+        logger.debug('User profile element not found, creating it');
         createUserProfileElement(profile);
         return; // After creating the element, return as we'll rerun this function
     }
     
     if (userName && profile && profile.display_name) {
         userName.textContent = profile.display_name;
-        console.log('Username set to:', profile.display_name);
+        logger.debug(`Username set to: ${profile.display_name}`);
     } else {
-        console.log('Could not set username', { 
+        logger.debug('Could not set username', { 
             userNameExists: !!userName, 
             profileExists: !!profile, 
             displayNameExists: profile ? !!profile.display_name : false 
@@ -182,14 +227,14 @@ function showAuthenticatedUI(profile) {
         // IMPORTANT: First hide the Google sign-in button
         if (googleSignInBtn) {
             googleSignInBtn.style.display = 'none';
-            console.log('Google sign-in button hidden');
+            logger.debug('Google sign-in button hidden');
         } else {
-            console.warn('Google sign-in button not found');
+            logger.debug('Google sign-in button not found');
             // Try to find it by class if ID is not found
             const signInByClass = document.querySelector('.google-signin-button');
             if (signInByClass) {
                 signInByClass.style.display = 'none';
-                console.log('Google sign-in button hidden by class selector');
+                logger.debug('Google sign-in button hidden by class selector');
             }
         }
         
@@ -197,12 +242,12 @@ function showAuthenticatedUI(profile) {
         const authButtons = document.querySelector('.auth-buttons');
         if (authButtons) {
             authButtons.style.display = 'none';
-            console.log('Auth buttons hidden');
+            logger.debug('Auth buttons hidden');
         }
         
         if (userProfile) {
             userProfile.style.display = 'flex';
-            console.log('User profile shown');
+            logger.debug('User profile shown');
         } else {
             // If the user-profile element doesn't exist, we need to create it
             createUserProfileElement(profile);
@@ -233,7 +278,7 @@ function showAuthenticatedUI(profile) {
         
         // Set or update the profile picture src
         profilePic.src = profile.profile_picture;
-        console.log('Profile picture set:', profile.profile_picture);
+        logger.debug('Profile picture set:', profile.profile_picture);
     }
 
     // Setup profile dropdown
@@ -275,9 +320,9 @@ function showAuthenticatedUI(profile) {
                     localStorage.removeItem('authState');
                     window.location.href = '/auth/logout';
                 });
-                console.log('Logout link event listener added');
+                logger.debug('Logout link event listener added');
             } else {
-                console.log('Logout link not found');
+                logger.debug('Logout link not found');
             }
         }
     }
@@ -285,11 +330,18 @@ function showAuthenticatedUI(profile) {
 
 // Create user profile element if it doesn't exist
 function createUserProfileElement(profile) {
-    console.log('Creating user profile element for:', profile.display_name);
+    // Create logger for this function
+    const logger = {
+        info: (message) => console.log(`AUTH-UI: ${message}`),
+        debug: (message) => console.log(`AUTH-UI-DEBUG: ${message}`),
+        error: (message) => console.error(`AUTH-UI-ERROR: ${message}`)
+    };
+    
+    logger.debug(`Creating user profile element for: ${profile.display_name}`);
     
     const navRight = document.querySelector('.nav-right');
     if (!navRight) {
-        console.error('Nav right element not found');
+        logger.error('Nav right element not found');
         return;
     }
     
@@ -364,38 +416,33 @@ function createUserProfileElement(profile) {
 
 // Show UI for unauthenticated users
 function showUnauthenticatedUI() {
-    console.log('Showing unauthenticated UI, isAuthenticated:', window.authState.isAuthenticated);
+    // Create logger for this function
+    const logger = {
+        info: (message) => console.log(`AUTH-UI: ${message}`),
+        debug: (message) => console.log(`AUTH-UI-DEBUG: ${message}`),
+        error: (message) => console.error(`AUTH-UI-ERROR: ${message}`)
+    };
+    
+    logger.info('Showing unauthenticated UI');
     
     const googleSignInButton = document.querySelector('.google-signin-button');
     const userProfile = document.querySelector('.user-profile');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
 
-    // If user is authenticated, don't show sign-in button regardless of UI state
-    if (window.authState.isAuthenticated) {
-        console.log('User is authenticated, not showing sign-in button');
-        if (googleSignInButton) {
-            googleSignInButton.style.display = 'none';
-        }
-        return;
-    }
-    
-    // First check if user profile is visible - if it is, don't show sign-in button
-    if (userProfile && userProfile.style.display === 'flex') {
-        console.log('User profile is visible, not showing sign-in button');
-        if (googleSignInButton) {
-            googleSignInButton.style.display = 'none';
-        }
-        return;
-    }
-    
-    // Only show sign-in button if user is not authenticated and profile is not visible
-    if (googleSignInButton) {
-        googleSignInButton.style.display = 'inline-flex';
-        console.log('Sign-in button shown');
-    }
-    
-    // Hide user profile if it exists
+    // Always hide user profile when not authenticated
     if (userProfile) {
         userProfile.style.display = 'none';
-        console.log('User profile hidden');
+        logger.debug('User profile hidden');
+    }
+
+    // Show sign-in button when not authenticated
+    if (googleSignInButton) {
+        googleSignInButton.style.display = 'inline-flex';
+        logger.debug('Sign-in button shown');
+    }
+    
+    if (googleSignInBtn) {
+        googleSignInBtn.style.display = 'inline-flex';
+        logger.debug('Google sign-in button shown');
     }
 }

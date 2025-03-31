@@ -22,18 +22,19 @@ const PORT = process.env.PORT || 3001;
 
 // Trust proxy - required for secure cookies behind proxies
 // For Nginx behind Route53, we need to trust all proxies in the chain
-app.set('trust proxy', 'loopback, linklocal, uniquelocal');
+app.set("trust proxy", "loopback, linklocal, uniquelocal");
 
 // Enable CORS with credentials support
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production"
-      ? ["https://billcreator.store", "https://www.billcreator.store"]
-      : ["http://localhost:3001", "http://localhost:3000"],
+    origin:
+      process.env.NODE_ENV === "production"
+        ? ["https://billcreator.store", "https://www.billcreator.store"]
+        : ["http://localhost:3001", "http://localhost:3000"],
     credentials: true, // Allow cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["X-Session-ID"] // Expose custom headers
+    exposedHeaders: ["X-Session-ID"], // Expose custom headers
   })
 );
 
@@ -77,24 +78,24 @@ try {
     errorLog: (error) => {
       console.error(`SESSION STORE ERROR: ${error.message}`);
       if (error.stack) {
-        console.error(error.stack.split('\n').slice(0, 3).join('\n'));
+        console.error(error.stack.split("\n").slice(0, 3).join("\n"));
       }
-    }
+    },
   });
-  
+
   // Verify connection to session store
-  sessionStore.on('connect', () => {
+  sessionStore.on("connect", () => {
     console.log("SESSION: Successfully connected to PostgreSQL session store");
   });
-  
-  sessionStore.on('disconnect', () => {
+
+  sessionStore.on("disconnect", () => {
     console.error("SESSION: Disconnected from PostgreSQL session store");
   });
-  
-  sessionStore.on('error', (error) => {
+
+  sessionStore.on("error", (error) => {
     console.error(`SESSION: Store error - ${error.message}`);
   });
-  
+
   console.log("SESSION: Using PostgreSQL for session storage");
 } catch (err) {
   console.error(`SESSION: PostgreSQL store creation failed - ${err.message}`);
@@ -116,7 +117,7 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       sameSite: isProduction ? "none" : "lax", // Use 'none' in production for cross-site requests
       path: "/",
-      domain: isProduction ? ".billcreator.store" : undefined // Use domain in production
+      domain: isProduction ? ".billcreator.store" : undefined, // Use domain in production
     },
     name: "bills.session", // Custom session name
   })
@@ -125,20 +126,27 @@ app.use(
 // Add middleware to ensure X-Forwarded-Proto is properly handled
 app.use((req, res, next) => {
   const logger = {
-    debug: (message) => console.log(`PROXY-DEBUG: ${message}`)
+    debug: (message) => {
+      // Only log for main page requests, not assets
+      if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+        console.log(`PROXY-DEBUG: ${message}`);
+      }
+    },
   };
-  
-  // Log headers to help with debugging
-  logger.debug(`Protocol: ${req.protocol}, Original URL: ${req.originalUrl}`);
-  logger.debug(`X-Forwarded-Proto: ${req.get('X-Forwarded-Proto') || 'not set'}`);
-  logger.debug(`X-Forwarded-Host: ${req.get('X-Forwarded-Host') || 'not set'}`);
-  
+
+  // Log headers to help with debugging - only for main routes
+  if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+    logger.debug(`Protocol: ${req.protocol}, Original URL: ${req.originalUrl}`);
+    logger.debug(`X-Forwarded-Proto: ${req.get("X-Forwarded-Proto") || "not set"}`);
+    logger.debug(`X-Forwarded-Host: ${req.get("X-Forwarded-Host") || "not set"}`);
+  }
+
   // Force HTTPS redirect if accessed via HTTP in production
-  if (isProduction && req.headers['x-forwarded-proto'] !== 'https') {
-    logger.debug('Redirecting HTTP to HTTPS');
+  if (isProduction && req.headers["x-forwarded-proto"] !== "https") {
+    logger.debug("Redirecting HTTP to HTTPS");
     return res.redirect(`https://${req.headers.host}${req.url}`);
   }
-  
+
   next();
 });
 
@@ -146,35 +154,44 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Session debugging middleware
+// Debug middleware to log session information
 app.use((req, res, next) => {
   const logger = {
     info: (message) => console.log(`SESSION-DEBUG: ${message}`),
-    debug: (message) => console.log(`SESSION-DEBUG: ${message}`)
+    debug: (message) => {
+      // Only log for main routes, not for assets
+      if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+        console.log(`SESSION-DEBUG: ${message}`);
+      }
+    },
   };
 
-  // Log session ID and authentication status
-  if (req.sessionID) {
+  // Log session ID and authentication status only for main routes
+  if (req.sessionID && (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/'))) {
     logger.debug(`Request has sessionID: ${req.sessionID}`);
     logger.debug(`Is authenticated: ${req.isAuthenticated()}`);
-    
+
     // Check if session exists in store
     if (req.session) {
-      logger.debug(`Session exists with cookie: ${JSON.stringify(req.session.cookie)}`);
-      
+      logger.debug(
+        `Session exists with cookie: ${JSON.stringify(req.session.cookie)}`
+      );
+
       // Log passport data if it exists
       if (req.session.passport) {
-        logger.debug(`Session has passport data: ${JSON.stringify(req.session.passport)}`);
+        logger.debug(
+          `Session has passport data: ${JSON.stringify(req.session.passport)}`
+        );
       } else {
-        logger.debug('Session has no passport data');
+        logger.debug("Session has no passport data");
       }
     } else {
-      logger.debug('Session object does not exist');
+      logger.debug("Session object does not exist");
     }
-  } else {
-    logger.debug('No sessionID in request');
+  } else if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+    logger.debug("No sessionID in request");
   }
-  
+
   next();
 });
 
@@ -196,7 +213,7 @@ passport.deserializeUser(async (id, done) => {
   } catch (err) {
     console.error(`AUTH: Error deserializing user - ${err.message}`);
     if (err.stack) {
-      console.error(err.stack.split('\n').slice(0, 3).join('\n'));
+      console.error(err.stack.split("\n").slice(0, 3).join("\n"));
     }
     done(err, null);
   }
@@ -255,15 +272,15 @@ app.get(
     console.log("AUTH: Google callback received");
     // Log request headers for debugging
     const logger = {
-      debug: (message) => console.log(`AUTH-DEBUG: ${message}`)
+      debug: (message) => console.log(`AUTH-DEBUG: ${message}`),
     };
-    logger.debug(`Callback headers: ${JSON.stringify(req.headers['host'])}`);
+    logger.debug(`Callback headers: ${JSON.stringify(req.headers["host"])}`);
     logger.debug(`Callback protocol: ${req.protocol}`);
-    
+
     passport.authenticate("google", {
       failureRedirect: "/signin",
       failWithError: true,
-      keepSessionInfo: true // Keep session information across the authentication
+      keepSessionInfo: true, // Keep session information across the authentication
     })(req, res, next);
   },
   async (req, res) => {
@@ -276,9 +293,13 @@ app.get(
       }
 
       console.log(`AUTH: Processing login for user ${userId}`);
-      const existingSession = await sessionManager.findActiveSessionForUser(userId);
+      const existingSession = await sessionManager.findActiveSessionForUser(
+        userId
+      );
       if (existingSession) {
-        console.log(`AUTH: User ${userId} already has active session ${existingSession.sid}, reusing`);
+        console.log(
+          `AUTH: User ${userId} already has active session ${existingSession.sid}, reusing`
+        );
       }
 
       // Save the session explicitly with proper error handling
@@ -290,22 +311,24 @@ app.get(
           }
           return res.redirect("/signin?error=session_error");
         }
-        
-        console.log(`AUTH: Login successful for user ${userId}, session: ${req.sessionID}`);
-        
+
+        console.log(
+          `AUTH: Login successful for user ${userId}, session: ${req.sessionID}`
+        );
+
         // Set a custom header to help with debugging
-        res.setHeader('X-Session-ID', req.sessionID);
-        
+        res.setHeader("X-Session-ID", req.sessionID);
+
         // Set a session cookie manually as a backup
-        res.cookie('sessionBackup', req.sessionID, {
+        res.cookie("sessionBackup", req.sessionID, {
           httpOnly: true,
           secure: isProduction,
           maxAge: 24 * 60 * 60 * 1000,
-          sameSite: isProduction ? 'none' : 'lax',
-          path: '/',
-          domain: isProduction ? '.billcreator.store' : undefined
+          sameSite: isProduction ? "none" : "lax",
+          path: "/",
+          domain: isProduction ? ".billcreator.store" : undefined,
         });
-        
+
         res.redirect("/");
       });
     } catch (err) {
@@ -335,22 +358,26 @@ app.get("/api/session/status", async (req, res) => {
     if (!req.sessionID) {
       return res.json({ active: false, message: "No session ID found" });
     }
-    
+
     // Get session info from database
     const sessionInfo = await sessionManager.getSessionInfo(req.sessionID);
-    
+
     if (!sessionInfo) {
       return res.json({ active: false, message: "Session not found" });
     }
-    
+
     // Check if session is active and not expired
-    const isActive = sessionInfo.status === 'active' && new Date(sessionInfo.expire) > new Date();
-    
+    const isActive =
+      sessionInfo.status === "active" &&
+      new Date(sessionInfo.expire) > new Date();
+
     res.json({
       active: isActive,
       status: sessionInfo.status,
       expires: sessionInfo.expire,
-      message: isActive ? "Session is active" : "Session is inactive or expired"
+      message: isActive
+        ? "Session is active"
+        : "Session is inactive or expired",
     });
   } catch (err) {
     console.error(`API: Error checking session status - ${err.message}`);
@@ -720,8 +747,10 @@ async function startServer() {
     }, 60 * 60 * 1000); // Run every hour
 
     // Start the server
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`SERVER: Running on http://0.0.0.0:${PORT}`);
+    const HOST =
+      process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
+    app.listen(PORT, HOST, () => {
+      console.log(`SERVER: Running on http://${HOST}:${PORT}`);
     });
   } catch (err) {
     console.error(`SERVER: Failed to start - ${err.message}`);
