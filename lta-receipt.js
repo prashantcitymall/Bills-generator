@@ -109,6 +109,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle generate PDF button
     document.querySelector('.btn-download').addEventListener('click', async function() {
+        // Check if user is logged in
+        if (!window.authState || !window.authState.isAuthenticated) {
+            // User is not logged in, show alert
+            alert('Please sign in to download bills');
+            return;
+        }
+        
         const ticket = document.getElementById('previewTicket');
         
         try {

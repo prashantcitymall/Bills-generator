@@ -113,6 +113,13 @@ function validateForm() {
 
 // Download PDF function
 document.getElementById('downloadBtn').addEventListener('click', () => {
+    // Check if user is logged in
+    if (!window.authState || !window.authState.isAuthenticated) {
+        // User is not logged in, show alert
+        alert('Please sign in to download bills');
+        return;
+    }
+    
     if (!validateForm()) return;
 
     const element = document.querySelector('.preview-content');

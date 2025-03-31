@@ -638,6 +638,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add download PDF functionality
     window.downloadPDF = function() {
+        // Check if user is logged in
+        if (!window.authState || !window.authState.isAuthenticated) {
+            // User is not logged in, show alert
+            alert('Please sign in to download bills');
+            return;
+        }
+        
         // Update preview first
         updatePreview();
         
