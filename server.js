@@ -30,7 +30,11 @@ app.use(
     origin:
       process.env.NODE_ENV === "production"
         ? ["https://billcreator.store", "https://www.billcreator.store"]
-        : ["http://localhost:3001", "http://localhost:3000"],
+        : [
+            "http://localhost:3001",
+            "http://localhost:3000",
+            "https://7309-103-123-73-221.ngrok-free.app",
+          ],
     credentials: true, // Allow cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -51,7 +55,7 @@ console.log(
 // Set the callback URL based on environment
 const callbackURL = isProduction
   ? "https://billcreator.store/auth/google/callback"
-  : "http://localhost:3001/auth/google/callback";
+  : "https://7309-103-123-73-221.ngrok-free.app/auth/google/callback";
 
 console.log(`AUTH: Using callback URL ${callbackURL}`);
 
@@ -128,17 +132,29 @@ app.use((req, res, next) => {
   const logger = {
     debug: (message) => {
       // Only log for main page requests, not assets
-      if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+      if (
+        req.originalUrl === "/" ||
+        req.originalUrl.startsWith("/auth/") ||
+        req.originalUrl.startsWith("/api/")
+      ) {
         console.log(`PROXY-DEBUG: ${message}`);
       }
     },
   };
 
   // Log headers to help with debugging - only for main routes
-  if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+  if (
+    req.originalUrl === "/" ||
+    req.originalUrl.startsWith("/auth/") ||
+    req.originalUrl.startsWith("/api/")
+  ) {
     logger.debug(`Protocol: ${req.protocol}, Original URL: ${req.originalUrl}`);
-    logger.debug(`X-Forwarded-Proto: ${req.get("X-Forwarded-Proto") || "not set"}`);
-    logger.debug(`X-Forwarded-Host: ${req.get("X-Forwarded-Host") || "not set"}`);
+    logger.debug(
+      `X-Forwarded-Proto: ${req.get("X-Forwarded-Proto") || "not set"}`
+    );
+    logger.debug(
+      `X-Forwarded-Host: ${req.get("X-Forwarded-Host") || "not set"}`
+    );
   }
 
   // Force HTTPS redirect if accessed via HTTP in production
@@ -160,14 +176,23 @@ app.use((req, res, next) => {
     info: (message) => console.log(`SESSION-DEBUG: ${message}`),
     debug: (message) => {
       // Only log for main routes, not for assets
-      if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+      if (
+        req.originalUrl === "/" ||
+        req.originalUrl.startsWith("/auth/") ||
+        req.originalUrl.startsWith("/api/")
+      ) {
         console.log(`SESSION-DEBUG: ${message}`);
       }
     },
   };
 
   // Log session ID and authentication status only for main routes
-  if (req.sessionID && (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/'))) {
+  if (
+    req.sessionID &&
+    (req.originalUrl === "/" ||
+      req.originalUrl.startsWith("/auth/") ||
+      req.originalUrl.startsWith("/api/"))
+  ) {
     logger.debug(`Request has sessionID: ${req.sessionID}`);
     logger.debug(`Is authenticated: ${req.isAuthenticated()}`);
 
@@ -188,7 +213,11 @@ app.use((req, res, next) => {
     } else {
       logger.debug("Session object does not exist");
     }
-  } else if (req.originalUrl === '/' || req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/api/')) {
+  } else if (
+    req.originalUrl === "/" ||
+    req.originalUrl.startsWith("/auth/") ||
+    req.originalUrl.startsWith("/api/")
+  ) {
     logger.debug("No sessionID in request");
   }
 
@@ -223,9 +252,12 @@ passport.deserializeUser(async (id, done) => {
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID",
-      clientSecret:
-        process.env.GOOGLE_CLIENT_SECRET || "YOUR_GOOGLE_CLIENT_SECRET",
+      clientID: isProduction
+        ? process.env.GOOGLE_CLIENT_ID
+        : process.env.GOOGLE_CLIENT_ID_LOCAL,
+      clientSecret: isProduction
+        ? process.env.GOOGLE_CLIENT_SECRET
+        : process.env.GOOGLE_CLIENT_SECRET_LOCAL,
       callbackURL: callbackURL,
       proxy: true, // Add proxy support for production environments behind proxies
       // Add additional options to handle SSL/TLS issues
@@ -343,11 +375,38 @@ app.get(
 
 // API endpoint to get current user
 app.get("/api/user", (req, res) => {
+  // Create logger for this endpoint
+  const logger = {
+    info: (message) => console.log(`API: ${message}`),
+    debug: (message) => console.log(`API-DEBUG: ${message}`),
+    error: (message) => console.error(`API-ERROR: ${message}`),
+  };
+
   if (req.isAuthenticated()) {
-    console.log(`API: User ${req.user.id} is authenticated`);
+    logger.info(`User ${req.user.id} is authenticated`);
+    logger.debug(`User data: ${JSON.stringify(req.user)}`);
+
+    // Set cache control headers to prevent caching
+    res.set({
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+      "Surrogate-Control": "no-store",
+    });
+
+    // Return user data
     res.json({ user: req.user });
   } else {
-    console.log("API: User not authenticated");
+    logger.info("User not authenticated");
+
+    // Set cache control headers to prevent caching
+    res.set({
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+      "Surrogate-Control": "no-store",
+    });
+
     res.json({ user: null });
   }
 });

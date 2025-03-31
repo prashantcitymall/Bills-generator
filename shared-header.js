@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Create logger for initialization
+    const logger = {
+        info: (message) => console.log(`AUTH-INIT: ${message}`),
+        debug: (message) => console.log(`AUTH-INIT-DEBUG: ${message}`),
+        error: (message) => console.error(`AUTH-INIT-ERROR: ${message}`)
+    };
+    
     // Clear initialAuthCheckDone flag on page load to force a fresh check
-    localStorage.removeItem('initialAuthCheckDone');
+    sessionStorage.removeItem('initialAuthCheckDone');
     
     // Initialize authentication state
     window.authState = {
@@ -13,73 +20,99 @@ document.addEventListener('DOMContentLoaded', function() {
     const googleSignInButton = document.querySelector('.google-signin-button');
     const userProfile = document.querySelector('.user-profile');
     const googleSignInBtn = document.getElementById('googleSignInBtn');
+    const allSignInButtons = document.querySelectorAll('.google-signin-button, #googleSignInBtn, .auth-buttons .btn, .signin-btn, button[aria-label="Sign in"]');
     
-    // Initially hide both elements until we check status
-    if (googleSignInButton) googleSignInButton.style.display = 'none';
+    // Log which elements were found for debugging
+    logger.debug(`Initial elements found: 
+        googleSignInButton: ${!!googleSignInButton}
+        googleSignInBtn: ${!!googleSignInBtn}
+        allSignInButtons count: ${allSignInButtons ? allSignInButtons.length : 0}
+        userProfile: ${!!userProfile}
+    `);
+    
+    // Initially hide both until we know the auth state
     if (userProfile) userProfile.style.display = 'none';
-    if (googleSignInBtn) googleSignInBtn.style.display = 'none'; // Hide sign-in button initially
+    
+    // Hide all sign-in buttons initially until we know auth state
+    allSignInButtons.forEach(button => {
+        if (button) button.style.display = 'none';
+    });
+    
+    if (googleSignInButton) googleSignInButton.style.display = 'none';
+    if (googleSignInBtn) googleSignInBtn.style.display = 'none';
     
     // Dropdown functionality
     const dropdownBtn = document.querySelector('.dropdown-btn');
     const dropdownContent = document.querySelector('.dropdown-content');
 
     if (dropdownBtn && dropdownContent) {
+        // Variables to track hover state
+        let isHovering = false;
+        let hideTimeout;
+        
         // Show dropdown on hover
         const dropdown = document.querySelector('.dropdown');
         if (dropdown) {
             dropdown.addEventListener('mouseenter', function() {
+                isHovering = true;
+                // Clear any pending hide timeout
+                if (hideTimeout) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+                
                 dropdownContent.style.opacity = '1';
                 dropdownContent.style.visibility = 'visible';
                 dropdownContent.style.transform = 'translateY(0)';
             });
 
             dropdown.addEventListener('mouseleave', function() {
-                dropdownContent.style.opacity = '0';
-                dropdownContent.style.visibility = 'hidden';
-                dropdownContent.style.transform = 'translateY(10px)';
+                isHovering = false;
+                
+                // Use a timeout to delay hiding the dropdown
+                hideTimeout = setTimeout(() => {
+                    if (!isHovering) {
+                        dropdownContent.style.opacity = '0';
+                        dropdownContent.style.visibility = 'hidden';
+                        dropdownContent.style.transform = 'translateY(10px)';
+                    }
+                }, 200); // 200ms delay
+            });
+            
+            // Also add events to the dropdown content itself
+            dropdownContent.addEventListener('mouseenter', function() {
+                isHovering = true;
+                if (hideTimeout) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+            });
+            
+            dropdownContent.addEventListener('mouseleave', function() {
+                isHovering = false;
+                hideTimeout = setTimeout(() => {
+                    if (!isHovering) {
+                        dropdownContent.style.opacity = '0';
+                        dropdownContent.style.visibility = 'hidden';
+                        dropdownContent.style.transform = 'translateY(10px)';
+                    }
+                }, 200); // 200ms delay
             });
         }
     }
-
-    // Check if we have a stored auth state first
-    const storedAuthState = localStorage.getItem('authState');
-    if (storedAuthState) {
-        try {
-            const authData = JSON.parse(storedAuthState);
-            if (authData && authData.isAuthenticated && authData.profile) {
-                console.log('Found stored auth state, showing authenticated UI');
-                // Show authenticated UI immediately with stored data
-                // This prevents flashing of login/signup during page reload
-                window.authState = {
-                    isAuthenticated: true,
-                    lastUpdated: Date.now(),
-                    profile: authData.profile
-                };
-                showAuthenticatedUI(authData.profile);
-            } else {
-                // If stored data doesn't indicate authentication, show unauthenticated UI
-                showUnauthenticatedUI();
-            }
-        } catch (e) {
-            console.error('Error parsing stored auth state:', e);
-            // Clear invalid stored state
-            localStorage.removeItem('authState');
-            showUnauthenticatedUI();
-        }
-    } else {
-        // No stored auth state, show unauthenticated UI initially
-        showUnauthenticatedUI();
-    }
-
-    // Run auth check immediately
-    checkAuthStatus();
     
-    // Set up periodic auth check every 5 minutes
-    setInterval(checkAuthStatus, 5 * 60 * 1000);
+    logger.info('Initializing authentication state');
+    
+    // Force a fresh authentication check on every page load
+    // This is critical for cross-domain authentication
+    checkAuthStatus(true);
+    
+    // Set up periodic auth check every 2 minutes
+    setInterval(() => checkAuthStatus(false), 2 * 60 * 1000);
 });
 
 // Function to check authentication status
-async function checkAuthStatus() {
+async function checkAuthStatus(forceCheck = false) {
     try {
         // Create logger for this function
         const logger = {
@@ -88,50 +121,52 @@ async function checkAuthStatus() {
             error: (message) => console.error(`AUTH-CLIENT-ERROR: ${message}`)
         };
         
-        logger.info('Checking authentication status');
+        logger.info(`Checking authentication status${forceCheck ? ' (forced)' : ''}`);
         
-        // Force a fresh check on page load to ensure UI is correct
-        const forceCheck = !localStorage.getItem('initialAuthCheckDone');
-        
-        // Check if we've already checked auth status recently (within last 30 seconds)
-        // This prevents redundant API calls during page load
-        const lastChecked = localStorage.getItem('authLastChecked');
-        if (lastChecked && !forceCheck) {
-            const timeSinceLastCheck = Date.now() - parseInt(lastChecked);
-            if (timeSinceLastCheck < 30000) { // 30 seconds
-                logger.debug(`Auth check skipped - last checked ${timeSinceLastCheck}ms ago`);
-                
-                // If we have a cached auth state, use it
-                const cachedAuthState = localStorage.getItem('authState');
-                if (cachedAuthState) {
-                    try {
-                        const authState = JSON.parse(cachedAuthState);
-                        if (authState.isAuthenticated && authState.profile) {
-                            logger.debug('Using cached authenticated state');
-                            window.authState = {
-                                isAuthenticated: true,
-                                lastUpdated: Date.now(),
-                                profile: authState.profile
-                            };
-                            showAuthenticatedUI(authState.profile);
-                            return;
-                        } else {
-                            logger.debug('Using cached unauthenticated state');
-                            handleUnauthenticatedState();
-                            return;
+        // Skip cache check if force check is requested
+        if (!forceCheck) {
+            // Check if we've already checked auth status recently (within last 30 seconds)
+            // This prevents redundant API calls during page load
+            const lastChecked = sessionStorage.getItem('authLastChecked');
+            if (lastChecked) {
+                const timeSinceLastCheck = Date.now() - parseInt(lastChecked);
+                if (timeSinceLastCheck < 30000) { // 30 seconds
+                    logger.debug(`Auth check skipped - last checked ${timeSinceLastCheck}ms ago`);
+                    
+                    // If we have a cached auth state, use it
+                    const cachedAuthState = sessionStorage.getItem('authState');
+                    if (cachedAuthState) {
+                        try {
+                            const authState = JSON.parse(cachedAuthState);
+                            if (authState.isAuthenticated && authState.profile) {
+                                logger.debug('Using cached authenticated state');
+                                window.authState = {
+                                    isAuthenticated: true,
+                                    lastUpdated: Date.now(),
+                                    profile: authState.profile
+                                };
+                                showAuthenticatedUI(authState.profile);
+                                return;
+                            } else {
+                                logger.debug('Using cached unauthenticated state');
+                                handleUnauthenticatedState();
+                                return;
+                            }
+                        } catch (e) {
+                            logger.error(`Error parsing cached auth state: ${e.message}`);
+                            // Continue with fresh check
                         }
-                    } catch (e) {
-                        logger.error(`Error parsing cached auth state: ${e.message}`);
-                        // Continue with fresh check
                     }
+                    return; // Skip check if we checked recently
                 }
-                return; // Skip check if we checked recently
             }
+        } else {
+            logger.debug('Forced check - bypassing cache');
         }
         
         // Update last checked timestamp
-        localStorage.setItem('authLastChecked', Date.now().toString());
-        localStorage.setItem('initialAuthCheckDone', 'true');
+        sessionStorage.setItem('authLastChecked', Date.now().toString());
+        sessionStorage.setItem('initialAuthCheckDone', 'true');
         
         // Fetch user profile data with proper credentials
         const response = await fetch('/api/user', {
@@ -139,7 +174,8 @@ async function checkAuthStatus() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include' // Critical for sending cookies with the request
+            credentials: 'include', // Critical for sending cookies with the request
+            cache: 'no-store' // Prevent caching of authentication status
         });
 
         logger.debug(`Auth status response: ${response.status}`);
@@ -148,7 +184,7 @@ async function checkAuthStatus() {
             try {
                 // User is authenticated
                 const data = await response.json();
-                logger.debug('Profile data received');
+                logger.debug(`Profile data received: ${JSON.stringify(data)}`);
                 
                 if (!data || !data.user) {
                     logger.info('No user data in response, treating as unauthenticated');
@@ -156,21 +192,23 @@ async function checkAuthStatus() {
                     return;
                 }
                 
-                logger.info(`User authenticated: ${data.user.display_name || data.user.email}`);
+                logger.info(`User authenticated: ${data.user.display_name || data.user.email || data.user.id}`);
                 
-                // Store authentication state in localStorage
-                localStorage.setItem('authState', JSON.stringify({
+                // Store authentication state in sessionStorage (not localStorage to avoid cross-tab issues)
+                sessionStorage.setItem('authState', JSON.stringify({
                     isAuthenticated: true,
-                    profile: data.user || data.profile,
+                    profile: data.user,
                     lastChecked: new Date().toISOString()
                 }));
                 
                 window.authState = {
                     isAuthenticated: true,
                     lastUpdated: Date.now(),
-                    profile: data.user || data.profile
+                    profile: data.user
                 };
-                showAuthenticatedUI(data.user || data.profile);
+                
+                // Show authenticated UI immediately
+                showAuthenticatedUI(data.user);
                 
                 // If on signin or signup page, redirect to home
                 const currentPath = window.location.pathname;
@@ -196,7 +234,7 @@ async function checkAuthStatus() {
 // Helper function to handle unauthenticated state
 function handleUnauthenticatedState() {
     // Clear any stored auth state
-    localStorage.removeItem('authState');
+    sessionStorage.removeItem('authState');
     
     window.authState = {
         isAuthenticated: false,
@@ -227,9 +265,20 @@ function showAuthenticatedUI(profile) {
     // Find all possible sign-in button elements using multiple selectors
     const googleSignInButton = document.querySelector('.google-signin-button');
     const googleSignInBtn = document.getElementById('googleSignInBtn');
-    const allSignInButtons = document.querySelectorAll('.google-signin-button, #googleSignInBtn, .auth-buttons .btn');
+    const allSignInButtons = document.querySelectorAll('.google-signin-button, #googleSignInBtn, .auth-buttons .btn, .signin-btn, button[aria-label="Sign in"]');
     const userProfile = document.querySelector('.user-profile');
     const userName = document.querySelector('.user-name');
+    const profileDropdownBtn = document.querySelector('.profile-btn');
+    
+    // Log which elements were found for debugging
+    logger.debug(`Found elements: 
+        googleSignInButton: ${!!googleSignInButton}
+        googleSignInBtn: ${!!googleSignInBtn}
+        allSignInButtons count: ${allSignInButtons ? allSignInButtons.length : 0}
+        userProfile: ${!!userProfile}
+        userName: ${!!userName}
+        profileDropdownBtn: ${!!profileDropdownBtn}
+    `);
     
     // Hide all sign-in buttons
     allSignInButtons.forEach(button => {
@@ -257,6 +306,13 @@ function showAuthenticatedUI(profile) {
         logger.debug('Auth buttons container hidden');
     }
     
+    // Hide any elements with the sign-in class
+    const signInElements = document.querySelectorAll('.signin-btn, .sign-in, .login-btn, .google-signin');
+    signInElements.forEach(el => {
+        el.style.display = 'none';
+        logger.debug(`Hidden additional sign-in element: ${el.className}`);
+    });
+    
     // Show user profile
     if (userProfile) {
         userProfile.style.display = 'flex';
@@ -280,7 +336,7 @@ function showAuthenticatedUI(profile) {
     }
 
     // Add profile picture if available
-    if (profile && profile.profile_picture) {
+    if (profile && profile.profile_picture && profileDropdownBtn) {
         // Check if profile picture element already exists
         let profilePic = profileDropdownBtn.querySelector('.profile-pic');
         
@@ -316,23 +372,62 @@ function showAuthenticatedUI(profile) {
             const newProfileDropdown = profileDropdown.cloneNode(true);
             profileDropdown.parentNode.replaceChild(newProfileDropdown, profileDropdown);
             
+            // Add a variable to track if we're hovering over the dropdown
+            let isHovering = false;
+            let hideTimeout;
+            
             // Add event listeners to the new element
             newProfileDropdown.addEventListener('mouseenter', function() {
+                isHovering = true;
+                // Clear any pending hide timeout
+                if (hideTimeout) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+                
                 const dropdownContent = newProfileDropdown.querySelector('.profile-dropdown-content');
                 if (dropdownContent) {
                     dropdownContent.style.opacity = '1';
                     dropdownContent.style.visibility = 'visible';
                     dropdownContent.style.transform = 'translateY(0)';
+                    
+                    // Also add mouseenter/mouseleave to the dropdown content itself
+                    dropdownContent.addEventListener('mouseenter', function() {
+                        isHovering = true;
+                        if (hideTimeout) {
+                            clearTimeout(hideTimeout);
+                            hideTimeout = null;
+                        }
+                    });
+                    
+                    dropdownContent.addEventListener('mouseleave', function() {
+                        isHovering = false;
+                        hideTimeout = setTimeout(() => {
+                            if (!isHovering) {
+                                dropdownContent.style.opacity = '0';
+                                dropdownContent.style.visibility = 'hidden';
+                                dropdownContent.style.transform = 'translateY(10px)';
+                            }
+                        }, 200); // 200ms delay before hiding
+                    });
                 }
             });
 
             newProfileDropdown.addEventListener('mouseleave', function() {
-                const dropdownContent = newProfileDropdown.querySelector('.profile-dropdown-content');
-                if (dropdownContent) {
-                    dropdownContent.style.opacity = '0';
-                    dropdownContent.style.visibility = 'hidden';
-                    dropdownContent.style.transform = 'translateY(10px)';
-                }
+                isHovering = false;
+                
+                // Use a timeout to delay hiding the dropdown
+                // This gives time for the mouse to enter the dropdown content
+                hideTimeout = setTimeout(() => {
+                    if (!isHovering) {
+                        const dropdownContent = newProfileDropdown.querySelector('.profile-dropdown-content');
+                        if (dropdownContent) {
+                            dropdownContent.style.opacity = '0';
+                            dropdownContent.style.visibility = 'hidden';
+                            dropdownContent.style.transform = 'translateY(10px)';
+                        }
+                    }
+                }, 200); // 200ms delay before hiding
             });
             
             // Re-add click event to logout link
@@ -341,7 +436,7 @@ function showAuthenticatedUI(profile) {
                 logoutLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     // Clear stored auth state before logout
-                    localStorage.removeItem('authState');
+                    sessionStorage.removeItem('authState');
                     window.location.href = '/auth/logout';
                 });
                 logger.debug('Logout link event listener added');
@@ -424,12 +519,12 @@ function createUserProfileElement(profile) {
     }
     
     // Add event listener for logout link
-    const logoutLink = dropdownContent.querySelector('.logout-link');
+    const logoutLink = profileMenu.querySelector('.logout-link');
     if (logoutLink) {
         logoutLink.addEventListener('click', function(e) {
             e.preventDefault();
             // Clear stored auth state before logout
-            localStorage.removeItem('authState');
+            sessionStorage.removeItem('authState');
             window.location.href = '/auth/logout';
         });
     }
@@ -454,12 +549,30 @@ function showUnauthenticatedUI() {
     const userProfile = document.querySelector('.user-profile');
     const googleSignInBtn = document.getElementById('googleSignInBtn');
     const authButtons = document.querySelector('.auth-buttons');
+    const allSignInButtons = document.querySelectorAll('.google-signin-button, #googleSignInBtn, .auth-buttons .btn, .signin-btn, button[aria-label="Sign in"]');
+
+    // Log which elements were found for debugging
+    logger.debug(`Found elements for unauthenticated UI: 
+        googleSignInButton: ${!!googleSignInButton}
+        googleSignInBtn: ${!!googleSignInBtn}
+        allSignInButtons count: ${allSignInButtons ? allSignInButtons.length : 0}
+        userProfile: ${!!userProfile}
+        authButtons: ${!!authButtons}
+    `);
 
     // Always hide user profile when not authenticated
     if (userProfile) {
         userProfile.style.display = 'none';
         logger.debug('User profile hidden');
     }
+
+    // Show all sign-in buttons
+    allSignInButtons.forEach(button => {
+        if (button) {
+            button.style.display = 'inline-flex';
+            logger.debug(`Shown sign-in button: ${button.id || button.className}`);
+        }
+    });
 
     // Show sign-in button when not authenticated
     if (googleSignInButton) {
