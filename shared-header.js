@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Clear initialAuthCheckDone flag on page load to force a fresh check
+    localStorage.removeItem('initialAuthCheckDone');
+    
+    // Initialize authentication state
+    window.authState = {
+        isAuthenticated: false,
+        lastUpdated: Date.now(),
+        profile: null
+    };
+    
     // Get authentication elements
     const googleSignInButton = document.querySelector('.google-signin-button');
     const userProfile = document.querySelector('.user-profile');
@@ -8,13 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (googleSignInButton) googleSignInButton.style.display = 'none';
     if (userProfile) userProfile.style.display = 'none';
     if (googleSignInBtn) googleSignInBtn.style.display = 'none'; // Hide sign-in button initially
-    
-    // Track authentication state globally with a timestamp to prevent race conditions
-    window.authState = {
-        isAuthenticated: false,
-        lastUpdated: Date.now(),
-        profile: null
-    };
     
     // Dropdown functionality
     const dropdownBtn = document.querySelector('.dropdown-btn');
@@ -68,8 +71,11 @@ document.addEventListener('DOMContentLoaded', function() {
         showUnauthenticatedUI();
     }
 
-    // Always check current auth status with server
+    // Run auth check immediately
     checkAuthStatus();
+    
+    // Set up periodic auth check every 5 minutes
+    setInterval(checkAuthStatus, 5 * 60 * 1000);
 });
 
 // Function to check authentication status
@@ -84,19 +90,48 @@ async function checkAuthStatus() {
         
         logger.info('Checking authentication status');
         
+        // Force a fresh check on page load to ensure UI is correct
+        const forceCheck = !localStorage.getItem('initialAuthCheckDone');
+        
         // Check if we've already checked auth status recently (within last 30 seconds)
         // This prevents redundant API calls during page load
         const lastChecked = localStorage.getItem('authLastChecked');
-        if (lastChecked) {
+        if (lastChecked && !forceCheck) {
             const timeSinceLastCheck = Date.now() - parseInt(lastChecked);
             if (timeSinceLastCheck < 30000) { // 30 seconds
                 logger.debug(`Auth check skipped - last checked ${timeSinceLastCheck}ms ago`);
+                
+                // If we have a cached auth state, use it
+                const cachedAuthState = localStorage.getItem('authState');
+                if (cachedAuthState) {
+                    try {
+                        const authState = JSON.parse(cachedAuthState);
+                        if (authState.isAuthenticated && authState.profile) {
+                            logger.debug('Using cached authenticated state');
+                            window.authState = {
+                                isAuthenticated: true,
+                                lastUpdated: Date.now(),
+                                profile: authState.profile
+                            };
+                            showAuthenticatedUI(authState.profile);
+                            return;
+                        } else {
+                            logger.debug('Using cached unauthenticated state');
+                            handleUnauthenticatedState();
+                            return;
+                        }
+                    } catch (e) {
+                        logger.error(`Error parsing cached auth state: ${e.message}`);
+                        // Continue with fresh check
+                    }
+                }
                 return; // Skip check if we checked recently
             }
         }
         
         // Update last checked timestamp
         localStorage.setItem('authLastChecked', Date.now().toString());
+        localStorage.setItem('initialAuthCheckDone', 'true');
         
         // Fetch user profile data with proper credentials
         const response = await fetch('/api/user', {
@@ -120,6 +155,8 @@ async function checkAuthStatus() {
                     handleUnauthenticatedState();
                     return;
                 }
+                
+                logger.info(`User authenticated: ${data.user.display_name || data.user.email}`);
                 
                 // Store authentication state in localStorage
                 localStorage.setItem('authState', JSON.stringify({
@@ -178,7 +215,7 @@ function showAuthenticatedUI(profile) {
         error: (message) => console.error(`AUTH-UI-ERROR: ${message}`)
     };
     
-    logger.info('Showing authenticated UI');
+    logger.info(`Showing authenticated UI for ${profile?.display_name || profile?.email || 'user'}`);
     
     // Set global authentication state
     window.authState = {
@@ -187,23 +224,40 @@ function showAuthenticatedUI(profile) {
         profile: profile
     };
     
+    // Find all possible sign-in button elements using multiple selectors
     const googleSignInButton = document.querySelector('.google-signin-button');
     const googleSignInBtn = document.getElementById('googleSignInBtn');
+    const allSignInButtons = document.querySelectorAll('.google-signin-button, #googleSignInBtn, .auth-buttons .btn');
     const userProfile = document.querySelector('.user-profile');
     const userName = document.querySelector('.user-name');
-    const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
-
-    // Always hide sign-in button when authenticated
+    
+    // Hide all sign-in buttons
+    allSignInButtons.forEach(button => {
+        if (button) {
+            button.style.display = 'none';
+            logger.debug(`Hidden sign-in button: ${button.id || button.className}`);
+        }
+    });
+    
+    // Also try specific buttons
     if (googleSignInButton) {
         googleSignInButton.style.display = 'none';
-        logger.debug('Sign-in button hidden');
+        logger.debug('Sign-in button hidden by class');
     }
     
     if (googleSignInBtn) {
         googleSignInBtn.style.display = 'none';
-        logger.debug('Google sign-in button (by ID) hidden');
+        logger.debug('Google sign-in button hidden by ID');
     }
     
+    // Find auth buttons container and hide it
+    const authButtons = document.querySelector('.auth-buttons');
+    if (authButtons) {
+        authButtons.style.display = 'none';
+        logger.debug('Auth buttons container hidden');
+    }
+    
+    // Show user profile
     if (userProfile) {
         userProfile.style.display = 'flex';
         logger.debug('User profile shown');
@@ -214,45 +268,15 @@ function showAuthenticatedUI(profile) {
         return; // After creating the element, return as we'll rerun this function
     }
     
-    if (userName && profile && profile.display_name) {
-        userName.textContent = profile.display_name;
-        logger.debug(`Username set to: ${profile.display_name}`);
+    if (userName && profile && (profile.display_name || profile.email)) {
+        userName.textContent = profile.display_name || profile.email;
+        logger.debug(`Username set to: ${profile.display_name || profile.email}`);
     } else {
         logger.debug('Could not set username', { 
             userNameExists: !!userName, 
             profileExists: !!profile, 
-            displayNameExists: profile ? !!profile.display_name : false 
+            displayNameExists: profile ? !!(profile.display_name || profile.email) : false 
         });
-        
-        // IMPORTANT: First hide the Google sign-in button
-        if (googleSignInBtn) {
-            googleSignInBtn.style.display = 'none';
-            logger.debug('Google sign-in button hidden');
-        } else {
-            logger.debug('Google sign-in button not found');
-            // Try to find it by class if ID is not found
-            const signInByClass = document.querySelector('.google-signin-button');
-            if (signInByClass) {
-                signInByClass.style.display = 'none';
-                logger.debug('Google sign-in button hidden by class selector');
-            }
-        }
-        
-        // Find auth buttons container
-        const authButtons = document.querySelector('.auth-buttons');
-        if (authButtons) {
-            authButtons.style.display = 'none';
-            logger.debug('Auth buttons hidden');
-        }
-        
-        if (userProfile) {
-            userProfile.style.display = 'flex';
-            logger.debug('User profile shown');
-        } else {
-            // If the user-profile element doesn't exist, we need to create it
-            createUserProfileElement(profile);
-            return; // Exit after creating the element
-        }
     }
 
     // Add profile picture if available
@@ -425,9 +449,11 @@ function showUnauthenticatedUI() {
     
     logger.info('Showing unauthenticated UI');
     
+    // Find all elements
     const googleSignInButton = document.querySelector('.google-signin-button');
     const userProfile = document.querySelector('.user-profile');
     const googleSignInBtn = document.getElementById('googleSignInBtn');
+    const authButtons = document.querySelector('.auth-buttons');
 
     // Always hide user profile when not authenticated
     if (userProfile) {
@@ -438,11 +464,17 @@ function showUnauthenticatedUI() {
     // Show sign-in button when not authenticated
     if (googleSignInButton) {
         googleSignInButton.style.display = 'inline-flex';
-        logger.debug('Sign-in button shown');
+        logger.debug('Sign-in button shown by class');
     }
     
     if (googleSignInBtn) {
         googleSignInBtn.style.display = 'inline-flex';
-        logger.debug('Google sign-in button shown');
+        logger.debug('Google sign-in button shown by ID');
+    }
+    
+    // Show auth buttons container if it exists
+    if (authButtons) {
+        authButtons.style.display = 'flex';
+        logger.debug('Auth buttons container shown');
     }
 }
