@@ -72,6 +72,14 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* Form heading style */
+.input-section h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
 .preview-section {
     background: rgba(255, 255, 255, 0.95);
     padding: 2rem;

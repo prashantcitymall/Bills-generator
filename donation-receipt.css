@@ -6,7 +6,7 @@
 .donation-container {
     padding: 2rem;
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 80px auto 0;
 }
 
 
@@ -15,7 +15,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    margin-top: 2rem;
 }
 
 .form-section, .preview-section {
@@ -23,6 +22,14 @@
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Form heading style */
+.form-section h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
 }
 
 h2 {

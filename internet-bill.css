@@ -23,6 +23,14 @@ h1 {
     text-align: center;
 }
 
+/* Form heading style */
+.input-section h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
 .highlight {
     color: #ff6b6b;
     text-decoration: underline;

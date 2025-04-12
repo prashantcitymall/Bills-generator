@@ -1,18 +1,25 @@
 .rent-receipt-container {
     display: flex;
     gap: 2rem;
-    padding: 104px 2rem 2rem 2rem;
+    padding: 2rem;
     max-width: 1600px;
-    margin: 0 auto;
+    margin: 80px auto 0;
 }
 
 .form-container {
     flex: 1;
-    margin-top: 52px;
     background: white;
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form heading style */
+.form-container h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
 }
 
 .preview-container {
