@@ -1,0 +1,89 @@
+/* Custom header styling for LTA receipt to match the design in the photo */
+.header .dropdown-btn {
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    background: rgba(10, 25, 47, 0.4);
+}
+
+.header .dropdown-btn i {
+    background: none;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: #FFFFFF;
+    color: #FFFFFF;
+}
+
+.header .nav-link {
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+}
+
+.header .nav-link i {
+    background: none;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: #FFFFFF;
+    color: #FFFFFF;
+}
+
+.header .google-signin-button {
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+}
+
+/* Logo styling - matching homepage gradient effect */
+.header .logo-title {
+    background: linear-gradient(45deg, #FFFFFF 30%, #A4ABFF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #FFFFFF; /* Fallback */
+}
+
+.header .logo-subtitle {
+    color: var(--text-secondary);
+}
+
+.header .logo-icon {
+    color: var(--primary-color);
+    filter: drop-shadow(0 0 12px rgba(82, 109, 255, 0.5));
+}
+
+/* Profile tab styling - targeting all possible profile elements */
+.header .profile-dropdown-btn,
+.header .user-dropdown-btn,
+.header .profile-btn,
+.header button[class*="profile"],
+.header button[class*="user"] {
+    border: 1px solid #FFFFFF !important;
+    color: #FFFFFF !important;
+    background: rgba(10, 25, 47, 0.4) !important;
+}
+
+/* Target all spans inside profile buttons */
+.header .profile-dropdown-btn span,
+.header .user-dropdown-btn span,
+.header .profile-btn span,
+.header button[class*="profile"] span,
+.header button[class*="user"] span,
+.header .user-greeting,
+.header .user-name {
+    color: #FFFFFF !important;
+    background: none !important;
+    background-clip: unset !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Target all icons inside profile buttons */
+.header .profile-dropdown-btn i,
+.header .user-dropdown-btn i,
+.header .profile-btn i,
+.header button[class*="profile"] i,
+.header button[class*="user"] i {
+    color: #FFFFFF !important;
+    background: none !important;
+    background-clip: unset !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
