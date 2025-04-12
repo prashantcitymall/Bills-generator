@@ -65,6 +65,17 @@ async function testConnection() {
 
 // User-related database operations
 const users = {
+  // Find user by Google ID
+  async findByGoogleId(googleId) {
+    try {
+      logger.info(`Finding user by Google ID: ${googleId}`);
+      return await db.oneOrNone("SELECT * FROM users WHERE google_id = $1", [googleId]);
+    } catch (error) {
+      logger.error(`Error finding user by Google ID ${googleId}:`, error);
+      throw error;
+    }
+  },
+
   // Find or create a user based on Google profile
   async findOrCreate(profile) {
     logger.info(`Looking up user with Google ID: ${profile.id}`);

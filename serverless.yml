@@ -1,0 +1,62 @@
+service: bills-generator
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-north-1 # Changed to match your current region
+  environment:
+    NODE_ENV: ${opt:stage, 'production'} # Use 'production' for deployment
+    # Use environment variables instead of hardcoding secrets
+    GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
+    GOOGLE_CLIENT_SECRET: ${env:GOOGLE_CLIENT_SECRET}
+    GOOGLE_CLIENT_ID_LOCAL: ${env:GOOGLE_CLIENT_ID_LOCAL}
+    GOOGLE_CLIENT_SECRET_LOCAL: ${env:GOOGLE_CLIENT_SECRET_LOCAL}
+    SESSION_SECRET: ${env:SESSION_SECRET}
+    DATABASE_URL: ${env:DATABASE_URL}
+  # Commenting out VPC config until we have valid IDs
+  # vpc:
+  #   securityGroupIds:
+  #     - sg-xxxxxxxxxxxxxxxxx # Replace with your security group ID
+  #   subnetIds:
+  #     - subnet-xxxxxxxxxxxxxxxxx # Replace with your subnet ID
+  #     - subnet-xxxxxxxxxxxxxxxxx # Replace with your subnet ID
+
+functions:
+  app:
+    handler: index.handler
+    events:
+      - httpApi: '*'
+    timeout: 30 # Increase timeout to handle longer requests
+    memorySize: 1024 # Adjust based on your application needs
+
+custom:
+  serverless-offline:
+    httpPort: 3001
+    lambdaPort: 3002
+    host: 0.0.0.0  # This makes the server accessible from other devices
+    stage: dev     # Set stage to 'dev' for local development
+
+package:
+  patterns:
+    - '!node_modules/.cache/**'
+    - '!.git/**'
+    - '!.github/**'
+    - '!.vscode/**'
+    - '!test/**'
+    - '!.env'
+    - '!ecosystem.config.cjs'
+    - '!*.sh'
+    - 'app.js'
+    - 'index.js'
+    - 'db/**'
+    - 'public/**'
+    - '*.html'
+    - '*.css'
+    - '*.js'
+    - 'assets/**'
+    - 'images/**'
+    - 'utils/**'
+    - 'middleware/**'
+
+plugins:
+  - serverless-offline

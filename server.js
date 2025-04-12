@@ -30,11 +30,7 @@ app.use(
     origin:
       process.env.NODE_ENV === "production"
         ? ["https://billcreator.store", "https://www.billcreator.store"]
-        : [
-            "http://localhost:3001",
-            "http://localhost:3000",
-            process.env.NGROK_HOSTNAME,
-          ],
+        : ["http://localhost:3001", process.env.NGROK_HOSTNAME],
     credentials: true, // Allow cookies to be sent with requests
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
