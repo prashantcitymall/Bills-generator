@@ -16,13 +16,12 @@ body {
 
 .page-container {
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 92px auto 0;
     padding: 0 1rem;
     display: flex;
     gap: 2rem;
     position: relative;
     z-index: 1;
-    margin-top: 10vh;
 }
 
 .container {
@@ -38,8 +37,15 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-width: 800px;
-    margin-top: 1rem;
     position: relative;
+}
+
+/* Form heading style */
+.form-container h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
 }
 
 .preview-container {

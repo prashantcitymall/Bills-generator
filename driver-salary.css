@@ -7,9 +7,8 @@ body {
     display: flex;
     gap: 2rem;
     padding: 2rem;
-    padding-top: 104px;
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 80px auto 0;
     position: relative;
     right: 0;
 }
@@ -18,10 +17,17 @@ body {
     flex: 1.2;
     background: white;
     padding: 2rem;
-    margin-top: 52px;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 85%;
+}
+
+/* Form heading style */
+.form-container h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
 }
 
 .preview-container {

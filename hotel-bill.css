@@ -183,7 +183,7 @@ body {
 
 .container {
     max-width: 1400px;
-    margin: 20px auto 0;
+    margin: 80px auto 0;
     padding: 2rem;
     position: relative;
     z-index: 1;
@@ -231,6 +231,14 @@ body {
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Form heading style */
+.input-section h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
 }
 
 .preview-section {
