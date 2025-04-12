@@ -1,0 +1,166 @@
+/* Signature Drawing Styles */
+.signature-container {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.signature-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.signature-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.signature-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.signature-canvas-container {
+    position: relative;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#signatureCanvas {
+    width: 100%;
+    height: 150px;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.signature-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.signature-size-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.signature-size-control label {
+    font-size: 14px;
+    color: #666;
+}
+
+.signature-size-control input {
+    width: 100px;
+}
+
+.signature-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.signature-btn {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.signature-btn-primary {
+    background-color: #ff5a5f;
+    color: white;
+}
+
+.signature-btn-primary:hover {
+    background-color: #ff4146;
+}
+
+.signature-btn-secondary {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.signature-btn-secondary:hover {
+    background-color: #e9e9e9;
+}
+
+.signature-preview {
+    position: relative;
+    margin-top: 15px;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.signature-preview-image {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+.signature-position-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.position-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.position-control-group label {
+    font-size: 14px;
+    color: #666;
+}
+
+.position-control-group input {
+    width: 80px;
+    padding: 5px;
+}
+
+/* Draggable signature in preview */
+.draggable-signature {
+    position: absolute;
+    cursor: move;
+    z-index: 100;
+    border: 1px dashed transparent;
+}
+
+.draggable-signature:hover {
+    border: 1px dashed #ff5a5f;
+}
+
+.draggable-signature img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Resize handle */
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #ff5a5f;
+    border-radius: 50%;
+    bottom: -5px;
+    right: -5px;
+    cursor: nwse-resize;
+}

@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadBtn = document.getElementById('downloadBtn');
     const clearBtn = document.getElementById('clearBtn');
     
+    // Initialize signature functionality
+    const sejdaSignature = new SejdaSignature();
+    
     // Load saved form data from localStorage
     loadFormData();
     
@@ -97,16 +100,91 @@ document.addEventListener('DOMContentLoaded', function() {
         // User is logged in, proceed with validation and download
         if (!validateForm()) return;
 
+        // Get the original preview element
         const element = document.getElementById('billPreview');
+        
+        // Fix signature position before generating PDF
+        const signatureElement = document.querySelector('.draggable-signature');
+        let originalStyles = {};
+        
+        if (signatureElement) {
+            // Store original styles
+            originalStyles = {
+                left: signatureElement.style.left,
+                top: signatureElement.style.top,
+                transform: signatureElement.style.transform,
+                width: signatureElement.style.width
+            };
+            
+            // Hide all controls
+            const handles = signatureElement.querySelectorAll('.resize-handle');
+            handles.forEach(handle => handle.style.display = 'none');
+            
+            const toolbar = signatureElement.querySelector('.signature-toolbar');
+            if (toolbar) toolbar.style.display = 'none';
+            
+            // Make sure the signature is visible
+            signatureElement.style.opacity = '1';
+            signatureElement.style.visibility = 'visible';
+        }
+        
+        // Generate a temporary element for PDF generation
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = element.innerHTML;
+        tempDiv.style.width = '210mm'; // A4 width
+        tempDiv.style.padding = '10mm';
+        tempDiv.style.backgroundColor = '#ffffff';
+        document.body.appendChild(tempDiv);
+        
+        // Fix text color to ensure no blue text in the PDF
+        const allTextElements = tempDiv.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, td, th, div');
+        allTextElements.forEach(el => {
+            if (!el.style.color) {
+                el.style.color = '#333'; // Set default text color to dark gray
+            }
+        });
+        
+        // If there's a signature, copy it properly
+        if (signatureElement) {
+            const signatureImg = signatureElement.querySelector('img');
+            if (signatureImg) {
+                const signatureRect = signatureElement.getBoundingClientRect();
+                const previewRect = element.getBoundingClientRect();
+                
+                // Create a new signature image with exact position
+                const newSignature = document.createElement('img');
+                newSignature.src = signatureImg.src;
+                newSignature.style.position = 'absolute';
+                newSignature.style.left = `${signatureRect.left - previewRect.left}px`;
+                newSignature.style.top = `${signatureRect.top - previewRect.top}px`;
+                newSignature.style.width = `${signatureRect.width}px`;
+                newSignature.style.height = 'auto';
+                newSignature.style.transform = signatureElement.style.transform;
+                newSignature.style.transformOrigin = 'center center';
+                newSignature.style.zIndex = '100';
+                newSignature.style.maxWidth = 'none'; // Prevent cropping
+                newSignature.style.objectFit = 'contain'; // Ensure the image is not cropped
+                
+                // Remove any existing signature in the temp div
+                const oldSig = tempDiv.querySelector('.draggable-signature');
+                if (oldSig) oldSig.remove();
+                
+                // Add the new signature
+                tempDiv.appendChild(newSignature);
+            }
+        }
+        
         const opt = {
-            margin: 1,
+            margin: 0,
             filename: `general-bill-${document.getElementById('invoiceNumber').value || 'invoice'}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
+            image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
                 scale: 2,
                 useCORS: true,
                 allowTaint: true,
-                scrollY: 0
+                scrollY: 0,
+                backgroundColor: '#ffffff',
+                logging: true
             },
             jsPDF: { 
                 unit: 'mm',
@@ -115,8 +193,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        // New Promise-based usage:
-        html2pdf().set(opt).from(element).save();
+        // Generate PDF from the temp element
+        html2pdf()
+            .from(tempDiv)
+            .set(opt)
+            .save()
+            .then(() => {
+                console.log('PDF generated successfully');
+                
+                // Clean up
+                document.body.removeChild(tempDiv);
+                
+                // Restore original signature styles
+                if (signatureElement && Object.keys(originalStyles).length > 0) {
+                    // Show controls again
+                    const handles = signatureElement.querySelectorAll('.resize-handle');
+                    handles.forEach(handle => handle.style.display = 'block');
+                    
+                    const toolbar = signatureElement.querySelector('.signature-toolbar');
+                    if (toolbar) toolbar.style.display = 'flex';
+                }
+            })
+            .catch(error => {
+                console.error('Error generating PDF:', error);
+                document.body.removeChild(tempDiv);
+            });
     });
 
     // Clear form function
@@ -196,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Update preview HTML
         preview.innerHTML = `
-            <div style="font-family: Arial, sans-serif;">
+            <div style="font-family: Arial, sans-serif; position: relative;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <h2 style="color: #333; font-size: 1.5rem; margin-bottom: 5px;">${shopName}</h2>
                     <p style="color: #666; margin: 0; font-size: 0.9rem;">${shopAddress}</p>

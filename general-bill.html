@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="general-bill.css">
     <link rel="stylesheet" href="preview-notification.css">
     <link rel="stylesheet" href="voice-button.css">
+    <link rel="stylesheet" href="sejda-signature.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -210,6 +211,17 @@
                     <p class="file-note">This will be used as name of the generated PDF file</p>
                 </div>
             </div>
+            
+            <!-- Signature Section -->
+            <div class="form-group">
+                <h3>Signature</h3>
+                <div class="signature-container">
+                    <p>Add your signature to the bill</p>
+                    <button type="button" id="addSignatureBtn" class="signature-add-btn">
+                        <i class="fas fa-signature"></i> Add Signature
+                    </button>
+                </div>
+            </div>
 
             <div class="form-actions">
                 <button id="downloadBtn" class="primary-button">
@@ -234,6 +246,7 @@
 
     <script src="shared-header.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="sejda-signature.js"></script>
     <script src="general-bill.js"></script>
     <script src="voice-recognition.js"></script>
 </body>
