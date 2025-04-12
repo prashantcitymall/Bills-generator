@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="rent-receipt.css">
     <link rel="stylesheet" href="preview-notification.css">
     <link rel="stylesheet" href="voice-button.css">
+    <link rel="stylesheet" href="premium-input.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -210,7 +211,7 @@
                         <h2>Rent Receipt</h2>
                     </div>
                     <div class="receipt-content">
-                        <p class="main-text">This is to certify that Mr./Ms. <span id="previewName">___________</span> have paid <span class="rupee">₹</span> <span id="previewAmount">_____</span> to landlord, Mr/Ms <span id="previewLandlord"></span> towards Rent of the period <span id="previewPeriod">23 Feb 2025 to 23 Feb 2025</span> (Acknowledged receipt enclosed)</p>
+                        <p class="main-text">This is to certify that Mr./Ms. <span id="previewName" class="premium-input">___________</span> have paid <span class="rupee">₹</span> <span id="previewAmount" class="premium-input">_____</span> to landlord, Mr/Ms <span id="previewLandlord" class="premium-input"></span> towards Rent of the period <span id="previewPeriod" class="premium-input">23 Feb 2025 to 23 Feb 2025</span> (Acknowledged receipt enclosed)</p>
                         
                         <p class="declaration">Please reimburse the above amount. I further declare that what is stated above is correct and true.</p>
                         
@@ -227,10 +228,10 @@
                                 
                                 <div class="detail-row values-row">
                                     <div class="left-col">
-                                        <span class="value" id="previewAddress"></span>
+                                        <span class="value premium-input" id="previewAddress"></span>
                                     </div>
                                     <div class="right-col">
-                                        <span class="value" id="previewPayment"></span>
+                                        <span class="value premium-input" id="previewPayment"></span>
                                     </div>
                                 </div>
                                 <div class="divider-line"></div>
@@ -246,22 +247,22 @@
 
                                 <div class="detail-row values-row">
                                     <div class="left-col">
-                                        <span class="value" id="previewLandlord"></span>
+                                        <span class="value premium-input" id="previewLandlord"></span>
                                     </div>
                                     <div class="right-col">
-                                        <span class="value" id="previewEmployee"></span>
+                                        <span class="value premium-input" id="previewEmployee"></span>
                                     </div>
                                 </div>
 
                                 <div class="detail-row">
                                     <div class="left-col">
-                                        <span style="font-weight: bold;">Pan No.:</span><span id="previewPan" style="display: inline-block; margin-left: 1px;"></span>
+                                        <span style="font-weight: bold;">Pan No.:</span><span id="previewPan" class="premium-input" style="display: inline-block; margin-left: 1px;"></span>
                                     </div>
                                 </div>
 
                                 <div class="detail-row">
                                     <div class="left-col">
-                                        <span style="font-weight: bold;">Period:</span><span id="previewDates" style="display: inline-block; margin-left: -20px;">23 Feb 2025 - 23 Feb 2025</span>
+                                        <span style="font-weight: bold;">Period:</span><span id="previewDates" class="premium-input" style="display: inline-block; margin-left: -20px;">23 Feb 2025 - 23 Feb 2025</span>
                                     </div>
                                 </div>
                             </div>

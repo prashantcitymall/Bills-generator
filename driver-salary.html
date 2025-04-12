@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="driver-salary.css">
     <link rel="stylesheet" href="preview-notification.css">
     <link rel="stylesheet" href="voice-button.css">
+    <link rel="stylesheet" href="premium-input.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -204,15 +205,15 @@
             <div class="preview-frame">
                 <div class="receipt-preview">
                     <div class="receipt-date">
-                        <span>Date: <span id="previewPrintDate">25 Feb 2025</span></span>
+                        <span>Date: <span id="previewPrintDate" class="premium-input">25 Feb 2025</span></span>
                     </div>
                     
                     <h2>Driver Salary Receipt</h2>
 
                     <div class="receipt-content">
                         <p class="main-text">
-                            This is to certify that Mr./Ms. <span id="previewDriverName" class="no-underline"></span> have paid <span id="previewAmount" class="no-underline"></span> to driver Mr/Ms <span id="previewEmployeeName" class="no-underline"></span> 
-                            towards salary of the period <span id="previewPeriod" class="no-underline">25 Feb 2025 to 25 Feb 2025</span> (Acknowledged receipt enclosed). I also declare that the driver is exclusively utilized for official purpose only
+                            This is to certify that Mr./Ms. <span id="previewDriverName" class="premium-input"></span> have paid <span id="previewAmount" class="premium-input"></span> to driver Mr/Ms <span id="previewEmployeeName" class="premium-input"></span> 
+                            towards salary of the period <span id="previewPeriod" class="premium-input">25 Feb 2025 to 25 Feb 2025</span> (Acknowledged receipt enclosed). I also declare that the driver is exclusively utilized for official purpose only
                         </p>
                         
                         <p class="additional-text">
@@ -223,21 +224,21 @@
                             <div class="detail-row">
                                 <div class="left-col">
                                     <span class="label">Vehicle Number:</span>
-                                    <span id="previewVehicleNumber" class="value no-underline"></span>
+                                    <span id="previewVehicleNumber" class="value premium-input"></span>
                                 </div>
                                 <div class="right-col">
                                     <span class="label">Period:</span>
-                                    <span>25 Feb 2025 - 25 Feb 2025</span>
+                                    <span id="previewPeriodDates" class="premium-input">25 Feb 2025 - 25 Feb 2025</span>
                                 </div>
                             </div>
                             <div class="detail-row">
                                 <div class="left-col">
                                     <span class="label">Driver Name:</span>
-                                    <span id="previewDriverNameValue" class="value no-underline"></span>
+                                    <span id="previewDriverNameValue" class="value premium-input"></span>
                                 </div>
                                 <div class="right-col">
                                     <span class="label">Employee Name:</span>
-                                    <span id="previewEmployeeNameValue" class="value no-underline"></span>
+                                    <span id="previewEmployeeNameValue" class="value premium-input"></span>
                                 </div>
                             </div>
                         </div>
