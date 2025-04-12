@@ -440,9 +440,9 @@ function updatePreview() {
     const receiptHTML = `
         <div class="receipt-preview" style="color: #000;">
             <div class="restaurant-details">
-                <div class="restaurant-name">${restaurantName}</div>
-                <div class="restaurant-address">${restaurantAddress}</div>
-                ${document.getElementById('gstNo').checked ? `<div class="restaurant-gst">GST No: ${document.getElementById('gstNumber').value || ''}</div>` : ''}
+                <div class="restaurant-name premium-input">${restaurantName}</div>
+                <div class="restaurant-address premium-input" style="display: block; margin-top: 5px; color: #666;">${restaurantAddress}</div>
+                ${document.getElementById('gstNo').checked ? `<div class="restaurant-gst">GST No: <span class="premium-input">${document.getElementById('gstNumber').value || ''}</span></div>` : ''}
             </div>
             <div class="receipt-line"></div>
             <div style="text-align: center; margin: 10px 0;">RECEIPT</div>
@@ -450,12 +450,12 @@ function updatePreview() {
             
             <div class="receipt-header">
                 <div class="header-row">
-                    <div>Name: ${customerName || '-'}</div>
-                    <div>Table: ${tableNo}</div>
+                    <div><span class="label">Name:</span> <span class="premium-input">${customerName || '-'}</span></div>
+                    <div><span class="label">Table:</span> <span class="premium-input">${tableNo}</span></div>
                 </div>
                 <div class="header-row">
-                    <div>Invoice No: ${invoiceNo}</div>
-                    <div>Date: ${billDate}</div>
+                    <div><span class="label">Invoice No:</span> <span class="premium-input">${invoiceNo}</span></div>
+                    <div><span class="label">Date:</span> <span class="premium-input">${billDate}</span></div>
                 </div>
             </div>
             
@@ -491,31 +491,31 @@ function updatePreview() {
             
             <div class="summary-section">
                 <div class="summary-row">
-                    <span>Sub-Total:</span>
-                    <span>₹ ${subTotal.toFixed(0)}</span>
+                    <span class="label">Sub-Total:</span>
+                    <span class="premium-input">₹ ${subTotal.toFixed(0)}</span>
                 </div>
                 <div class="summary-row">
-                    <span>CGST: ${taxPercentage/2}%</span>
-                    <span>₹ ${(taxAmount/2).toFixed(0)}</span>
+                    <span class="label">CGST: ${taxPercentage/2}%</span>
+                    <span class="premium-input">₹ ${(taxAmount/2).toFixed(0)}</span>
                 </div>
                 <div class="summary-row">
-                    <span>SGST: ${taxPercentage/2}%</span>
-                    <span>₹ ${(taxAmount/2).toFixed(0)}</span>
+                    <span class="label">SGST: ${taxPercentage/2}%</span>
+                    <span class="premium-input">₹ ${(taxAmount/2).toFixed(0)}</span>
                 </div>
             </div>
             
             <div class="receipt-line"></div>
             
             <div class="summary-row">
-                <span>Mode: ${document.getElementById('paymentMethod').value || '-'}</span>
-                <span>Total: ₹ ${total.toFixed(0)}</span>
+                <span class="label">Mode:</span> <span class="premium-input">${document.getElementById('paymentMethod').value || '-'}</span>
+                <span class="label">Total:</span> <span class="premium-input">₹ ${total.toFixed(0)}</span>
             </div>
             
             <div class="receipt-line"></div>
             
             <div class="receipt-footer">
                 <div class="nature-text">**SAVE PAPER SAVE NATURE !!</div>
-                <div class="time-text">Time: ${billTime}</div>
+                <div class="time-text"><span class="label">Time:</span> <span class="premium-input">${billTime}</span></div>
             </div>
             
             <div class="receipt-line"></div>
@@ -527,4 +527,27 @@ function updatePreview() {
     `;
 
     previewContainer.innerHTML = receiptHTML;
+    
+    // Apply premium input styling to filled elements
+    applyPremiumInputStyling();
+}
+
+// Helper function to toggle premium input class based on content
+function togglePremiumInputClass(element) {
+    if (!element) return;
+    
+    const content = element.textContent;
+    if (content && content.trim() !== '' && content !== '-') {
+        element.classList.add('filled');
+    } else {
+        element.classList.remove('filled');
+    }
+}
+
+// Apply premium input styling to all premium input elements
+function applyPremiumInputStyling() {
+    const premiumInputs = document.querySelectorAll('.premium-input');
+    premiumInputs.forEach(element => {
+        togglePremiumInputClass(element);
+    });
 }

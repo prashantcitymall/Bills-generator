@@ -1,0 +1,65 @@
+/* Premium Input Styling for Rent Receipt Preview */
+.premium-input {
+    position: relative;
+    display: inline-block;
+    color: #000; /* Pure black for premium input text */
+    font-weight: 600; /* Bolder text for more emphasis */
+}
+
+.premium-input::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background-color: #020b17; /* Dark Navy from color scheme */
+    transition: transform 0.3s ease;
+}
+
+.premium-input.filled::after {
+    transform: scaleX(0);
+}
+
+/* Special handling for landlord name - no underline */
+#previewLandlord::after {
+    display: none;
+}
+
+/* Adjust specific preview elements */
+#previewName, #previewAmount, #previewLandlord, 
+#previewAddress, #previewEmployee, #previewPan, 
+#previewPayment, #previewDates, #previewPeriod {
+    padding: 0 2px;
+    min-width: 50px;
+    display: inline-block;
+}
+
+/* Ensure proper spacing */
+.receipt-content .main-text {
+    line-height: 2;
+}
+
+.detail-row .value {
+    min-height: 20px;
+}
+
+/* Make labels/headings lighter compared to preview text */
+.receipt-details .label,
+.detail-row .left-col span[style*="font-weight: bold"],
+.detail-row .right-col span[style*="font-weight: bold"],
+.details-grid .label,
+.detail-row .label {
+    color: #666; /* Medium gray from color scheme for labels */
+    font-weight: normal;
+}
+
+/* Regular text in paragraphs */
+.receipt-content p {
+    color: #555555;
+}
+
+/* Additional emphasis for preview elements */
+.premium-input.filled {
+    text-shadow: 0 0 0.5px #000; /* Subtle text shadow for filled inputs */
+}

@@ -260,42 +260,69 @@ function updatePreview() {
     const employeeName = document.getElementById('employeeName').value || '';
     document.getElementById('previewName').textContent = employeeName;
     document.getElementById('previewEmployee').textContent = employeeName;
+    togglePremiumInputClass('previewName', employeeName);
+    togglePremiumInputClass('previewEmployee', employeeName);
 
     // Update amount
     const amount = document.getElementById('rentAmount').value || '';
     const currency = document.getElementById('currency').value === 'INR' ? '₹' : 
                     document.getElementById('currency').value === 'USD' ? '$' : '€';
-    document.getElementById('previewAmount').textContent = amount ? `${currency}${amount}` : '';
+    const formattedAmount = amount ? `${currency}${amount}` : '';
+    document.getElementById('previewAmount').textContent = formattedAmount;
+    togglePremiumInputClass('previewAmount', formattedAmount);
 
     // Update address
     const address = document.getElementById('rentAddress').value || '';
     document.getElementById('previewAddress').textContent = address;
+    togglePremiumInputClass('previewAddress', address);
 
     // Update landlord name in all locations
     const landlordName = document.getElementById('landlordName').value || '';
     const landlordElements = document.querySelectorAll('#previewLandlord');
     landlordElements.forEach(element => {
         element.textContent = landlordName;
+        if (element.classList.contains('premium-input')) {
+            togglePremiumInputClass(element.id, landlordName);
+        }
     });
 
     // Update Pan No.
     const panNo = document.getElementById('panNo').value || '';
     document.getElementById('previewPan').textContent = panNo;
+    togglePremiumInputClass('previewPan', panNo);
 
     // Update payment method
     const paymentMethod = document.getElementById('paymentMethod');
     const paymentText = paymentMethod.value ? paymentMethod.options[paymentMethod.selectedIndex].text : '';
     document.getElementById('previewPayment').textContent = paymentText;
+    togglePremiumInputClass('previewPayment', paymentText);
 
     // Update dates
     const fromDate = formatDate(document.getElementById('fromDate').value);
     const toDate = formatDate(document.getElementById('toDate').value);
-    document.getElementById('previewDates').textContent = `${fromDate} - ${toDate}`;
-    document.getElementById('previewPeriod').textContent = `${fromDate} to ${toDate}`;
+    const dateRange = `${fromDate} - ${toDate}`;
+    const periodText = `${fromDate} to ${toDate}`;
+    document.getElementById('previewDates').textContent = dateRange;
+    document.getElementById('previewPeriod').textContent = periodText;
+    togglePremiumInputClass('previewDates', dateRange);
+    togglePremiumInputClass('previewPeriod', periodText);
     
     // Update the date in the header of the preview
     const currentDate = formatDate(document.getElementById('printDate').value);
     document.getElementById('previewDate').textContent = currentDate;
+    togglePremiumInputClass('previewDate', currentDate);
+}
+
+// Helper function to toggle premium input class based on content
+function togglePremiumInputClass(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    if (value && value.trim() !== '') {
+        element.classList.add('filled');
+    } else {
+        element.classList.remove('filled');
+    }
 }
 
 function formatDate(dateString) {

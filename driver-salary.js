@@ -249,36 +249,60 @@ function updatePreview() {
     // Update print date
     const printDate = formatDate(document.getElementById('printDate').value);
     document.getElementById('previewPrintDate').textContent = printDate;
+    togglePremiumInputClass('previewPrintDate', printDate);
     
     // Update driver name
     const driverName = document.getElementById('driverName').value || '________________';
     document.getElementById('previewDriverName').textContent = driverName;
     document.getElementById('previewDriverNameValue').textContent = driverName;
+    togglePremiumInputClass('previewDriverName', driverName);
+    togglePremiumInputClass('previewDriverNameValue', driverName);
 
     // Update employee name
     const employeeName = document.getElementById('employeeName').value || '________________';
     document.getElementById('previewEmployeeName').textContent = employeeName;
     document.getElementById('previewEmployeeNameValue').textContent = employeeName;
+    togglePremiumInputClass('previewEmployeeName', employeeName);
+    togglePremiumInputClass('previewEmployeeNameValue', employeeName);
 
     // Update vehicle number
     const vehicleNumber = document.getElementById('vehicleNumber').value || '________________';
     document.getElementById('previewVehicleNumber').textContent = vehicleNumber;
+    togglePremiumInputClass('previewVehicleNumber', vehicleNumber);
 
     // Update salary amount
     const currency = document.getElementById('currency').value === 'INR' ? '₹' : 
                     document.getElementById('currency').value === 'USD' ? '$' : '€';
     const amount = document.getElementById('salaryAmount').value || '________';
-    document.getElementById('previewAmount').textContent = `${currency}${amount}`;
+    const formattedAmount = `${currency}${amount}`;
+    document.getElementById('previewAmount').textContent = formattedAmount;
+    togglePremiumInputClass('previewAmount', formattedAmount);
 
     // Update dates
     const fromDate = formatDate(document.getElementById('fromDate').value);
     const toDate = formatDate(document.getElementById('toDate').value);
-    document.getElementById('previewPeriod').textContent = `${fromDate} to ${toDate}`;
-    document.getElementById('previewPeriodDates').textContent = `${fromDate} - ${toDate}`;
+    const periodText = `${fromDate} to ${toDate}`;
+    const dateRange = `${fromDate} - ${toDate}`;
+    document.getElementById('previewPeriod').textContent = periodText;
+    document.getElementById('previewPeriodDates').textContent = dateRange;
+    togglePremiumInputClass('previewPeriod', periodText);
+    togglePremiumInputClass('previewPeriodDates', dateRange);
 
     // Update declaration
     const declaration = document.getElementById('declaration').value;
     document.getElementById('previewDeclaration').textContent = declaration || 'I also declare that the driver is exclusively utilized for official purpose only';
+}
+
+// Helper function to toggle premium input class based on content
+function togglePremiumInputClass(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    if (value && value.trim() !== '' && value !== '________________' && value !== '________') {
+        element.classList.add('filled');
+    } else {
+        element.classList.remove('filled');
+    }
 }
 
 function formatDate(dateString) {
