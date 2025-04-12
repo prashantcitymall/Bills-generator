@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="preview-notification.css">
     <link rel="stylesheet" href="voice-button.css">
     <link rel="stylesheet" href="premium-input.css">
+    <link rel="stylesheet" href="sejda-signature.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Pacifico&family=Satisfy&family=Great+Vibes&family=Sacramento&family=Allura&family=Tangerine&family=Yellowtail&family=Kaushan+Script&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="background-design">
@@ -148,22 +150,11 @@
 
             <div class="form-section signature-details">
                 <h3>Signature Details</h3>
-                <div class="signature-options">
-                    <label class="radio-label">
-                        <input type="radio" name="signatureType" value="url" checked>
-                        URL
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="signatureType" value="upload">
-                        Upload From Device
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="signatureType" value="gallery">
-                        Gallery
-                    </label>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="signatureUrl" placeholder="Please enter a valid image URL">
+                <div class="signature-container">
+                    <button type="button" id="addSignatureBtn" class="signature-add-btn">
+                        <i class="fas fa-signature"></i> Add Signature
+                    </button>
+                    <p class="signature-help-text">Click to add, draw, or upload your signature</p>
                 </div>
                 <div class="form-group">
                     <label class="checkbox-label">
@@ -203,7 +194,7 @@
         <div class="preview-container">
             <h2>Live Preview</h2>
             <div class="preview-frame">
-                <div class="receipt-preview">
+                <div class="receipt-preview" id="driverSalaryPreview">
                     <div class="receipt-date">
                         <span>Date: <span id="previewPrintDate" class="premium-input">25 Feb 2025</span></span>
                     </div>
@@ -261,6 +252,7 @@
 
     <script src="shared-header.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="sejda-signature.js"></script>
     <script src="driver-salary.js"></script>
     <script src="voice-recognition.js"></script>
 </body>

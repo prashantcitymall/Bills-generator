@@ -204,35 +204,37 @@ th {
 
 .primary-button,
 .secondary-button {
-    padding: 0.75rem 1.5rem;
+    padding: 0.96rem 1.6rem; /* 20% smaller padding */
     border: none;
-    border-radius: 6px;
-    font-size: 1rem;
+    border-radius: 0.8rem; /* Consistent with driver salary form */
+    font-size: 1.12rem; /* 20% smaller font */
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 0.4rem; /* 20% smaller gap */
     transition: all 0.3s ease;
 }
 
 .primary-button {
-    background: var(--primary-color);
-    color: var(--background);
+    background: #ff5a5f; /* Coral color from memory */
+    color: white;
 }
 
 .primary-button:hover {
-    background: #52ccb2;
-    transform: translateY(-1px);
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .secondary-button {
-    background: rgba(100, 255, 218, 0.1);
-    color: var(--primary-color);
+    background: white;
+    color: #333;
+    border: 1px solid #e0e0e0;
 }
 
 .secondary-button:hover {
-    background: rgba(100, 255, 218, 0.2);
-    transform: translateY(-1px);
+    background-color: #f5f5f5;
 }
 
 .bill-preview {
@@ -272,5 +274,11 @@ th {
     
     .form-group {
         margin-top: 34.5px;
+    }
+    
+    .primary-button,
+    .secondary-button {
+        padding: 0.8rem 1.28rem; /* 20% smaller padding for mobile */
+        font-size: 0.96rem; /* 20% smaller font for mobile */
     }
 }

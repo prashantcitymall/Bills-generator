@@ -157,28 +157,41 @@
 .btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
+    justify-content: center;
+    gap: 0.4rem; /* 20% smaller gap */
+    padding: 0.96rem 1.6rem; /* 20% smaller padding */
+    border-radius: 0.8rem; /* Consistent with driver salary form */
+    font-size: 1.12rem; /* 20% smaller font */
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .btn i {
-    font-size: 0.9rem;
+    font-size: 1.12rem; /* 20% smaller icon */
+    transform: scale(1) !important;
 }
 
 .btn-primary {
-    background: #ff6b6b;
+    background: #ff5a5f; /* Coral color from memory */
     color: white;
     border: none;
 }
 
+.btn-primary:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .btn-secondary {
-    background: #f8f9fa;
-    color: #666;
-    border: 1px solid #e1e1e1;
+    background: white;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background-color: #f5f5f5;
 }
 
 .credit-note {

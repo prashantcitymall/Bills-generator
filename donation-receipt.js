@@ -268,18 +268,80 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (!validateForm()) return;
-
+        
+        // Get the original preview element
         const element = document.getElementById('receiptPreview');
         
+        // Fix signature position before generating PDF
+        const signatureElement = document.querySelector('.draggable-signature');
+        let originalStyles = {};
+        
+        if (signatureElement) {
+            // Store original styles
+            originalStyles = {
+                left: signatureElement.style.left,
+                top: signatureElement.style.top,
+                transform: signatureElement.style.transform,
+                width: signatureElement.style.width
+            };
+            
+            // Hide all controls
+            const handles = signatureElement.querySelectorAll('.resize-handle');
+            handles.forEach(handle => handle.style.display = 'none');
+            
+            const toolbar = signatureElement.querySelector('.signature-toolbar');
+            if (toolbar) toolbar.style.display = 'none';
+            
+            // Make sure the signature is visible
+            signatureElement.style.opacity = '1';
+            signatureElement.style.visibility = 'visible';
+        }
+        
+        // Set PDF options
         const opt = {
-            margin: 1,
+            margin: 0,
             filename: `donation-receipt-${document.getElementById('receiptNo').value || 'receipt'}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
+            image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
                 scale: 2,
                 useCORS: true,
                 allowTaint: true,
-                scrollY: 0
+                scrollY: 0,
+                backgroundColor: '#ffffff',
+                logging: true, // Enable logging for debugging
+                onclone: function(clonedDoc) {
+                    // Make sure the signature is visible in the cloned document
+                    const clonedSignature = clonedDoc.querySelector('.draggable-signature');
+                    if (clonedSignature) {
+                        // Hide all controls
+                        const handles = clonedSignature.querySelectorAll('.resize-handle');
+                        handles.forEach(handle => handle.style.display = 'none');
+                        
+                        const toolbar = clonedSignature.querySelector('.signature-toolbar');
+                        if (toolbar) toolbar.style.display = 'none';
+                        
+                        // Make sure the signature is visible
+                        clonedSignature.style.opacity = '1';
+                        clonedSignature.style.visibility = 'visible';
+                        clonedSignature.style.background = 'transparent';
+                        
+                        // Force the signature to be visible
+                        const signatureImg = clonedSignature.querySelector('img');
+                        if (signatureImg) {
+                            signatureImg.style.display = 'block';
+                            signatureImg.style.visibility = 'visible';
+                            signatureImg.style.opacity = '1';
+                        }
+                    }
+                    
+                    // Make sure all content is visible
+                    const previewContent = clonedDoc.querySelector('.receipt-content');
+                    if (previewContent) {
+                        previewContent.style.display = 'block';
+                        previewContent.style.visibility = 'visible';
+                        previewContent.style.backgroundColor = '#ffffff';
+                    }
+                }
             },
             jsPDF: { 
                 unit: 'mm',
@@ -288,8 +350,68 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        // Generate and save PDF
-        html2pdf().set(opt).from(element).save();
+        // Generate and save PDF using a simpler approach
+        // First make a copy of the element
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = element.innerHTML;
+        tempDiv.style.width = '210mm'; // A4 width
+        tempDiv.style.padding = '10mm';
+        tempDiv.style.backgroundColor = '#ffffff';
+        document.body.appendChild(tempDiv);
+        
+        // If there's a signature, copy it properly
+        if (signatureElement) {
+            const signatureImg = signatureElement.querySelector('img');
+            if (signatureImg) {
+                const signatureRect = signatureElement.getBoundingClientRect();
+                const previewRect = element.getBoundingClientRect();
+                
+                // Create a new signature image with exact position
+                const newSignature = document.createElement('img');
+                newSignature.src = signatureImg.src;
+                newSignature.style.position = 'absolute';
+                newSignature.style.left = `${signatureRect.left - previewRect.left}px`;
+                newSignature.style.top = `${signatureRect.top - previewRect.top}px`;
+                newSignature.style.width = `${signatureRect.width}px`;
+                newSignature.style.height = 'auto';
+                newSignature.style.transform = signatureElement.style.transform;
+                newSignature.style.transformOrigin = 'center center';
+                newSignature.style.zIndex = '100';
+                
+                // Remove any existing signature in the temp div
+                const oldSig = tempDiv.querySelector('.draggable-signature');
+                if (oldSig) oldSig.remove();
+                
+                // Add the new signature
+                tempDiv.appendChild(newSignature);
+            }
+        }
+        
+        // Generate PDF from the temp element
+        html2pdf()
+            .from(tempDiv)
+            .set(opt)
+            .save()
+            .then(() => {
+                console.log('PDF generated successfully');
+                
+                // Clean up
+                document.body.removeChild(tempDiv);
+                
+                // Restore original signature styles
+                if (signatureElement && Object.keys(originalStyles).length > 0) {
+                    // Show controls again
+                    const handles = signatureElement.querySelectorAll('.resize-handle');
+                    handles.forEach(handle => handle.style.display = 'block');
+                    
+                    const toolbar = signatureElement.querySelector('.signature-toolbar');
+                    if (toolbar) toolbar.style.display = 'flex';
+                }
+            })
+            .catch(error => {
+                console.error('Error generating PDF:', error);
+                document.body.removeChild(tempDiv);
+            });
     });
 
     // Initial preview
