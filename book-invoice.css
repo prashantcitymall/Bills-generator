@@ -94,6 +94,10 @@ label {
     font-weight: 500;
 }
 
+label::after {
+    content: none;
+}
+
 input[type="text"],
 input[type="number"],
 input[type="date"],
@@ -219,7 +223,7 @@ textarea {
 
 .receipt-preview h2 {
     text-align: center;
-    font-size: 1.26rem; /* Reduced by 30% from 1.8rem */
+    font-size: 1.51rem; /* Increased by 20% from 1.26rem */
     margin: 1rem 0 0.5rem;
     color: #000000;
     font-weight: 600;
@@ -270,24 +274,31 @@ textarea {
     display: flex;
     justify-content: space-between;
     gap: 2rem;
+    flex-wrap: wrap; /* Allow wrapping if needed */
 }
 
 .info-item {
     display: flex;
     gap: 0.5rem;
+    align-items: flex-start; /* Changed from default to flex-start */
 }
 
 .info-item .label {
     color: #000000;
     font-weight: normal;
     min-width: auto;
-    font-size: 0.77rem; /* Reduced by 30% from default */
+    font-size: 0.92rem;
+    position: relative;
+    white-space: nowrap; /* Prevent label from wrapping */
+    flex-shrink: 0; /* Prevent label from shrinking */
 }
 
 .info-item .value {
     color: #000000;
     font-weight: normal;
-    font-size: 0.77rem; /* Reduced by 30% from default */
+    font-size: 0.92rem;
+    word-wrap: break-word; /* Allow long words to break */
+    overflow-wrap: break-word; /* Modern browsers */
 }
 
 .billing-details {
@@ -295,19 +306,22 @@ textarea {
     justify-content: space-between;
     margin-bottom: 2rem;
     position: relative;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 2rem; /* Space between columns */
 }
 
-.bill-to {
+.bill-to, .sold-by {
     flex: 1;
+    min-width: 45%; /* Ensure minimum width for each column */
+    max-width: 48%; /* Limit maximum width to prevent overflow */
 }
 
 .sold-by {
-    flex: 1;
-    margin-left: 20%;
+    margin-left: 0; /* Remove fixed margin */
 }
 
 .bill-to h3, .sold-by h3 {
-    font-size: 0.98rem; /* Reduced by 30% from 1.4rem */
+    font-size: 1.18rem; /* Increased by 20% from 0.98rem */
     margin-bottom: 1rem;
     color: #000000;
     font-weight: 600;
@@ -316,28 +330,40 @@ textarea {
 .detail-row {
     margin-bottom: 1.4rem;
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     line-height: 1.3;
-}
-
-.detail-row .label,
-.detail-row .value {
-    display: inline;
+    width: 100%; /* Use full width */
 }
 
 .detail-row .label {
     font-weight: 700;
     color: #000000;
-    min-width: auto;
-    margin-right: 0;
-    font-size: 0.77rem; /* Reduced by 30% from 1.1rem */
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.92rem;
+    position: relative;
+    margin-right: 0.2rem; /* Small space after label */
 }
 
 .detail-row .value {
     color: #000000;
     margin-left: 0;
     padding-left: 0;
-    font-size: 0.77rem; /* Reduced by 30% from 1.1rem */
+    font-size: 0.92rem;
+    flex: 1;
+    max-width: calc(100% - 1rem); /* Use maximum available width minus a small buffer */
+    word-break: break-word; /* Break words only when necessary */
+    overflow-wrap: anywhere; /* Modern approach for text wrapping */
+    hyphens: auto; /* Enable hyphenation for better text wrapping */
+}
+
+/* Special handling for Book Publisher field to show full text on a single line */
+#previewPublisher {
+    white-space: nowrap !important;
+    overflow: visible !important; /* Show full text */
+    text-overflow: clip !important; /* Don't add ellipsis */
+    display: inline-block !important;
+    max-width: none !important; /* Remove width restriction */
 }
 
 .receipt-summary {
@@ -345,7 +371,7 @@ textarea {
 }
 
 .receipt-summary h3 {
-    font-size: 0.98rem; /* Reduced by 30% from 1.4rem */
+    font-size: 1.18rem; /* Increased by 20% from 0.98rem */
     margin-bottom: 1rem;
     color: #000000;
     font-weight: 600;
@@ -362,6 +388,7 @@ th, td {
     text-align: left;
     border-bottom: 1px solid #ddd;
     color: #000000;
+    font-size: 1.08rem; /* Added 20% larger font size */
 }
 
 th {
@@ -379,7 +406,7 @@ th {
 }
 
 .thank-you {
-    font-size: 1.1rem;
+    font-size: 1.32rem; /* Increased by 20% from 1.1rem */
     font-weight: 500;
     margin-bottom: 1rem;
     color: #000000;
@@ -389,7 +416,7 @@ th {
     font-style: italic;
     color: #000000;
     margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 1.08rem; /* Increased by 20% from 0.9rem */
 }
 
 .watermark {
