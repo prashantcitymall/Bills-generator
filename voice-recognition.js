@@ -44,11 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const isDonationReceiptPage = window.location.pathname.includes('donation-receipt.html');
         const isLtaReceiptPage = window.location.pathname.includes('lta-receipt.html');
         const isCourseInvoicePage = window.location.pathname.includes('course-invoice.html');
+        const isMedicalBillPage = window.location.pathname.includes('medical-bill.html');
         
         const isSupportedPage = isGeneralBillPage || isFuelBillPage || isDriverSalaryPage || 
                                isRentReceiptPage || isBookInvoicePage || isInternetBillPage ||
                                isRestaurantBillPage || isHotelBillPage || isEcommerceBillPage ||
-                               isDonationReceiptPage || isLtaReceiptPage || isCourseInvoicePage;
+                               isDonationReceiptPage || isLtaReceiptPage || isCourseInvoicePage ||
+                               isMedicalBillPage;
         
         if (!isSupportedPage) {
             showNotification('Voice recognition is only available on selected bill forms');
@@ -233,11 +235,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const isDonationReceiptPage = window.location.pathname.includes('donation-receipt.html');
         const isLtaReceiptPage = window.location.pathname.includes('lta-receipt.html');
         const isCourseInvoicePage = window.location.pathname.includes('course-invoice.html');
+        const isMedicalBillPage = window.location.pathname.includes('medical-bill.html');
         
         const isSupportedPage = isGeneralBillPage || isFuelBillPage || isDriverSalaryPage || 
                                isRentReceiptPage || isBookInvoicePage || isInternetBillPage ||
                                isRestaurantBillPage || isHotelBillPage || isEcommerceBillPage ||
-                               isDonationReceiptPage || isLtaReceiptPage || isCourseInvoicePage;
+                               isDonationReceiptPage || isLtaReceiptPage || isCourseInvoicePage ||
+                               isMedicalBillPage;
         
         if (!isSupportedPage) return;
         
