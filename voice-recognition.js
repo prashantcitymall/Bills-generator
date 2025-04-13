@@ -266,6 +266,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Create notification function
     function showNotification(message) {
+        // Get the voice button position
+        const voiceButton = document.getElementById('headerVoiceButton');
+        if (!voiceButton) return;
+        
         // Check if notification container exists
         let notificationContainer = document.getElementById('voiceNotificationContainer');
         
@@ -273,12 +277,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Create notification container
             notificationContainer = document.createElement('div');
             notificationContainer.id = 'voiceNotificationContainer';
-            notificationContainer.style.position = 'fixed';
-            notificationContainer.style.bottom = '20px';
-            notificationContainer.style.right = '20px';
+            notificationContainer.style.position = 'absolute';
             notificationContainer.style.zIndex = '9999';
             document.body.appendChild(notificationContainer);
         }
+        
+        // Position the container near the voice button
+        const buttonRect = voiceButton.getBoundingClientRect();
+        notificationContainer.style.top = (buttonRect.bottom + window.scrollY) + 'px';
+        notificationContainer.style.left = (buttonRect.left + window.scrollX - 250) + 'px'; // Position to the left of the button
         
         // Create notification
         const notification = document.createElement('div');
@@ -292,6 +299,8 @@ document.addEventListener('DOMContentLoaded', function() {
         notification.style.display = 'flex';
         notification.style.alignItems = 'center';
         notification.style.borderLeft = '4px solid #ff5a5f';
+        notification.style.width = '300px';
+        notification.style.maxWidth = '100%';
         
         // Add icon
         notification.innerHTML = `
@@ -300,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         // Add to container
+        notificationContainer.innerHTML = ''; // Clear previous notifications
         notificationContainer.appendChild(notification);
         
         // Remove after 3 seconds

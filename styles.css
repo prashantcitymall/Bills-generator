@@ -356,10 +356,10 @@ body {
 .footer {
     background: rgba(17, 34, 64, 0.95);
     backdrop-filter: blur(10px);
-    padding: 1.26rem 0 0.45rem;
+    padding: 1rem 0 0.36rem;
     position: relative;
     overflow: hidden;
-    margin-top: 1.26rem;
+    margin-top: 1rem;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
@@ -381,17 +381,17 @@ body {
 
 .footer-content {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 0.9rem;
+    grid-template-columns: 300px minmax(0, 1.3fr);
+    gap: 2rem;
     width: 100%;
-    padding: 0 0.9rem;
+    padding: 0 2rem;
     box-sizing: border-box;
 }
 
 .footer-brand {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: 0.7rem;
 }
 
 .footer-logo {
@@ -548,11 +548,10 @@ body {
 
 .social-links {
     display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
+    flex-direction: row;
+    gap: 1.5rem;
     margin-top: 0.26rem;
     position: relative;
-    top: 2%;
 }
 
 .social-link {
@@ -564,29 +563,40 @@ body {
     border-radius: 50%;
     background: #ffffff;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    padding: 0.3rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
 }
 
-.social-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    position: relative;
-    z-index: 2;
-}
-
-/* Social media link hover effects */
 .social-link:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.social-link.instagram i {
+    font-size: 1.5rem;
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
+.social-link.facebook i {
+    font-size: 1.5rem;
+    color: #1877F2;
+}
+
+.social-link.linkedin i {
+    font-size: 1.5rem;
+    color: #0A66C2;
+}
+
+.social-link.twitter i {
+    font-size: 1.5rem;
+    color: #1DA1F2;
+}
 
 .footer-bottom {
-    margin-top: 4rem;
+    margin-top: 3.2rem;
     text-align: center;
 }
 
@@ -597,27 +607,30 @@ body {
         rgba(100, 255, 218, 0.2),
         transparent
     );
-    margin-bottom: 2rem;
+    margin-bottom: 1.6rem;
 }
 
-.copyright {
+.copyright-text {
+    margin-top: 1.5rem;
+    text-align: center;
     color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 0.9;
-    padding: 0.32rem 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
-.tech-stack {
-    margin-top: 0.32rem;
-    color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 0.9;
+.copyright-text p {
+    margin: 0.3rem 0;
 }
 
-.tech-stack i {
+.copyright-text .tech-stack {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+}
+
+.copyright-text .tech-stack i {
     color: #ff6b6b;
     margin: 0 0.18rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 @media (max-width: 1024px) {
@@ -660,6 +673,215 @@ body {
 
     .social-links {
         justify-content: center;
+    }
+}
+
+.footer-section:first-of-type {
+    margin-left: -20%;
+}
+
+.footer-section:first-of-type .contact-info {
+    background: linear-gradient(135deg, rgba(10, 25, 47, 0.8) 0%, rgba(17, 34, 64, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 100%;
+}
+
+.footer-section:first-of-type .contact-info::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(100, 255, 218, 0.03), transparent);
+    transform: rotate(30deg);
+    animation: shimmer 8s infinite linear;
+    pointer-events: none;
+}
+
+.contact-details {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.contact-details i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin-top: 0.2rem;
+}
+
+.contact-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-numbers span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.separator {
+    color: rgba(100, 255, 218, 0.5);
+    margin: 0 0.2rem;
+}
+
+.phone-number {
+    color: var(--primary-color);
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: 0.5px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    background: rgba(100, 255, 218, 0.05);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+}
+
+.phone-number:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 0 8px rgba(100, 255, 218, 0.6);
+    background: rgba(100, 255, 218, 0.1);
+}
+
+/* About Us Section in Footer */
+.about-us-section {
+    margin-left: 2rem;
+    max-width: 100%;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.about-us-content {
+    background: linear-gradient(135deg, rgba(10, 25, 47, 0.8) 0%, rgba(17, 34, 64, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    width: 130%;
+    margin-right: -30%;
+}
+
+.about-us-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(100, 255, 218, 0.03), transparent);
+    transform: rotate(30deg);
+    animation: shimmer 8s infinite linear;
+    pointer-events: none;
+}
+
+.about-us-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-width: 100%;
+}
+
+.about-us-highlight {
+    color: var(--primary-color);
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--primary-color);
+    padding-left: 1.5rem;
+    position: relative;
+    max-width: 100%;
+}
+
+.contact-info {
+    background: rgba(10, 25, 47, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid rgba(100, 255, 218, 0.1);
+}
+
+.contact-heading {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.contact-details {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-details i {
+    color: var(--primary-color);
+}
+
+.phone-number {
+    color: var(--primary-color);
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: 0.5px;
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.phone-number:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 0 8px rgba(100, 255, 218, 0.6);
+}
+
+.phone-number::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.phone-number:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Responsive adjustments for About Us section */
+@media (max-width: 1024px) {
+    .about-us-section {
+        margin-left: 0;
+        margin-top: 2rem;
+        max-width: 100%;
     }
 }
 
@@ -1161,4 +1383,12 @@ body {
     .section-description {
         font-size: 1rem;
     }
+}
+
+/* Make Select Template heading black in all form types */
+.template-selector h2,
+.template-selector h3,
+.template-selection h3 {
+    color: #000000 !important;
+    font-weight: 500;
 }
