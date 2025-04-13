@@ -6,6 +6,152 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoFileInput = document.getElementById('logoFileInput');
     const logoTypeRadios = document.getElementsByName('logoType');
     
+    // Template elements
+    const templateRadios = document.getElementsByName('template');
+    const template1Fields = document.getElementById('template1Fields');
+    const template2Fields = document.getElementById('template2Fields');
+    
+    // Template data storage
+    const templateData = {
+        template1: {},
+        template2: {}
+    };
+    
+    // Load saved form data from localStorage
+    function loadFormData() {
+        const savedData = localStorage.getItem('donationReceiptFormData');
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                
+                // Load saved template selection
+                if (data.template) {
+                    const templateRadio = document.querySelector(`input[name="template"][value="${data.template}"]`);
+                    if (templateRadio) {
+                        templateRadio.checked = true;
+                        
+                        // Show the appropriate template fields
+                        if (data.template === 'template1') {
+                            template1Fields.classList.add('active');
+                            template2Fields.classList.remove('active');
+                        } else {
+                            template1Fields.classList.remove('active');
+                            template2Fields.classList.add('active');
+                        }
+                    }
+                }
+                
+                // Load template-specific data
+                if (data.template === 'template1') {
+                    // Load Template 1 data
+                    if (data.templeName) document.getElementById('templeName').value = data.templeName;
+                    if (data.trustPan) document.getElementById('trustPan').value = data.trustPan;
+                    if (data.templeAddress) document.getElementById('templeAddress').value = data.templeAddress;
+                    if (data.phoneNo) document.getElementById('phoneNo').value = data.phoneNo;
+                    if (data.email) document.getElementById('email').value = data.email;
+                    if (data.website) document.getElementById('website').value = data.website;
+                    if (data.receiptNo) document.getElementById('receiptNo').value = data.receiptNo;
+                    if (data.amount) document.getElementById('amount').value = data.amount;
+                    if (data.receivedFrom) document.getElementById('receivedFrom').value = data.receivedFrom;
+                    if (data.donatorPan) document.getElementById('donatorPan').value = data.donatorPan;
+                    if (data.receivedBy) document.getElementById('receivedBy').value = data.receivedBy;
+                    if (data.description) document.getElementById('description').value = data.description;
+                    if (data.date) document.getElementById('date').value = data.date;
+                    if (data.paymentMethod) document.getElementById('paymentMethod').value = data.paymentMethod;
+                } else if (data.template === 'template2') {
+                    // Load Template 2 data
+                    if (data.t2ReceiptNumber) document.getElementById('t2ReceiptNumber').value = data.t2ReceiptNumber;
+                    if (data.t2DonorName) document.getElementById('t2DonorName').value = data.t2DonorName;
+                    if (data.t2DonorPAN) document.getElementById('t2DonorPAN').value = data.t2DonorPAN;
+                    if (data.t2Purpose) document.getElementById('t2Purpose').value = data.t2Purpose;
+                    if (data.t2Address) document.getElementById('t2Address').value = data.t2Address;
+                    if (data.t2Mobile) document.getElementById('t2Mobile').value = data.t2Mobile;
+                    if (data.t2Email) document.getElementById('t2Email').value = data.t2Email;
+                    if (data.t2Amount) document.getElementById('t2Amount').value = data.t2Amount;
+                    if (data.t2Date) document.getElementById('t2Date').value = data.t2Date;
+                    if (data.t2PaymentMode) document.getElementById('t2PaymentMode').value = data.t2PaymentMode;
+                    if (data.t2TrustPAN) document.getElementById('t2TrustPAN').value = data.t2TrustPAN;
+                }
+                
+                // Load common fields
+                if (data.terms) document.getElementById('terms').checked = data.terms;
+                
+                // Update preview
+                updatePreview();
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+            }
+        } else {
+            // Set default values if no saved data
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('t2Date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('t2Purpose').value = 'Mandir Renovation/Repair';
+            document.getElementById('t2TrustPAN').value = 'AAZTS6197B';
+        }
+    }
+    
+    // Set up form persistence
+    function setupFormPersistence() {
+        // Save form data on input changes
+        form.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('input', saveFormData);
+            input.addEventListener('change', saveFormData);
+        });
+        
+        // Save form data when logo type changes
+        logoTypeRadios.forEach(radio => {
+            radio.addEventListener('change', saveFormData);
+        });
+    }
+    
+    // Function to save form data to localStorage
+    function saveFormData() {
+        const formData = {
+            // Template selection
+            template: document.querySelector('input[name="template"]:checked')?.value || 'template1',
+            
+            // Temple/Trust details
+            templeName: document.getElementById('templeName').value,
+            trustPan: document.getElementById('trustPan').value,
+            templeAddress: document.getElementById('templeAddress').value,
+            phoneNo: document.getElementById('phoneNo').value,
+            email: document.getElementById('email').value,
+            website: document.getElementById('website').value,
+            
+            // Receipt details
+            receiptNo: document.getElementById('receiptNo').value,
+            amount: document.getElementById('amount').value,
+            receivedFrom: document.getElementById('receivedFrom').value,
+            donatorPan: document.getElementById('donatorPan').value,
+            receivedBy: document.getElementById('receivedBy').value,
+            description: document.getElementById('description').value,
+            date: document.getElementById('date').value,
+            paymentMethod: document.getElementById('paymentMethod').value,
+            
+            // Logo details
+            logoType: document.querySelector('input[name="logoType"]:checked')?.value || 'url',
+            logoUrl: document.getElementById('logoUrlField').value,
+            
+            // Terms checkbox
+            terms: document.getElementById('terms').checked,
+            
+            // Template 2 fields
+            t2ReceiptNumber: document.getElementById('t2ReceiptNumber').value,
+            t2DonorName: document.getElementById('t2DonorName').value,
+            t2DonorPAN: document.getElementById('t2DonorPAN').value,
+            t2Purpose: document.getElementById('t2Purpose').value,
+            t2Address: document.getElementById('t2Address').value,
+            t2Mobile: document.getElementById('t2Mobile').value,
+            t2Email: document.getElementById('t2Email').value,
+            t2Amount: document.getElementById('t2Amount').value,
+            t2Date: document.getElementById('t2Date').value,
+            t2PaymentMode: document.getElementById('t2PaymentMode').value,
+            t2TrustPAN: document.getElementById('t2TrustPAN').value
+        };
+        
+        localStorage.setItem('donationReceiptFormData', JSON.stringify(formData));
+    }
+    
     // Load saved form data from localStorage
     loadFormData();
     
@@ -109,142 +255,266 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update preview function
     function updatePreview() {
+        // Get form data
         const formData = {
-            templeName: document.getElementById('templeName').value || 'The Hindu Temples Discovery and Restoration Trust',
-            trustPan: document.getElementById('trustPan').value || 'AAATH1234A',
-            templeAddress: document.getElementById('templeAddress').value || 'gaurakhmath uttrakhand',
-            phoneNo: document.getElementById('phoneNo').value || '9548999898',
-            email: document.getElementById('email').value || 'xyz@gmail.com',
-            website: document.getElementById('website').value || '',
+            // Template selection
+            template: document.querySelector('input[name="template"]:checked')?.value || 'template1',
+            
+            // Template 1 fields
+            templeName: document.getElementById('templeName').value,
+            trustPan: document.getElementById('trustPan').value,
+            templeAddress: document.getElementById('templeAddress').value,
+            phoneNo: document.getElementById('phoneNo').value,
+            email: document.getElementById('email').value,
+            website: document.getElementById('website').value,
             receiptNo: document.getElementById('receiptNo').value,
             amount: document.getElementById('amount').value,
+            amountInWords: numberToWords(document.getElementById('amount').value),
             receivedFrom: document.getElementById('receivedFrom').value,
             donatorPan: document.getElementById('donatorPan').value,
             receivedBy: document.getElementById('receivedBy').value,
             description: document.getElementById('description').value,
             date: document.getElementById('date').value,
-            paymentMethod: document.getElementById('paymentMethod').value
+            paymentMethod: document.getElementById('paymentMethod').value,
+            
+            // Template 2 fields
+            t2ReceiptNumber: document.getElementById('t2ReceiptNumber').value,
+            t2DonorName: document.getElementById('t2DonorName').value,
+            t2DonorPAN: document.getElementById('t2DonorPAN').value,
+            t2Purpose: document.getElementById('t2Purpose').value || 'Mandir Renovation/Repair',
+            t2Address: document.getElementById('t2Address').value,
+            t2Mobile: document.getElementById('t2Mobile').value,
+            t2Email: document.getElementById('t2Email').value,
+            t2Amount: document.getElementById('t2Amount').value,
+            t2AmountInWords: numberToWords(document.getElementById('t2Amount').value),
+            t2Date: document.getElementById('t2Date').value,
+            t2PaymentMode: document.getElementById('t2PaymentMode').value,
+            t2TrustPAN: document.getElementById('t2TrustPAN').value || 'AAZTS6197B'
         };
+        
+        let previewHTML;
+        
+        if (formData.template === 'template1') {
+            // Template 1 - Original template
+            previewHTML = `
+                <div class="receipt-content" style="font-family: Arial, sans-serif; padding: 20px; background-color: white;">
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <h1 style="color: #E41B17; margin: 0; font-size: 24px; margin-bottom: 5px;">${formData.templeName}</h1>
+                        <p style="color: #000; margin: 5px 0; font-size: 12px;">(Govt Regd. No. 91 of 2018)</p>
+                        <p style="color: #000; margin: 5px 0; font-size: 14px;">PAN: ${formData.trustPan}</p>
+                        <p style="color: #000; margin: 5px 0; font-size: 14px;">${formData.templeAddress}</p>
+                        <p style="color: #000; margin: 5px 0; font-size: 14px;">Email: ${formData.email} | Website: ${formData.website}</p>
+                        <p style="color: #E41B17; margin: 5px 0; font-size: 14px;">Phone: +91 ${formData.phoneNo}</p>
+                    </div>
 
-        // Format the email and website display
-        const emailWebsiteDisplay = formData.website 
-            ? `Email: ${formData.email} | Website: ${formData.website}`
-            : `Email: ${formData.email}`;
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <h2 style="color: #000080; margin: 0; font-size: 28px; font-weight: bold; flex: 1;">DONATION RECEIPT</h2>
+                        <table style="border-collapse: collapse; width: 50%;">
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px; background-color: #fff;">Receipt No.</td>
+                                <td style="border: 1px solid #000; padding: 8px;">${formData.receiptNo}</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px; background-color: #fff;">Date</td>
+                                <td style="border: 1px solid #000; padding: 8px;">${formData.date}</td>
+                            </tr>
+                        </table>
+                    </div>
 
-        // Generate preview HTML
-        const previewHTML = `
-            <div class="receipt-content" style="font-family: Arial, sans-serif; padding: 20px; background-color: white;">
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <h1 style="color: #E41B17; margin: 0; font-size: 24px; margin-bottom: 5px;">${formData.templeName}</h1>
-                    <p style="color: #000; margin: 5px 0; font-size: 12px;">(Govt Regd. No. 91 of 2018)</p>
-                    <p style="color: #000; margin: 5px 0; font-size: 14px;">PAN: ${formData.trustPan}</p>
-                    <p style="color: #000; margin: 5px 0; font-size: 14px;">${formData.templeAddress}</p>
-                    <p style="color: #000; margin: 5px 0; font-size: 14px;">${emailWebsiteDisplay}</p>
-                    <p style="color: #E41B17; margin: 5px 0; font-size: 14px;">Phone: +91 ${formData.phoneNo}</p>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                    <h2 style="color: #000080; margin: 0; font-size: 28px; font-weight: bold; flex: 1;">DONATION RECEIPT</h2>
-                    <table style="border-collapse: collapse; width: 50%;">
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                         <tr>
-                            <td style="border: 1px solid #000; padding: 8px; background-color: #fff;">Receipt No.</td>
-                            <td style="border: 1px solid #000; padding: 8px;">${formData.receiptNo}</td>
+                            <td colspan="3" style="border: 1px solid #000; padding: 8px;">
+                                <span style="font-weight: normal; color: #000;">Received From : </span>
+                                ${formData.receivedFrom}
+                            </td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #000; padding: 8px; background-color: #fff;">Date</td>
-                            <td style="border: 1px solid #000; padding: 8px;">${formData.date}</td>
+                            <td colspan="3" style="border: 1px solid #000; padding: 8px;">
+                                <span style="font-weight: normal; color: #000;">Donator's PAN No : </span>
+                                ${formData.donatorPan}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px; width: 25%;">
+                                <span style="font-weight: normal; color: #000;">Amount</span>
+                            </td>
+                            <td style="border: 1px solid #000; padding: 8px; width: 45%;">
+                                ${formData.amount}
+                            </td>
+                            <td style="border: 1px solid #000; padding: 8px; width: 30%;">
+                                <span style="font-weight: normal; color: #000;">Payment Method:</span>
+                                ${formData.paymentMethod}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="border: 1px solid #000; padding: 8px;">
+                                <span style="font-weight: normal; color: #000;">The Sum of Amount in Words: </span>
+                                ${formData.amountInWords}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="border: 1px solid #000; padding: 8px;">
+                                <span style="font-weight: normal; color: #000;">Received by :</span>
+                                ${formData.receivedBy}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="border: 1px solid #000; padding: 8px;">
+                                <span style="font-weight: normal; color: #000;">Description of Donation:</span>
+                                ${formData.description}
+                            </td>
                         </tr>
                     </table>
-                </div>
 
-                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-                    <tr>
-                        <td colspan="3" style="border: 1px solid #000; padding: 8px;">
-                            <span style="font-weight: normal; color: #000;">Received From : </span>
-                            ${formData.receivedFrom}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="border: 1px solid #000; padding: 8px;">
-                            <span style="font-weight: normal; color: #000;">Donator's PAN No : </span>
-                            ${formData.donatorPan}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #000; padding: 8px; width: 25%;">
-                            <span style="font-weight: normal; color: #000;">Amount</span>
-                        </td>
-                        <td style="border: 1px solid #000; padding: 8px; width: 45%;">
-                            ${formData.amount}
-                        </td>
-                        <td style="border: 1px solid #000; padding: 8px; width: 30%;">
-                            <span style="font-weight: normal; color: #000;">Payment Method:</span>
-                            ${formData.paymentMethod}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="border: 1px solid #000; padding: 8px;">
-                            <span style="font-weight: normal; color: #000;">The Sum of Amount in Words: </span>
-                            ${numberToWords(formData.amount)}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="border: 1px solid #000; padding: 8px;">
-                            <span style="font-weight: normal; color: #000;">Received by :</span>
-                            ${formData.receivedBy}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="border: 1px solid #000; padding: 8px;">
-                            <span style="font-weight: normal; color: #000;">Description of Donation:</span>
-                            ${formData.description}
-                        </td>
-                    </tr>
-                </table>
+                    <div style="position: relative; margin-top: 20px; min-height: 200px;">
+                        <p style="text-align: center; margin-top: 20px; font-style: normal; color: #000; font-size: 14px;">
+                            Thank you for your generosity, we appreciate your support
+                        </p>
 
-                <div style="position: relative; margin-top: 20px; min-height: 200px;">
-                    <p style="text-align: center; margin-top: 20px; font-style: normal; color: #000; font-size: 14px;">
-                        Thank you for your generosity, we appreciate your support
-                    </p>
-
-                    <!-- Temple Stamp -->
-                    <div class="temple-stamp">
-                        <div class="stamp-temple-name">${formData.templeName}</div>
-                        <div class="stamp-details">
-                            ${formData.templeAddress}<br>
-                            Phone: +91 ${formData.phoneNo}<br>
-                            Govt Regd. No. 91 of 2018
+                        <!-- Temple Stamp -->
+                        <div class="temple-stamp">
+                            <div class="stamp-temple-name">${formData.templeName}</div>
+                            <div class="stamp-details">
+                                ${formData.templeAddress}<br>
+                                Phone: +91 ${formData.phoneNo}<br>
+                                Govt Regd. No. 91 of 2018
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        } else {
+            // Template 2 - Shri Ram Janmbhoomi template
+            previewHTML = `
+                <div class="receipt-content" style="font-family: Arial, sans-serif; padding: 20px; background-color: white; border: 1px solid #ccc;">
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="images/ram mandir.png" alt="Shri Ram Janmbhoomi Logo" style="width: 235px; height: auto;">
+                        <div style="margin-top: -10px;">
+                            <h1 style="color: #FF0000; margin: 10px 0 0; font-size: 24px; text-transform: uppercase; font-family: serif;">SHRI RAM JANMBHOOMI</h1>
+                            <h2 style="color: #FF0000; margin: 0 0 5px; font-size: 20px; text-transform: uppercase; font-family: serif;">TEERTH KSHETRA</h2>
+                            <p style="margin: 5px 0; font-size: 14px;">
+                                RAM KACHEHRI, RAMKOT, AYODHYA-<br>
+                                224123 PAN: ${formData.t2TrustPAN}
+                            </p>
+                            <h2 style="margin: 10px 0; font-size: 24px;">E-Receipt</h2>
+                        </div>
+                    </div>
 
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px; width: 40%;">Receipt Number</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2ReceiptNumber}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Name of the Donor/Institute</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2DonorName}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">PAN No. of Donor</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2DonorPAN}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Purpose of the Donation</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2Purpose}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Address of Donor</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2Address}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Mobile number of Donor</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2Mobile}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Email of Donor</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2Email}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Amount of Donation</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2Amount}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Transaction ID</td>
+                            <td style="border: 1px solid #000; padding: 8px;">TXN${Math.floor(Math.random() * 10000000000000)}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Transaction Date</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2Date}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Payment Status</td>
+                            <td style="border: 1px solid #000; padding: 8px;">SUCCESS</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;">Payment Mode</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${formData.t2PaymentMode}</td>
+                        </tr>
+                    </table>
+
+                    <div style="font-size: 12px; margin-top: 20px;">
+                        <p>*PAN of Shri Ram Janmbhoomi Teerth Kshetra is ${formData.t2TrustPAN}.</p>
+                        <p>*50% of Voluntary Contribution, for the purpose of renovation/repair of Mandir, to Shri Ram Janmbhoomi Teerth Kshetra is eligible for deduction under sec 80G(2)(b), subject to other conditions mentioned under section 80G of the Income Tax Act, 1961.</p>
+                        <p>*Donations made in cash exceeding Rs 2000/- are not eligible for deduction under aforesaid section.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update preview
         preview.innerHTML = previewHTML;
     }
 
     // Function to validate form
     function validateForm() {
-        const requiredFields = [
-            { field: document.getElementById('templeName'), name: 'Temple Name' },
-            { field: document.getElementById('trustPan'), name: 'Trust PAN Number' },
-            { field: document.getElementById('templeAddress'), name: 'Temple Address' },
-            { field: document.getElementById('phoneNo'), name: 'Phone Number' },
-            { field: document.getElementById('email'), name: 'Email' },
-            { field: document.getElementById('receiptNo'), name: 'Receipt Number' },
-            { field: document.getElementById('amount'), name: 'Amount' },
-            { field: document.getElementById('receivedFrom'), name: 'Received From' },
-            { field: document.getElementById('donatorPan'), name: 'Donator PAN Number' },
-            { field: document.getElementById('receivedBy'), name: 'Received By' },
-            { field: document.getElementById('date'), name: 'Date' },
-            { field: document.getElementById('paymentMethod'), name: 'Payment Method' }
-        ];
-
-        for (const { field, name } of requiredFields) {
-            if (!field.value.trim()) {
-                alert(`Please enter ${name}`);
-                field.focus();
-                return false;
+        // Check which template is selected
+        const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
+        
+        if (selectedTemplate === 'template1') {
+            // Validate Template 1 fields
+            const template1RequiredFields = [
+                { field: document.getElementById('templeName'), name: 'Temple Name' },
+                { field: document.getElementById('trustPan'), name: 'Trust PAN Number' },
+                { field: document.getElementById('templeAddress'), name: 'Temple Address' },
+                { field: document.getElementById('phoneNo'), name: 'Phone Number' },
+                { field: document.getElementById('email'), name: 'Email' },
+                { field: document.getElementById('receiptNo'), name: 'Receipt Number' },
+                { field: document.getElementById('amount'), name: 'Amount' },
+                { field: document.getElementById('receivedFrom'), name: 'Received From' },
+                { field: document.getElementById('donatorPan'), name: 'Donator PAN Number' },
+                { field: document.getElementById('receivedBy'), name: 'Received By' },
+                { field: document.getElementById('date'), name: 'Date' },
+                { field: document.getElementById('paymentMethod'), name: 'Payment Method' }
+            ];
+            
+            for (const { field, name } of template1RequiredFields) {
+                if (!field.value.trim()) {
+                    alert(`Please enter ${name}`);
+                    field.focus();
+                    return false;
+                }
+            }
+        } else if (selectedTemplate === 'template2') {
+            // Validate Template 2 fields
+            const template2RequiredFields = [
+                { field: document.getElementById('t2ReceiptNumber'), name: 'Receipt Number' },
+                { field: document.getElementById('t2DonorName'), name: 'Donor Name' },
+                { field: document.getElementById('t2DonorPAN'), name: 'Donor PAN' },
+                { field: document.getElementById('t2Purpose'), name: 'Purpose' },
+                { field: document.getElementById('t2Address'), name: 'Address' },
+                { field: document.getElementById('t2Mobile'), name: 'Mobile Number' },
+                { field: document.getElementById('t2Email'), name: 'Email' },
+                { field: document.getElementById('t2Amount'), name: 'Amount' },
+                { field: document.getElementById('t2Date'), name: 'Date' },
+                { field: document.getElementById('t2PaymentMode'), name: 'Payment Mode' },
+                { field: document.getElementById('t2TrustPAN'), name: 'Trust PAN' }
+            ];
+            
+            for (const { field, name } of template2RequiredFields) {
+                if (!field.value.trim()) {
+                    alert(`Please enter ${name}`);
+                    field.focus();
+                    return false;
+                }
             }
         }
 
@@ -266,6 +536,9 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please sign in to download bills');
             return;
         }
+        
+        // Check which template is selected
+        const selectedTemplate = document.querySelector('input[name="template"]:checked').value;
         
         if (!validateForm()) return;
         
@@ -300,7 +573,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set PDF options
         const opt = {
             margin: 0,
-            filename: `donation-receipt-${document.getElementById('receiptNo').value || 'receipt'}.pdf`,
+            filename: selectedTemplate === 'template1' 
+                ? `donation-receipt-${document.getElementById('receiptNo').value || 'receipt'}.pdf`
+                : `donation-receipt-${document.getElementById('t2ReceiptNumber').value || 'receipt'}.pdf`,
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
                 scale: 2,
@@ -414,6 +689,24 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 
+    // Handle template switching
+    document.querySelectorAll('input[name="template"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Save current form data before switching templates
+            saveFormData();
+            
+            if (this.value === 'template1') {
+                template1Fields.classList.add('active');
+                template2Fields.classList.remove('active');
+            } else if (this.value === 'template2') {
+                template1Fields.classList.remove('active');
+                template2Fields.classList.add('active');
+            }
+            
+            updatePreview();
+        });
+    });
+
     // Initial preview
     updatePreview();
 
@@ -430,110 +723,4 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.removeItem('donationReceiptFormData');
         setTimeout(updatePreview, 0);
     });
-    
-    // Function to save form data to localStorage
-    function saveFormData() {
-        const formData = {
-            // Template selection
-            template: document.querySelector('input[name="template"]:checked')?.value || 'template1',
-            
-            // Temple/Trust details
-            templeName: document.getElementById('templeName').value,
-            trustPan: document.getElementById('trustPan').value,
-            templeAddress: document.getElementById('templeAddress').value,
-            phoneNo: document.getElementById('phoneNo').value,
-            email: document.getElementById('email').value,
-            website: document.getElementById('website').value,
-            
-            // Receipt details
-            receiptNo: document.getElementById('receiptNo').value,
-            amount: document.getElementById('amount').value,
-            receivedFrom: document.getElementById('receivedFrom').value,
-            donatorPan: document.getElementById('donatorPan').value,
-            receivedBy: document.getElementById('receivedBy').value,
-            description: document.getElementById('description').value,
-            date: document.getElementById('date').value,
-            paymentMethod: document.getElementById('paymentMethod').value,
-            
-            // Logo details
-            logoType: document.querySelector('input[name="logoType"]:checked')?.value || 'url',
-            logoUrl: document.getElementById('logoUrlField').value,
-            
-            // Terms checkbox
-            terms: document.getElementById('terms').checked
-        };
-        
-        localStorage.setItem('donationReceiptFormData', JSON.stringify(formData));
-    }
-    
-    // Function to load form data from localStorage
-    function loadFormData() {
-        const savedData = localStorage.getItem('donationReceiptFormData');
-        if (!savedData) {
-            // If no saved data, set default date to today
-            document.getElementById('date').value = new Date().toISOString().split('T')[0];
-            return;
-        }
-        
-        const formData = JSON.parse(savedData);
-        
-        // Restore template selection
-        const templateRadio = document.querySelector(`input[name="template"][value="${formData.template || 'template1'}"]`);
-        if (templateRadio) {
-            templateRadio.checked = true;
-        }
-        
-        // Restore temple/trust details
-        document.getElementById('templeName').value = formData.templeName || '';
-        document.getElementById('trustPan').value = formData.trustPan || '';
-        document.getElementById('templeAddress').value = formData.templeAddress || '';
-        document.getElementById('phoneNo').value = formData.phoneNo || '';
-        document.getElementById('email').value = formData.email || '';
-        document.getElementById('website').value = formData.website || '';
-        
-        // Restore receipt details
-        document.getElementById('receiptNo').value = formData.receiptNo || '';
-        document.getElementById('amount').value = formData.amount || '';
-        document.getElementById('receivedFrom').value = formData.receivedFrom || '';
-        document.getElementById('donatorPan').value = formData.donatorPan || '';
-        document.getElementById('receivedBy').value = formData.receivedBy || '';
-        document.getElementById('description').value = formData.description || '';
-        document.getElementById('date').value = formData.date || new Date().toISOString().split('T')[0];
-        document.getElementById('paymentMethod').value = formData.paymentMethod || '';
-        
-        // Restore logo details
-        const logoTypeRadio = document.querySelector(`input[name="logoType"][value="${formData.logoType || 'url'}"]`);
-        if (logoTypeRadio) {
-            logoTypeRadio.checked = true;
-            // Show/hide logo input fields based on selection
-            if (formData.logoType === 'url') {
-                logoUrlInput.style.display = 'block';
-                logoFileInput.style.display = 'none';
-            } else {
-                logoUrlInput.style.display = 'none';
-                logoFileInput.style.display = 'block';
-            }
-        }
-        document.getElementById('logoUrlField').value = formData.logoUrl || '';
-        
-        // Restore terms checkbox
-        document.getElementById('terms').checked = formData.terms || false;
-        
-        // Update the preview with the restored data
-        updatePreview();
-    }
-    
-    // Function to set up form persistence
-    function setupFormPersistence() {
-        // Save form data on input changes
-        form.querySelectorAll('input, select, textarea').forEach(input => {
-            input.addEventListener('input', saveFormData);
-            input.addEventListener('change', saveFormData);
-        });
-        
-        // Save form data when logo type changes
-        logoTypeRadios.forEach(radio => {
-            radio.addEventListener('change', saveFormData);
-        });
-    }
 });

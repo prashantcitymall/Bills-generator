@@ -81,63 +81,160 @@
                         <div class="template-selection">
                             <input type="radio" id="template1" name="template" value="template1" checked>
                             <label for="template1">Template 1</label>
+                            <input type="radio" id="template2" name="template" value="template2">
+                            <label for="template2">Shri Ram Janmbhoomi</label>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="templeName">Temple Name *</label>
-                        <input type="text" id="templeName" required placeholder="Enter Temple Name">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="trustPan">Trust PAN No *</label>
-                        <input type="text" id="trustPan" required placeholder="Enter Trust PAN Number" maxlength="10">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="templeAddress">Temple Address *</label>
-                        <input type="text" id="templeAddress" required placeholder="Enter Temple Address">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group half">
-                            <label for="phoneNo">Phone No *</label>
-                            <input type="tel" id="phoneNo" required placeholder="Mobile No">
+                    <!-- Template 1 Fields -->
+                    <div id="template1Fields" class="template-fields active">
+                        <div class="form-group">
+                            <label for="templeName">Temple Name *</label>
+                            <input type="text" id="templeName" required placeholder="Enter Temple Name">
                         </div>
-                        <div class="form-group half">
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" required placeholder="Enter Email">
+
+                        <div class="form-group">
+                            <label for="trustPan">Trust PAN No *</label>
+                            <input type="text" id="trustPan" required placeholder="Enter Trust PAN Number" maxlength="10">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="templeAddress">Temple Address *</label>
+                            <input type="text" id="templeAddress" required placeholder="Enter Temple Address">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="phoneNo">Phone No *</label>
+                                <input type="tel" id="phoneNo" required placeholder="Mobile No">
+                            </div>
+                            <div class="form-group half">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" required placeholder="Enter Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website">Website</label>
+                            <input type="text" id="website" placeholder="Enter Website">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="receiptNo">Receipt No *</label>
+                            <input type="text" id="receiptNo" required placeholder="Enter Receipt Number">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="amount">Amount *</label>
+                                <input type="number" id="amount" required placeholder="Enter Amount">
+                            </div>
+                            <div class="form-group half">
+                                <label for="paymentMethod">Payment Method *</label>
+                                <select id="paymentMethod" required>
+                                    <option value="">Select Payment Method</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="UPI">UPI</option>
+                                    <option value="Credit Card">Credit Card</option>
+                                    <option value="Debit Card">Debit Card</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="receivedFrom">Received From *</label>
+                            <input type="text" id="receivedFrom" required placeholder="Enter Donor Name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="donatorPan">Donator's PAN</label>
+                            <input type="text" id="donatorPan" placeholder="Enter Donator's PAN" maxlength="10">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="receivedBy">Received By *</label>
+                            <input type="text" id="receivedBy" required placeholder="Enter Receiver's Name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" placeholder="Enter Description..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="date">Date *</label>
+                                <input type="date" id="date" required>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="website">Website</label>
-                        <input type="text" id="website" placeholder="Enter Website">
-                    </div>
+                    <!-- Template 2 Fields (Shri Ram Janmbhoomi) -->
+                    <div id="template2Fields" class="template-fields">
+                        <div class="form-group">
+                            <label for="t2ReceiptNumber">Receipt Number *</label>
+                            <input type="text" id="t2ReceiptNumber" required placeholder="Enter Receipt Number">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="receiptNo">Receipt No *</label>
-                        <input type="text" id="receiptNo" required placeholder="Enter Receipt Number">
-                    </div>
+                        <div class="form-group">
+                            <label for="t2DonorName">Name of the Donor/Institute *</label>
+                            <input type="text" id="t2DonorName" required placeholder="Enter Donor Name">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="amount">Amount *</label>
-                        <input type="number" id="amount" required placeholder="Enter Amount">
-                    </div>
+                        <div class="form-group">
+                            <label for="t2DonorPAN">PAN No. of Donor</label>
+                            <input type="text" id="t2DonorPAN" placeholder="Enter Donor's PAN" maxlength="10">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="receivedFrom">Received from *</label>
-                        <input type="text" id="receivedFrom" required placeholder="Enter Name">
-                    </div>
+                        <div class="form-group">
+                            <label for="t2Purpose">Purpose of the Donation *</label>
+                            <input type="text" id="t2Purpose" required placeholder="Enter Purpose" value="Mandir Renovation/Repair">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="donatorPan">Donator's PAN No *</label>
-                        <input type="text" id="donatorPan" required placeholder="Enter Donator's PAN Number" maxlength="10">
-                    </div>
+                        <div class="form-group">
+                            <label for="t2Address">Address of Donor *</label>
+                            <textarea id="t2Address" required placeholder="Enter Donor Address"></textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="receivedBy">Received by *</label>
-                        <input type="text" id="receivedBy" required placeholder="Enter Name">
+                        <div class="form-group">
+                            <label for="t2Mobile">Mobile number of Donor *</label>
+                            <input type="tel" id="t2Mobile" required placeholder="Enter Mobile Number">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="t2Email">Email of Donor *</label>
+                            <input type="email" id="t2Email" required placeholder="Enter Email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="t2Amount">Amount of Donation *</label>
+                            <input type="number" id="t2Amount" required placeholder="Enter Amount">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="t2Date">Transaction Date *</label>
+                            <input type="date" id="t2Date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="t2PaymentMode">Payment Mode *</label>
+                            <select id="t2PaymentMode" required>
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="DC">Debit Card (DC)</option>
+                                <option value="CC">Credit Card (CC)</option>
+                                <option value="Net Banking">Net Banking</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="t2TrustPAN">Trust PAN *</label>
+                            <input type="text" id="t2TrustPAN" required placeholder="Enter Trust PAN" value="AAZTS6197B" maxlength="10">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -157,28 +254,6 @@
                         </div>
                         <div id="logoFileInput" class="logo-input" style="display: none;">
                             <input type="file" id="logoFile" accept="image/*">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" placeholder="Enter Description"></textarea>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group half">
-                            <label for="date">Date *</label>
-                            <input type="date" id="date" required>
-                        </div>
-                        <div class="form-group half">
-                            <label for="paymentMethod">Payment Method *</label>
-                            <select id="paymentMethod" required>
-                                <option value="">Select One</option>
-                                <option value="cash">Cash</option>
-                                <option value="check">Check</option>
-                                <option value="card">Card</option>
-                                <option value="upi">UPI</option>
-                            </select>
                         </div>
                     </div>
 

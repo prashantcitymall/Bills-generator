@@ -346,3 +346,12 @@ td span {
     word-wrap: break-word;
     line-height: 1.3;
 }
+
+/* Template Fields Styling */
+.template-fields {
+    display: none;
+}
+
+.template-fields.active {
+    display: block;
+}
