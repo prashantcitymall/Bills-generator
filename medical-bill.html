@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Medical Bill - Bill Creator</title>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="form-layout.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="shared-header.css">
+    <link rel="stylesheet" href="medical-bill.css">
+    <link rel="stylesheet" href="modern-logo.css">
+    <link rel="stylesheet" href="preview-notification.css">
+    <link rel="stylesheet" href="voice-button.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-design">
+        <div class="gradient-overlay"></div>
+    </div>
+    <header class="header">
+        <nav class="navbar">
+            <a href="/" class="logo-link">
+                <div class="modern-logo">
+                    <div class="modern-logo-icon">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M160 20H60c-5.523 0-10 4.477-10 10v10H40c-5.523 0-10 4.477-10 10v120c0 5.523 4.477 10 10 10h100c5.523 0 10-4.477 10-10v-10h10c5.523 0 10-4.477 10-10V30c0-5.523-4.477-10-10-10z" fill="none" stroke="#4B6BDC" stroke-width="8"/>
+                            <path d="M100 80c-11.046 0-20 8.954-20 20s8.954 20 20 20 20-8.954 20-20-8.954-20-20-20zm0 30c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10z" fill="#4B6BDC"/>
+                            <line x1="70" y1="50" x2="130" y2="50" stroke="#4B6BDC" stroke-width="8" stroke-linecap="round"/>
+                            <line x1="70" y1="150" x2="130" y2="150" stroke="#4B6BDC" stroke-width="8" stroke-linecap="round"/>
+                            <path d="M160 170c0 5.523-4.477 10-10 10H50c-5.523 0-10-4.477-10-10v-10h110c5.523 0 10-4.477 10-10V30c0-5.523 4.477-10 10-10h-10v140c0 5.523-4.477 10-10 10z" fill="#4B6BDC" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div class="modern-logo-text">
+                        <h1 class="modern-logo-title">Bill Creator</h1>
+                        <p class="modern-logo-subtitle">Professional Bill Creator</p>
+                    </div>
+                </div>
+            </a>
+            <div class="nav-right">
+                <div class="dropdown">
+                    <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+                        Generate Bills <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-content" role="menu" aria-label="Bill Types">
+                        <a href="general-bill.html" role="menuitem"><i class="fas fa-file-invoice" aria-hidden="true"></i>General Bill</a>
+                        <a href="hotel-bill.html" role="menuitem"><i class="fas fa-hotel" aria-hidden="true"></i>Hotel Stay Bill</a>
+                        <a href="restaurant-bill.html" role="menuitem"><i class="fas fa-utensils" aria-hidden="true"></i>Restaurant Bill</a>
+                        <a href="internet-bill.html" role="menuitem"><i class="fas fa-wifi" aria-hidden="true"></i>Internet Bill</a>
+                        <a href="fuel-bill.html" role="menuitem"><i class="fas fa-gas-pump" aria-hidden="true"></i>Fuel Receipt</a>
+                        <a href="rent-receipt.html" role="menuitem"><i class="fas fa-home" aria-hidden="true"></i>Rent Receipt</a>
+                        <a href="book-invoice.html" role="menuitem"><i class="fas fa-book" aria-hidden="true"></i>Book Invoice</a>
+                        <a href="driver-salary.html" role="menuitem"><i class="fas fa-car" aria-hidden="true"></i>Driver Salary</a>
+                        <a href="donation-receipt.html" role="menuitem"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i>Donation Receipt</a>
+                        <a href="lta-receipt.html" role="menuitem"><i class="fas fa-plane" aria-hidden="true"></i>LTA Receipt</a>
+                        <a href="ecommerce-bill.html" role="menuitem"><i class="fas fa-shopping-cart" aria-hidden="true"></i>E-commerce Bill</a>
+                        <a href="course-invoice.html" role="menuitem"><i class="fas fa-graduation-cap" aria-hidden="true"></i>Course Invoice</a>
+                        <a href="medical-bill.html" class="active" role="menuitem"><i class="fas fa-hospital" aria-hidden="true"></i>Medical Bill</a>
+                    </div>
+                </div>
+                <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+                
+                <!-- Google Sign In Button -->
+                <a href="/auth/google" class="google-signin-button">
+                    <img src="images/google logo.png" alt="Google" class="google-icon">
+                    <span>Sign in</span>
+                </a>
+                
+            </div>
+        </nav>
+    </header>
+
+    <main class="medical-bill-container">
+        <div class="form-container">
+            <h1>Medical Bill</h1>
+            <div class="template-selector">
+                <h2>Select Template</h2>
+                <div class="template-options">
+                    <label>
+                        <input type="radio" name="template" value="template1" checked>
+                        <span>Apollo Hospitals</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="template" value="template2">
+                        <span>General Hospital</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section hospital-details">
+                <h3>Hospital Details</h3>
+                <div class="form-group">
+                    <label for="hospitalName">Hospital Name</label>
+                    <input type="text" id="hospitalName" placeholder="Enter Hospital Name">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalAddress">Hospital Address</label>
+                    <textarea id="hospitalAddress" placeholder="Enter Hospital Address..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hospitalPhone">Phone Number</label>
+                        <input type="text" id="hospitalPhone" placeholder="Enter Phone Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="hospitalFax">Fax Number</label>
+                        <input type="text" id="hospitalFax" placeholder="Enter Fax Number">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section patient-details">
+                <h3>Patient Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientName">Patient Name</label>
+                        <input type="text" id="patientName" placeholder="Enter Patient Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="billToName">Bill To</label>
+                        <input type="text" id="billToName" placeholder="Enter Billing Person Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="patientAddress">Address</label>
+                    <textarea id="patientAddress" placeholder="Enter Patient Address..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientPhone">Phone Number</label>
+                        <input type="text" id="patientPhone" placeholder="Enter Phone Number">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section invoice-details">
+                <h3>Invoice Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="invoiceNumber">Invoice Number</label>
+                        <input type="text" id="invoiceNumber" placeholder="Enter Invoice Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceDate">Invoice Date</label>
+                        <input type="date" id="invoiceDate">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section medical-items">
+                <h3>Medical Services</h3>
+                <div class="medical-services-container">
+                    <div class="medical-service-item">
+                        <div class="service-row">
+                            <div class="service-field">
+                                <label>Description</label>
+                                <input type="text" class="item-description" placeholder="Enter Service Description">
+                            </div>
+                        </div>
+                        <div class="service-row">
+                            <div class="service-field">
+                                <label>Unit Price</label>
+                                <input type="number" class="item-price" min="0" step="0.01" placeholder="Enter Unit Price">
+                            </div>
+                            <div class="service-field">
+                                <label>Quantity</label>
+                                <input type="number" class="item-quantity" min="1" value="1">
+                            </div>
+                            <div class="service-field">
+                                <label>Tax %</label>
+                                <input type="number" class="item-tax" min="0" max="100" value="0">
+                            </div>
+                            <div class="service-actions">
+                                <label>Action</label>
+                                <div class="action-buttons">
+                                    <button type="button" class="add-service-btn" style="background-color: #ff5a5f; color: white; font-size: 24px; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; border: none;">+</button>
+                                    <button type="button" class="remove-service-btn" style="background-color: #f5f5f5; color: #333; font-size: 24px; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e0e0e0;">−</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section file-details">
+                <h3>File Details</h3>
+                <div class="form-group">
+                    <label for="downloadFileName">Download File Name</label>
+                    <input type="text" id="downloadFileName" placeholder="Medical Bill">
+                </div>
+                <p class="file-note">This will be used as name of the generated PDF file</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="downloadBtn"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
+                <button type="button" class="btn btn-secondary" id="clearBtn"><i class="fas fa-times" aria-hidden="true"></i> Clear</button>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-frame">
+                <div class="receipt-preview">
+                    <div class="hospital-header">
+                        <div class="hospital-logo">
+                            <img src="images/apollo-logo.png" alt="Hospital Logo" id="hospitalLogoPreview" class="hospital-logo-img">
+                        </div>
+                        <div class="hospital-info">
+                            <h1 id="previewHospitalName">APOLLO HOSPITALS</h1>
+                            <p id="previewHospitalAddress">Opposite IIMB,154/11, Amalodhayi Nagar, Panduranga Nagar,Bangalore - 560076 (India)</p>
+                            <p id="previewHospitalContact">Tel.: +(91)-80-26304053 / 26304052 Fax: +(91)-80-41463154</p>
+                        </div>
+                        <div class="invoice-title">
+                            <h2>Invoice</h2>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="billing-details">
+                        <div class="bill-to">
+                            <p><strong>Bill To</strong></p>
+                            <p id="previewBillToName">Sagar R</p>
+                            <p id="previewPatientAddress">#4726, Vijayanag 4th stage, Mysore 570032</p>
+                            <p id="previewPatientPhone">9972515926</p>
+                        </div>
+                        <div class="invoice-info">
+                            <table class="invoice-info-table">
+                                <tr>
+                                    <td><strong>Invoice Number</strong></td>
+                                    <td id="previewInvoiceNumber">2001321</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date</strong></td>
+                                    <td id="previewInvoiceDate">2/6/2022</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Patient Name</strong></td>
+                                    <td id="previewPatientName">Krishnappa</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="medical-items-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Unit price</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="medicalItemsTableBody">
+                                <!-- Medical items will be added here dynamically -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3"><strong>Total</strong></td>
+                                    <td id="totalAmount">Rs. 50,000</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <div class="disclaimer">
+                        <p>This is a computer generated statement and requires no signature. This Receipt is valid for an employer or insurer, who is contractually obligated to reimburse the medical expenses covered by MediSave and/or MediShield. For billing and general enquiries, please mail: customercare_bangalore@apollohospitals.com</p>
+                        <p>&copy; Apollo Hospitals, Bangalore 2013, All Rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+            <p class="watermark">Watermark will be removed from actual pdf</p>
+        </div>
+    </main>
+    
+    <div class="preview-notification">
+        <i class="fas fa-info-circle"></i> Note: The preview may not reflect the original view of the bill/receipt. Some changes may be visible in the live preview, but the original view can only be seen after downloading. Please make sure to download and check once. Thank you for your support!
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="shared-header.js"></script>
+    <script src="medical-bill.js"></script>
+    <script src="voice-recognition.js"></script>
+    <script>
+        // Ensure buttons work with direct event handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            if (downloadBtn) {
+                downloadBtn.onclick = function() {
+                    // Check if user is logged in
+                    if (!window.authState || !window.authState.isAuthenticated) {
+                        alert('Please sign in to download bills');
+                        return;
+                    }
+                    
+                    try {
+                        // Call the PDF generation function
+                        const previewContent = document.querySelector('.receipt-preview');
+                        const fileName = document.getElementById('downloadFileName').value || 'medical-bill';
+                        
+                        // Hide watermark temporarily
+                        const watermark = document.querySelector('.watermark');
+                        if (watermark) watermark.style.display = 'none';
+                        
+                        html2canvas(previewContent, {
+                            scale: 2,
+                            useCORS: true,
+                            letterRendering: true,
+                            backgroundColor: '#ffffff'
+                        }).then(function(canvas) {
+                            const { jsPDF } = window.jspdf;
+                            const doc = new jsPDF({
+                                orientation: 'portrait',
+                                unit: 'mm',
+                                format: 'a4'
+                            });
+                            
+                            // Calculate dimensions with 5% margins
+                            const a4Width = 210; // A4 width in mm
+                            const a4Height = 297; // A4 height in mm
+                            
+                            // Calculate 5% margins
+                            const leftMargin = a4Width * 0.05;
+                            const topMargin = a4Height * 0.05;
+                            
+                            // Calculate available width after margins
+                            const availableWidth = a4Width * 0.9;
+                            
+                            // Calculate image height proportionally
+                            const imgHeight = canvas.height * availableWidth / canvas.width;
+                            
+                            // Add the image to the PDF with margins
+                            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                            doc.addImage(imgData, 'JPEG', leftMargin, topMargin, availableWidth, imgHeight);
+                            
+                            // Save the PDF
+                            doc.save(`${fileName}.pdf`);
+                            
+                            // Show watermark again
+                            if (watermark) watermark.style.display = 'block';
+                        });
+                    } catch (error) {
+                        console.error('PDF generation failed:', error);
+                    }
+                };
+            }
+            
+            if (clearBtn) {
+                clearBtn.onclick = function() {
+                    if (confirm('Are you sure you want to clear the form?')) {
+                        // Reset form fields
+                        const form = document.querySelector('.form-container');
+                        const inputs = form.querySelectorAll('input:not([type="radio"]), select, textarea');
+                        inputs.forEach(input => {
+                            input.value = '';
+                        });
+                        
+                        // Reset date to today
+                        const today = new Date().toISOString().split('T')[0];
+                        document.getElementById('invoiceDate').value = today;
+                        
+                        // Reset radio buttons to default
+                        document.querySelector('input[name="template"][value="template1"]').checked = true;
+                        
+                        // Reset medical items
+                        const medicalServicesContainer = document.querySelector('.medical-services-container');
+                        if (medicalServicesContainer) {
+                            medicalServicesContainer.innerHTML = `
+                                <div class="medical-service-item">
+                                    <div class="service-row">
+                                        <div class="service-field">
+                                            <label>Description</label>
+                                            <input type="text" class="item-description" placeholder="Enter Service Description">
+                                        </div>
+                                    </div>
+                                    <div class="service-row">
+                                        <div class="service-field">
+                                            <label>Unit Price</label>
+                                            <input type="number" class="item-price" min="0" step="0.01" placeholder="Enter Unit Price">
+                                        </div>
+                                        <div class="service-field">
+                                            <label>Quantity</label>
+                                            <input type="number" class="item-quantity" min="1" value="1">
+                                        </div>
+                                        <div class="service-field">
+                                            <label>Tax %</label>
+                                            <input type="number" class="item-tax" min="0" max="100" value="0">
+                                        </div>
+                                        <div class="service-actions">
+                                            <label>Action</label>
+                                            <div class="action-buttons">
+                                                <button type="button" class="add-service-btn" style="background-color: #ff5a5f; color: white; font-size: 24px; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; border: none;">+</button>
+                                                <button type="button" class="remove-service-btn" style="background-color: #f5f5f5; color: #333; font-size: 24px; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e0e0e0;">−</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        // Update preview
+                        if (typeof updatePreview === 'function') {
+                            updatePreview();
+                        }
+                        
+                        // Clear localStorage
+                        localStorage.removeItem('medicalBillFormData');
+                    }
+                };
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,643 @@
+/* Medical Bill Styles */
+.medical-bill-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 80px auto 0;
+}
+
+.form-container {
+    flex: 1;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form heading style */
+.form-container h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.preview-container {
+    flex: 1;
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+}
+
+.preview-container .preview-frame {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: visible;
+}
+
+.preview-frame {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.template-selector {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.template-selector h2 {
+    color: #000000 !important;
+}
+
+.template-options {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.form-section h3 {
+    margin-bottom: 1.5rem;
+    color: #000000;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #000000;
+    font-weight: 500;
+}
+
+label::after {
+    content: none;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #000000;
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.file-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-actions .btn {
+    font-size: 1.12rem; /* 20% smaller font */
+    padding: 0.96rem 1.6rem; /* 20% smaller padding */
+    border-radius: 0.8rem; /* Consistent with other forms */
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem; /* 20% smaller gap */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-actions .btn-primary {
+    background: #ff5a5f;
+    color: white;
+}
+
+.form-actions .btn-primary:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-actions .btn-secondary {
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.form-actions .btn-secondary:hover {
+    background: #f5f5f5;
+}
+
+.form-actions i {
+    font-size: 1.12rem; /* 20% smaller icon */
+    transform: scale(1) !important;
+}
+
+/* Add Item Button */
+.add-item-btn {
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.add-item-btn i {
+    margin-right: 0.5rem;
+    transform: scale(1) !important;
+}
+
+.medical-item {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.medical-item:not(:first-child) {
+    padding-top: 2rem;
+}
+
+.remove-item {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: #ff5a5f;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .medical-bill-container {
+        flex-direction: column;
+    }
+    
+    .preview-container {
+        position: relative;
+        top: 0;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .medical-bill-container {
+        padding-top: 100.1px;
+    }
+    
+    .form-container {
+        margin-top: 50.05px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .medical-bill-container {
+        padding-top: 85.8px;
+    }
+    
+    .form-container {
+        margin-top: 42.9px;
+    }
+    
+    .form-actions .btn {
+        padding: 0.8rem 1.28rem; /* 20% smaller padding for mobile */
+        font-size: 0.96rem; /* 20% smaller font for mobile */
+    }
+    
+    .form-actions i {
+        font-size: 0.96rem; /* 20% smaller icon for mobile */
+    }
+}
+
+/* Preview Styles */
+.receipt-preview {
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.5;
+}
+
+.hospital-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.hospital-logo {
+    width: 120px;
+    height: auto;
+}
+
+.hospital-logo-img {
+    max-width: 100%;
+    height: auto;
+}
+
+.hospital-info {
+    flex: 1;
+    padding: 0 1.5rem;
+}
+
+.hospital-info h1 {
+    font-size: 1.51rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.hospital-info p {
+    font-size: 0.92rem;
+    margin: 0.3rem 0;
+}
+
+.invoice-title {
+    text-align: right;
+    min-width: 100px;
+}
+
+.invoice-title h2 {
+    font-size: 1.51rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #333;
+    margin: 1rem 0;
+}
+
+.billing-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.bill-to {
+    flex: 1;
+}
+
+.bill-to p {
+    margin: 0.3rem 0;
+    font-size: 0.92rem;
+}
+
+.invoice-info {
+    flex: 1;
+    text-align: right;
+}
+
+.invoice-info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invoice-info-table td {
+    padding: 0.3rem;
+    font-size: 0.92rem;
+    text-align: left;
+}
+
+.invoice-info-table td:first-child {
+    padding: 0.3rem;
+    font-size: 0.92rem;
+    text-align: left;
+    padding-left: 15%; /* Shift heading text to the right by 15% */
+}
+
+.invoice-info-table td:last-child {
+    text-align: right;
+}
+
+.medical-items-table {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.medical-items-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.medical-items-table th,
+.medical-items-table td {
+    padding: 0.8rem;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 0.92rem;
+}
+
+.medical-items-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.medical-items-table tfoot td {
+    font-weight: 600;
+}
+
+.watermark {
+    text-align: center;
+    color: #ff5a5f;
+    font-style: italic;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Disclaimer styling */
+.disclaimer {
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    font-size: 0.8rem;
+    color: #333;
+    line-height: 1.4;
+}
+
+.disclaimer p {
+    margin: 5px 0;
+}
+
+.disclaimer p:last-child {
+    font-style: italic;
+    font-size: 0.75rem;
+}
+
+/* Medical Services Table Styling */
+.order-table {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+}
+
+.order-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.order-table th {
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.8rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.order-table td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+}
+
+.order-table tr:last-child td {
+    border-bottom: none;
+}
+
+.order-table input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.4rem;
+    font-size: 0.9rem;
+}
+
+.order-table input:focus {
+    border-color: #ff5a5f;
+    outline: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.action-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.add-row {
+    background-color: #ff5a5f !important;
+    color: white;
+}
+
+.remove-row {
+    background-color: #f5f5f5 !important;
+    color: #333;
+    border: 1px solid #e0e0e0 !important;
+}
+
+.add-row:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.remove-row:hover {
+    background-color: #e0e0e0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .order-table {
+        overflow-x: auto;
+    }
+    
+    .order-table table {
+        min-width: 600px;
+    }
+    
+    .action-buttons button {
+        width: 1.8rem;
+        height: 1.8rem;
+    }
+}
+
+/* Medical Services Styling */
+.medical-services-container {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.medical-service-item {
+    background-color: #f9f9f9;
+    border-radius: 0.8rem;
+    padding: 1.2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.service-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.service-row:last-child {
+    margin-bottom: 0;
+}
+
+.service-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.service-field label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.service-field input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    background-color: #fff;
+}
+
+.service-field input:focus {
+    border-color: #ff5a5f;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 90, 95, 0.2);
+}
+
+.service-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 120px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    height: 100%;
+    align-items: center;
+}
+
+.add-service-btn,
+.remove-service-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.add-service-btn {
+    background-color: #ff5a5f;
+    color: white;
+}
+
+.remove-service-btn {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.add-service-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.remove-service-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .service-row {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .service-actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .action-buttons {
+        justify-content: flex-end;
+    }
+    
+    .add-service-btn,
+    .remove-service-btn {
+        width: 2.2rem;
+        height: 2.2rem;
+    }
+}
