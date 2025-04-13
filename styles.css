@@ -20,6 +20,7 @@
     --hotel-gradient: linear-gradient(135deg, #5ee7df, #b490ca);
     --general-gradient: linear-gradient(135deg, #c471f5, #fa71cd);
     --medical-gradient: linear-gradient(135deg, #43e97b, #38f9d7);
+    --course-gradient: linear-gradient(135deg, #6a11cb, #2575fc);
 }
 
 * {
@@ -949,6 +950,7 @@ body {
 .bill-type-card:nth-child(10) .icon-wrapper { background: var(--hotel-gradient); }
 .bill-type-card:nth-child(11) .icon-wrapper { background: var(--general-gradient); }
 .bill-type-card:nth-child(12) .icon-wrapper { background: var(--medical-gradient); }
+.bill-type-card:nth-child(13) .icon-wrapper { background: var(--course-gradient); }
 
 .bill-type-card:hover .icon-wrapper {
     transform: scale(1.15) rotate(5deg);
