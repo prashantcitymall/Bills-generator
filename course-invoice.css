@@ -1,0 +1,385 @@
+/* Course Invoice Styles */
+.course-invoice-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 80px auto 0;
+}
+
+.form-container {
+    flex: 1;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form heading style */
+.form-container h1 {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.preview-container {
+    flex: 1;
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+}
+
+.preview-container .preview-frame {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: visible;
+}
+
+.preview-frame {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.template-selector {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.template-selector h2 {
+    color: #000000 !important;
+}
+
+.template-options {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.form-section h3 {
+    margin-bottom: 1.5rem;
+    color: #000000;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #000000;
+    font-weight: 500;
+}
+
+label::after {
+    content: none;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #000000;
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.file-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-actions .btn {
+    font-size: 1.12rem; /* 20% smaller font */
+    padding: 0.96rem 1.6rem; /* 20% smaller padding */
+    border-radius: 0.8rem; /* Consistent with other forms */
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem; /* 20% smaller gap */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-actions .btn-primary {
+    background: #ff5a5f;
+    color: white;
+}
+
+.form-actions .btn-primary:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-actions .btn-secondary {
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.form-actions .btn-secondary:hover {
+    background: #f5f5f5;
+}
+
+.form-actions i {
+    font-size: 1.12rem; /* 20% smaller icon */
+    transform: scale(1) !important;
+}
+
+/* Add Course Button */
+.add-item-btn {
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.add-item-btn i {
+    margin-right: 0.5rem;
+    transform: scale(1) !important;
+}
+
+.course-item {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.course-item:not(:first-child) {
+    padding-top: 2rem;
+}
+
+.remove-item {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: #ff5a5f;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .course-invoice-container {
+        flex-direction: column;
+    }
+    
+    .preview-container {
+        position: relative;
+        top: 0;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-invoice-container {
+        padding-top: 100.1px;
+    }
+    
+    .form-container {
+        margin-top: 50.05px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .course-invoice-container {
+        padding-top: 85.8px;
+    }
+    
+    .form-container {
+        margin-top: 42.9px;
+    }
+    
+    .form-actions .btn {
+        padding: 0.8rem 1.28rem; /* 20% smaller padding for mobile */
+        font-size: 0.96rem; /* 20% smaller font for mobile */
+    }
+    
+    .form-actions i {
+        font-size: 0.96rem; /* 20% smaller icon for mobile */
+    }
+}
+
+/* Preview Styles */
+.receipt-preview {
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.5;
+}
+
+.receipt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.company-logo {
+    width: 120px;
+    height: auto;
+}
+
+.company-logo-img {
+    max-width: 100%;
+    height: auto;
+}
+
+.invoice-title {
+    text-align: right;
+}
+
+.invoice-title h1 {
+    font-size: 1.51rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.original-text {
+    font-size: 0.92rem;
+    color: #666;
+}
+
+.invoice-details-preview {
+    text-align: right;
+    margin-bottom: 2rem;
+}
+
+.invoice-number-date p {
+    margin: 0.3rem 0;
+    font-size: 0.92rem;
+}
+
+.details-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 2rem;
+}
+
+.supplier-details-preview,
+.recipient-details-preview {
+    flex: 1;
+    min-width: 45%;
+    max-width: 48%;
+}
+
+.supplier-details-preview h2,
+.recipient-details-preview h2 {
+    font-size: 1.18rem;
+    margin-bottom: 1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.supplier-details-preview p,
+.recipient-details-preview p {
+    font-size: 0.92rem;
+    margin: 0.3rem 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+}
+
+.course-items-table {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.course-items-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.course-items-table th,
+.course-items-table td {
+    padding: 0.8rem;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 0.92rem;
+}
+
+.course-items-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.course-items-table tfoot td {
+    font-weight: 600;
+}
+
+.receipt-footer {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.thank-you {
+    font-size: 1.32rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.watermark {
+    text-align: center;
+    color: #ff5a5f;
+    font-style: italic;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}

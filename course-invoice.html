@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Course Invoice - Bill Creator</title>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="shared-header.css">
+    <link rel="stylesheet" href="course-invoice.css">
+    <link rel="stylesheet" href="modern-logo.css">
+    <link rel="stylesheet" href="preview-notification.css">
+    <link rel="stylesheet" href="voice-button.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-design">
+        <div class="gradient-overlay"></div>
+    </div>
+    <header class="header">
+        <nav class="navbar">
+            <a href="/" class="logo-link">
+                <div class="modern-logo">
+                    <div class="modern-logo-icon">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M160 20H60c-5.523 0-10 4.477-10 10v10H40c-5.523 0-10 4.477-10 10v120c0 5.523 4.477 10 10 10h100c5.523 0 10-4.477 10-10v-10h10c5.523 0 10-4.477 10-10V30c0-5.523-4.477-10-10-10z" fill="none" stroke="#4B6BDC" stroke-width="8"/>
+                            <path d="M100 80c-11.046 0-20 8.954-20 20s8.954 20 20 20 20-8.954 20-20-8.954-20-20-20zm0 30c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10z" fill="#4B6BDC"/>
+                            <line x1="70" y1="50" x2="130" y2="50" stroke="#4B6BDC" stroke-width="8" stroke-linecap="round"/>
+                            <line x1="70" y1="150" x2="130" y2="150" stroke="#4B6BDC" stroke-width="8" stroke-linecap="round"/>
+                            <path d="M160 170c0 5.523-4.477 10-10 10H50c-5.523 0-10-4.477-10-10v-10h110c5.523 0 10-4.477 10-10V30c0-5.523 4.477-10 10-10h-10v140c0 5.523-4.477 10-10 10z" fill="#4B6BDC" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div class="modern-logo-text">
+                        <h1 class="modern-logo-title">Bill Creator</h1>
+                        <p class="modern-logo-subtitle">Professional Bill Creator</p>
+                    </div>
+                </div>
+            </a>
+            <div class="nav-right">
+                <div class="dropdown">
+                    <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+                        Generate Bills <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-content" role="menu" aria-label="Bill Types">
+                        <a href="general-bill.html" role="menuitem"><i class="fas fa-file-invoice" aria-hidden="true"></i>General Bill</a>
+                        <a href="hotel-bill.html" role="menuitem"><i class="fas fa-hotel" aria-hidden="true"></i>Hotel Stay Bill</a>
+                        <a href="restaurant-bill.html" role="menuitem"><i class="fas fa-utensils" aria-hidden="true"></i>Restaurant Bill</a>
+                        <a href="internet-bill.html" role="menuitem"><i class="fas fa-wifi" aria-hidden="true"></i>Internet Bill</a>
+                        <a href="fuel-bill.html" role="menuitem"><i class="fas fa-gas-pump" aria-hidden="true"></i>Fuel Receipt</a>
+                        <a href="rent-receipt.html" role="menuitem"><i class="fas fa-home" aria-hidden="true"></i>Rent Receipt</a>
+                        <a href="book-invoice.html" role="menuitem"><i class="fas fa-book" aria-hidden="true"></i>Book Invoice</a>
+                        <a href="driver-salary.html" role="menuitem"><i class="fas fa-car" aria-hidden="true"></i>Driver Salary</a>
+                        <a href="donation-receipt.html" role="menuitem"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i>Donation Receipt</a>
+                        <a href="lta-receipt.html" role="menuitem"><i class="fas fa-plane" aria-hidden="true"></i>LTA Receipt</a>
+                        <a href="ecommerce-bill.html" role="menuitem"><i class="fas fa-shopping-cart" aria-hidden="true"></i>E-commerce Bill</a>
+                        <a href="course-invoice.html" class="active" role="menuitem"><i class="fas fa-graduation-cap" aria-hidden="true"></i>Course Invoice</a>
+                    </div>
+                </div>
+                <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+                
+                <!-- Google Sign In Button -->
+                <a href="/auth/google" class="google-signin-button">
+                    <img src="images/google logo.png" alt="Google" class="google-icon">
+                    <span>Sign in</span>
+                </a>
+                
+            </div>
+        </nav>
+    </header>
+
+    <main class="course-invoice-container">
+        <div class="form-container">
+            <h1>Course Invoice</h1>
+            <div class="template-selector">
+                <h2>Select Template</h2>
+                <div class="template-options">
+                    <label>
+                        <input type="radio" name="template" value="template1">
+                        Template 1
+                    </label>
+                    <label>
+                        <input type="radio" name="template" value="template2" checked>
+                        Template 2
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section supplier-details">
+                <h3>Supplier Details</h3>
+                <div class="form-group">
+                    <label for="supplierName">Supplier Name</label>
+                    <input type="text" id="supplierName" placeholder="Enter Supplier Name (e.g., Udemy India LLP)">
+                </div>
+                <div class="form-group">
+                    <label for="supplierAddress">Supplier Address</label>
+                    <textarea id="supplierAddress" placeholder="Enter Supplier Address..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gstin">GSTIN</label>
+                        <input type="text" id="gstin" placeholder="Enter GSTIN Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="pan">PAN No.</label>
+                        <input type="text" id="pan" placeholder="Enter PAN Number">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section recipient-details">
+                <h3>Recipient Details</h3>
+                <div class="form-group">
+                    <label for="recipientName">Recipient Name</label>
+                    <input type="text" id="recipientName" placeholder="Enter Recipient Name">
+                </div>
+                <div class="form-group">
+                    <label for="recipientEmail">Recipient Email</label>
+                    <input type="email" id="recipientEmail" placeholder="Enter Recipient Email">
+                </div>
+                <div class="form-group">
+                    <label for="recipientAddress">Recipient Address</label>
+                    <textarea id="recipientAddress" placeholder="Enter Recipient Address..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section invoice-details">
+                <h3>Invoice Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="invoiceNumber">Invoice Number</label>
+                        <input type="text" id="invoiceNumber" placeholder="Enter Invoice Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceDate">Invoice Date</label>
+                        <input type="date" id="invoiceDate">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="currency">Currency</label>
+                        <select id="currency">
+                            <option value="INR">Indian Rupee - ₹</option>
+                            <option value="USD">US Dollar - $</option>
+                            <option value="EUR">Euro - €</option>
+                            <option value="GBP">British Pound - £</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section course-items">
+                <h3>Course Items</h3>
+                <div id="courseItemsContainer">
+                    <div class="course-item">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="courseName1">Course Name</label>
+                                <input type="text" id="courseName1" placeholder="Enter Course Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="hsnCode1">HSN Code</label>
+                                <input type="text" id="hsnCode1" placeholder="Enter HSN Code">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="quantity1">Quantity</label>
+                                <input type="number" id="quantity1" value="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="taxableValue1">Taxable Value</label>
+                                <input type="number" id="taxableValue1" placeholder="Enter Taxable Value" step="0.01">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="taxRate1">Tax Rate (%)</label>
+                                <input type="number" id="taxRate1" placeholder="Enter Tax Rate" value="18" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="taxAmount1">Tax Amount</label>
+                                <input type="number" id="taxAmount1" placeholder="0.00" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="addCourseBtn" class="btn btn-secondary add-item-btn">
+                    <i class="fas fa-plus"></i> Add Another Course
+                </button>
+            </div>
+
+            <div class="form-section file-details">
+                <h3>File Details</h3>
+                <div class="form-group">
+                    <label for="downloadFileName">Download File Name</label>
+                    <input type="text" id="downloadFileName" placeholder="Course Invoice">
+                </div>
+                <p class="file-note">This will be used as name of the generated PDF file</p>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" id="downloadBtn"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
+                <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-times" aria-hidden="true"></i> Clear</button>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-frame">
+                <div class="receipt-preview">
+                    <div class="receipt-header">
+                        <div class="company-logo">
+                            <img src="" alt="" id="companyLogoPreview" class="company-logo-img">
+                        </div>
+                        <div class="invoice-title">
+                            <h1>TAX INVOICE</h1>
+                            <p class="original-text">ORIGINAL FOR RECIPIENT</p>
+                        </div>
+                    </div>
+
+                    <div class="invoice-details-preview">
+                        <div class="invoice-number-date">
+                            <p><span class="label">Invoice #:</span> <span id="previewInvoiceNumber">IN2020-421271</span></p>
+                            <p><span class="label">Invoice date:</span> <span id="previewInvoiceDate">27/10/2020</span></p>
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <div class="supplier-details-preview">
+                            <h2>Supplier details:</h2>
+                            <p id="previewSupplierName">Udemy India LLP</p>
+                            <p id="previewSupplierAddress">10th Floor, RedCowork 07, Tower B,<br>Unitech Cyber Park, Sector 39,<br>Gurgaon, Haryana, India, 122003</p>
+                            <p>GSTIN: <span id="previewGstin">06AAFFU8763H1ZE</span></p>
+                            <p>PAN no. <span id="previewPan">AAOCU4291A</span></p>
+                        </div>
+                        <div class="recipient-details-preview">
+                            <h2>Recipient details:</h2>
+                            <p id="previewRecipientName">Badri Kotanjan Reddy</p>
+                            <p id="previewRecipientEmail">kotanjan.neo@gmail.com</p>
+                            <p id="previewRecipientAddress">Uppalapadu,Owk Andhra Pradesh, 37, AP, India</p>
+                        </div>
+                    </div>
+
+                    <div class="course-items-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>HSN Code</th>
+                                    <th>Quantity</th>
+                                    <th>Taxable Value</th>
+                                    <th>CGST (0%)</th>
+                                    <th>SGST/UGST (0%)</th>
+                                    <th>IGST (18%)</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="courseItemsTableBody">
+                                <!-- Course items will be added here dynamically -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">Total</td>
+                                    <td id="totalTaxableValue">6710.00</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td id="totalTaxAmount">1207.80</td>
+                                    <td id="grandTotal">INR 7917.80</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="receipt-footer">
+                        <p class="thank-you">Thank you for your business!</p>
+                    </div>
+                </div>
+            </div>
+            <p class="watermark">Watermark will be removed from actual pdf</p>
+        </div>
+    </main>
+    
+    <div class="preview-notification">
+        <i class="fas fa-info-circle"></i> Note: The preview may not reflect the original view of the bill/receipt. Some changes may be visible in the live preview, but the original view can only be seen after downloading. Please make sure to download and check once. Thank you for your support!
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="shared-header.js"></script>
+    <script src="course-invoice.js"></script>
+    <script src="voice-recognition.js"></script>
+</body>
+</html>

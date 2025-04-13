@@ -43,11 +43,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const isEcommerceBillPage = window.location.pathname.includes('ecommerce-bill.html');
         const isDonationReceiptPage = window.location.pathname.includes('donation-receipt.html');
         const isLtaReceiptPage = window.location.pathname.includes('lta-receipt.html');
+        const isCourseInvoicePage = window.location.pathname.includes('course-invoice.html');
         
         const isSupportedPage = isGeneralBillPage || isFuelBillPage || isDriverSalaryPage || 
                                isRentReceiptPage || isBookInvoicePage || isInternetBillPage ||
                                isRestaurantBillPage || isHotelBillPage || isEcommerceBillPage ||
-                               isDonationReceiptPage || isLtaReceiptPage;
+                               isDonationReceiptPage || isLtaReceiptPage || isCourseInvoicePage;
         
         if (!isSupportedPage) {
             showNotification('Voice recognition is only available on selected bill forms');
@@ -231,11 +232,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const isEcommerceBillPage = window.location.pathname.includes('ecommerce-bill.html');
         const isDonationReceiptPage = window.location.pathname.includes('donation-receipt.html');
         const isLtaReceiptPage = window.location.pathname.includes('lta-receipt.html');
+        const isCourseInvoicePage = window.location.pathname.includes('course-invoice.html');
         
         const isSupportedPage = isGeneralBillPage || isFuelBillPage || isDriverSalaryPage || 
                                isRentReceiptPage || isBookInvoicePage || isInternetBillPage ||
                                isRestaurantBillPage || isHotelBillPage || isEcommerceBillPage ||
-                               isDonationReceiptPage || isLtaReceiptPage;
+                               isDonationReceiptPage || isLtaReceiptPage || isCourseInvoicePage;
         
         if (!isSupportedPage) return;
         
