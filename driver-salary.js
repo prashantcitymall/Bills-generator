@@ -87,14 +87,58 @@ document.addEventListener('DOMContentLoaded', function() {
         tempDiv.style.width = '210mm'; // A4 width
         tempDiv.style.padding = '10mm';
         tempDiv.style.backgroundColor = '#ffffff';
+        // Apply global font style to match rent receipt
+        tempDiv.style.fontFamily = 'Arial, sans-serif';
+        tempDiv.style.fontSize = '14px';
+        tempDiv.style.color = '#000000';
+        tempDiv.style.lineHeight = '1.5';
         document.body.appendChild(tempDiv);
         
-        // Fix text color to ensure no blue text in the PDF
+        // Ensure heading is properly centered in the PDF and has the exact same font style as rent receipt
+        const heading = tempDiv.querySelector('h2');
+        if (heading) {
+            heading.style.textAlign = 'center';
+            heading.style.marginBottom = '2rem';
+            heading.style.marginTop = '0';
+            heading.style.fontWeight = 'bold';
+            heading.style.color = '#000000';
+            heading.style.fontFamily = 'Arial, sans-serif';
+            heading.style.fontSize = '18px';
+            heading.style.lineHeight = '1.5';
+        }
+        
+        // Apply consistent font styling to match rent receipt image
         const allTextElements = tempDiv.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, td, th, div');
         allTextElements.forEach(el => {
-            if (!el.style.color) {
-                el.style.color = '#333'; // Set default text color to dark gray
+            // Base font styling for all elements
+            el.style.fontFamily = 'Arial, sans-serif';
+            el.style.color = '#000000';
+            
+            // Apply specific styling based on element type
+            if (el.tagName.toLowerCase() === 'h2') {
+                el.style.fontSize = '18px';
+                el.style.fontWeight = 'bold';
+            } else if (el.tagName.toLowerCase() === 'h3') {
+                el.style.fontSize = '16px';
+                el.style.fontWeight = 'bold';
+            } else if (el.tagName.toLowerCase() === 'p') {
+                el.style.fontSize = '14px';
+                el.style.lineHeight = '1.5';
+            } else if (el.className && el.className.includes('label')) {
+                el.style.fontSize = '14px';
+                el.style.fontWeight = 'normal';
+            } else if (el.className && el.className.includes('value')) {
+                el.style.fontSize = '14px';
+                el.style.fontWeight = 'bold';
+            } else if (el.id && el.id.startsWith('preview')) {
+                el.style.fontSize = '14px';
+                el.style.fontWeight = 'bold';
+            } else {
+                el.style.fontSize = '14px';
             }
+            
+            // Ensure consistent line height
+            el.style.lineHeight = '1.5';
         });
         
         // If there's a signature, copy it properly
