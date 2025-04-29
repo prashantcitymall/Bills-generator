@@ -169,8 +169,8 @@
                                 <input type="number" id="quantity1" value="1" min="1">
                             </div>
                             <div class="form-group">
-                                <label for="taxableValue1">Taxable Value</label>
-                                <input type="number" id="taxableValue1" placeholder="Enter Taxable Value" step="0.01">
+                                <label for="taxableValue1">Price</label>
+                                <input type="number" id="taxableValue1" placeholder="Enter Price" step="0.01">
                             </div>
                         </div>
                         <div class="form-row">
@@ -245,30 +245,35 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Description</th>
-                                    <th>HSN Code</th>
-                                    <th>Quantity</th>
-                                    <th>Taxable Value</th>
-                                    <th>CGST (0%)</th>
-                                    <th>SGST/UGST (0%)</th>
-                                    <th>IGST (18%)</th>
-                                    <th>Total Amount</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>HSN CODE</th>
+                                    <th>QUANTITY</th>
+                                    <th>TOTAL AMOUNT</th>
                                 </tr>
                             </thead>
                             <tbody id="courseItemsTableBody">
                                 <!-- Course items will be added here dynamically -->
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3">Total</td>
-                                    <td id="totalTaxableValue">6710.00</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td id="totalTaxAmount">1207.80</td>
-                                    <td id="grandTotal">INR 7917.80</td>
-                                </tr>
-                            </tfoot>
                         </table>
+                        
+                        <!-- Payment summary with complete border lines -->
+                        <div class="payment-summary">
+                            <div class="payment-row">
+                                <div class="payment-label">CGST</div>
+                                <div class="payment-dash">-</div>
+                                <div class="payment-value" id="cgstAmount">xyz</div>
+                            </div>
+                            <div class="payment-row">
+                                <div class="payment-label">SGST</div>
+                                <div class="payment-dash">-</div>
+                                <div class="payment-value" id="sgstAmount">xyz</div>
+                            </div>
+                            <div class="payment-row total-row">
+                                <div class="payment-label">TOTAL</div>
+                                <div class="payment-dash">-</div>
+                                <div class="payment-value" id="grandTotal">xyz</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="receipt-footer">

@@ -43,9 +43,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (watermark) watermark.style.display = 'none';
 
         try {
-            // Convert the preview content to canvas
+            // Temporarily increase font sizes for PDF download
+            const originalFontSizes = {};
+            const elements = previewContent.querySelectorAll('*');
+            elements.forEach((el, index) => {
+                const style = window.getComputedStyle(el);
+                const fontSize = parseFloat(style.fontSize);
+                if (fontSize) {
+                    originalFontSizes[index] = fontSize;
+                    el.style.fontSize = `${fontSize * 1.25}px`; // Increase font size by 25%
+                }
+            });
+            
+            // Convert the preview content to canvas with increased scale
             const canvas = await html2canvas(previewContent, {
-                scale: 2,
+                scale: 2.5, // Increased scale for better quality
                 useCORS: true,
                 letterRendering: true,
                 backgroundColor: '#ffffff',
@@ -85,6 +97,14 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('PDF generation failed:', error);
         } finally {
+            // Restore original font sizes
+            const elements = previewContent.querySelectorAll('*');
+            elements.forEach((el, index) => {
+                if (originalFontSizes[index]) {
+                    el.style.fontSize = `${originalFontSizes[index]}px`;
+                }
+            });
+            
             // Show watermark again
             if (watermark) watermark.style.display = 'block';
         }
@@ -309,31 +329,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to update totals
     function updateTotals() {
         let totalTaxableValue = 0;
-        let totalTaxAmount = 0;
         
         document.querySelectorAll('.course-item').forEach((item, index) => {
             const itemNumber = index + 1;
             const taxableValueInput = document.getElementById(`taxableValue${itemNumber}`);
-            const taxAmountInput = document.getElementById(`taxAmount${itemNumber}`);
             const quantityInput = document.getElementById(`quantity${itemNumber}`);
             
-            if (taxableValueInput && taxAmountInput && quantityInput) {
+            if (taxableValueInput && quantityInput) {
                 const taxableValue = parseFloat(taxableValueInput.value) || 0;
                 const quantity = parseInt(quantityInput.value) || 1;
-                const taxAmount = parseFloat(taxAmountInput.value) || 0;
                 
                 totalTaxableValue += taxableValue * quantity;
-                totalTaxAmount += taxAmount;
             }
         });
         
-        // Update preview totals
-        document.getElementById('totalTaxableValue').textContent = totalTaxableValue.toFixed(2);
-        document.getElementById('totalTaxAmount').textContent = totalTaxAmount.toFixed(2);
+        // Calculate tax amounts
+        const taxRate = parseFloat(document.getElementById('taxRate1')?.value || '18');
+        const halfTaxRate = taxRate / 2;
+        const cgstAmount = (totalTaxableValue * halfTaxRate / 100);
+        const sgstAmount = (totalTaxableValue * halfTaxRate / 100);
         
-        const currency = document.getElementById('currency').value;
-        const grandTotal = totalTaxableValue + totalTaxAmount;
-        document.getElementById('grandTotal').textContent = `${getCurrencySymbol(currency)} ${grandTotal.toFixed(2)}`;
+        // Calculate grand total
+        const grandTotal = totalTaxableValue + cgstAmount + sgstAmount;
+        
+        // Get currency symbol
+        const currency = document.getElementById('currency').value || 'INR';
+        const currencySymbol = getCurrencySymbol(currency);
+        
+        // Format numbers with commas for thousands separators
+        function formatNumber(num) {
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // Update preview totals with real calculated values (without taxable value)
+        document.getElementById('cgstAmount').textContent = `${currencySymbol} ${formatNumber(cgstAmount)}`;
+        document.getElementById('sgstAmount').textContent = `${currencySymbol} ${formatNumber(sgstAmount)}`;
+        document.getElementById('grandTotal').textContent = `${currencySymbol} ${formatNumber(grandTotal)}`;
     }
 
     // Validation function for required fields
@@ -428,26 +459,21 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.course-item').forEach((item, index) => {
             const itemNumber = index + 1;
             const courseName = document.getElementById(`courseName${itemNumber}`).value || `Course ${itemNumber}`;
-            const hsnCode = document.getElementById(`hsnCode${itemNumber}`).value || '9984';
+            const hsnCode = document.getElementById(`hsnCode${itemNumber}`).value || '6556';
             const quantity = document.getElementById(`quantity${itemNumber}`).value || '1';
             const taxableValue = document.getElementById(`taxableValue${itemNumber}`).value || '0.00';
             
             // Calculate tax amount
             calculateTaxAmount(itemNumber);
-            const taxAmount = document.getElementById(`taxAmount${itemNumber}`).value || '0.00';
             
             // Calculate total amount
-            const totalAmount = (parseFloat(taxableValue) * parseFloat(quantity)) + parseFloat(taxAmount);
+            const totalAmount = parseFloat(taxableValue) * parseFloat(quantity);
             
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${courseName}</td>
                 <td>${hsnCode}</td>
                 <td>${quantity}</td>
-                <td>${parseFloat(taxableValue).toFixed(2)}</td>
-                <td>-</td>
-                <td>-</td>
-                <td>${parseFloat(taxAmount).toFixed(2)}</td>
                 <td>${totalAmount.toFixed(2)}</td>
             `;
             
