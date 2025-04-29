@@ -5,19 +5,28 @@
   --text-secondary: #8892b0;
   --background: #0a192f;
   --gradient: linear-gradient(45deg, #64ffda, #64d8ff);
+  
+  /* Font size variables for responsive scaling */
+  --font-size-base: 62.5%;
+  --font-size-tablet-large: 60%;
+  --font-size-tablet: 58%;
+  --font-size-mobile: 55%;
+  --font-size-mobile-small: 50%;
 }
 
 html {
-  font-size: 16px; /* Reset from 62.5% to standard 16px base */
+  /* Base font size - 62.5% means 1rem = 10px */
+  font-size: var(--font-size-base);
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  zoom: 100%;
 }
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  font-size: 1rem;
+  font-size: 1.6rem; /* 16px at base size */
   line-height: 1.5;
   margin: 0;
   padding-top: 4.5rem;
@@ -34,27 +43,54 @@ body {
   padding: 0 1rem;
 }
 
-/* Responsive breakpoints */
+/* Responsive breakpoints with improved tablet support */
 @media (max-width: 1200px) {
   html {
-    font-size: 15px;
+    font-size: var(--font-size-tablet-large);
   }
 }
 
-@media (max-width: 992px) {
+/* Tablet landscape */
+@media (max-width: 1024px) {
   html {
-    font-size: 14px;
+    font-size: var(--font-size-tablet);
+  }
+  
+  body {
+    font-size: 1.7rem; /* Slightly larger for better readability */
   }
 }
 
+/* Tablet portrait */
 @media (max-width: 768px) {
   html {
-    font-size: 13px;
+    font-size: var(--font-size-tablet);
+  }
+  
+  body {
+    font-size: 1.7rem;
+  }
+  
+  /* Adjust container padding for tablets */
+  .container {
+    padding: 0 1.5rem;
   }
 }
 
+/* Mobile devices */
 @media (max-width: 576px) {
   html {
-    font-size: 12px;
+    font-size: var(--font-size-mobile);
+  }
+  
+  body {
+    font-size: 1.6rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 375px) {
+  html {
+    font-size: var(--font-size-mobile-small);
   }
 }

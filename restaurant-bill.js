@@ -450,12 +450,12 @@ function updatePreview() {
             
             <div class="receipt-header">
                 <div class="header-row">
-                    <div><span class="label">Name:</span> <span class="premium-input">${customerName || '-'}</span></div>
-                    <div><span class="label">Table:</span> <span class="premium-input">${tableNo}</span></div>
+                    <div><span class="label">Name:&nbsp;&nbsp;</span><span class="premium-input">${customerName || '-'}</span></div>
+                    <div><span class="label">Table:&nbsp;&nbsp;</span><span class="premium-input">${tableNo}</span></div>
                 </div>
                 <div class="header-row">
-                    <div><span class="label">Invoice No:</span> <span class="premium-input">${invoiceNo}</span></div>
-                    <div><span class="label">Date:</span> <span class="premium-input">${billDate}</span></div>
+                    <div><span class="label">Invoice No:&nbsp;&nbsp;</span><span class="premium-input">${invoiceNo}</span></div>
+                    <div><span class="label">Date:&nbsp;&nbsp;</span><span class="premium-input">${billDate}</span></div>
                 </div>
             </div>
             
@@ -491,15 +491,15 @@ function updatePreview() {
             
             <div class="summary-section">
                 <div class="summary-row">
-                    <span class="label">Sub-Total:</span>
+                    <span class="label">Sub-Total:&nbsp;&nbsp;</span>
                     <span class="premium-input">₹ ${subTotal.toFixed(0)}</span>
                 </div>
                 <div class="summary-row">
-                    <span class="label">CGST: ${taxPercentage/2}%</span>
+                    <span class="label">CGST: ${taxPercentage/2}%&nbsp;&nbsp;</span>
                     <span class="premium-input">₹ ${(taxAmount/2).toFixed(0)}</span>
                 </div>
                 <div class="summary-row">
-                    <span class="label">SGST: ${taxPercentage/2}%</span>
+                    <span class="label">SGST: ${taxPercentage/2}%&nbsp;&nbsp;</span>
                     <span class="premium-input">₹ ${(taxAmount/2).toFixed(0)}</span>
                 </div>
             </div>
@@ -507,15 +507,15 @@ function updatePreview() {
             <div class="receipt-line"></div>
             
             <div class="summary-row">
-                <span class="label">Mode:</span> <span class="premium-input">${document.getElementById('paymentMethod').value || '-'}</span>
-                <span class="label">Total:</span> <span class="premium-input">₹ ${total.toFixed(0)}</span>
+                <span class="label">Mode:&nbsp;&nbsp;</span><span class="premium-input">${document.getElementById('paymentMethod').value || '-'}</span>
+                <span class="label">Total:&nbsp;&nbsp;</span><span class="premium-input">₹ ${total.toFixed(0)}</span>
             </div>
             
             <div class="receipt-line"></div>
             
             <div class="receipt-footer">
                 <div class="nature-text">**SAVE PAPER SAVE NATURE !!</div>
-                <div class="time-text"><span class="label">Time:</span> <span class="premium-input">${billTime}</span></div>
+                <div class="time-text"><span class="label">Time:&nbsp;&nbsp;</span><span class="premium-input">${billTime}</span></div>
             </div>
             
             <div class="receipt-line"></div>

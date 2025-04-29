@@ -46,6 +46,11 @@ h2, h3 {
     margin-bottom: 2rem;
 }
 
+/* Make 'Select Template' heading white */
+.template-selector h3 {
+    color: #ffffff !important;
+}
+
 .template-options {
     display: flex;
     gap: 1rem;
