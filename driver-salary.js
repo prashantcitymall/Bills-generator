@@ -81,20 +81,90 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Generate a temporary element for PDF generation
+        // Create a temporary element for PDF generation with exact styling
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = element.innerHTML;
         tempDiv.style.width = '210mm'; // A4 width
         tempDiv.style.padding = '10mm';
         tempDiv.style.backgroundColor = '#ffffff';
+        
+        // Copy all CSS styles from the original receipt preview
+        const styles = window.getComputedStyle(element);
+        for (let style of styles) {
+            tempDiv.style[style] = styles.getPropertyValue(style);
+        }
+        
         document.body.appendChild(tempDiv);
         
-        // Fix text color to ensure no blue text in the PDF
-        const allTextElements = tempDiv.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, td, th, div');
-        allTextElements.forEach(el => {
-            if (!el.style.color) {
-                el.style.color = '#333'; // Set default text color to dark gray
+        // Copy exact computed styles from the preview to the PDF version for each element
+        function copyComputedStyles(sourceElement, targetElement) {
+            const computedStyle = window.getComputedStyle(sourceElement);
+            
+            // Apply all computed styles to the target element
+            for (let i = 0; i < computedStyle.length; i++) {
+                const property = computedStyle[i];
+                const value = computedStyle.getPropertyValue(property);
+                targetElement.style[property] = value;
             }
+            
+            // Explicitly set important styles to ensure they're preserved
+            targetElement.style.fontFamily = computedStyle.getPropertyValue('font-family');
+            targetElement.style.fontSize = computedStyle.getPropertyValue('font-size');
+            targetElement.style.fontWeight = computedStyle.getPropertyValue('font-weight');
+            targetElement.style.color = computedStyle.getPropertyValue('color');
+            targetElement.style.textAlign = computedStyle.getPropertyValue('text-align');
+            targetElement.style.lineHeight = computedStyle.getPropertyValue('line-height');
+            targetElement.style.letterSpacing = computedStyle.getPropertyValue('letter-spacing');
+            targetElement.style.textTransform = computedStyle.getPropertyValue('text-transform');
+        }
+        
+        // Copy styles for each element in the preview to its counterpart in the PDF
+        const originalElements = element.querySelectorAll('*');
+        const tempElements = tempDiv.querySelectorAll('*');
+        
+        // Make sure we have the same number of elements
+        if (originalElements.length === tempElements.length) {
+            for (let i = 0; i < originalElements.length; i++) {
+                copyComputedStyles(originalElements[i], tempElements[i]);
+            }
+        }
+        
+        // Ensure the heading style is exactly preserved
+        const originalHeading = element.querySelector('h2');
+        const tempHeading = tempDiv.querySelector('h2');
+        if (originalHeading && tempHeading) {
+            copyComputedStyles(originalHeading, tempHeading);
+            // Force these critical styles
+            tempHeading.style.fontFamily = 'Arial, sans-serif';
+            tempHeading.style.fontSize = '1.4rem';
+            tempHeading.style.fontWeight = '600';
+            tempHeading.style.color = '#000000';
+            tempHeading.style.textAlign = 'center';
+            tempHeading.style.marginBottom = '2rem';
+        }
+        
+        // Ensure text elements have proper styling
+        const textElements = tempDiv.querySelectorAll('.main-text, .additional-text, .label, .value, .premium-input');
+        textElements.forEach(el => {
+            el.style.fontFamily = 'Arial, sans-serif';
+            el.style.color = '#000000';
+        });
+        
+        // Ensure detail rows have proper styling
+        const detailRows = tempDiv.querySelectorAll('.detail-row');
+        detailRows.forEach(row => {
+            row.style.display = 'flex';
+            row.style.justifyContent = 'space-between';
+            row.style.marginBottom = '1.5rem';
+            
+            const labels = row.querySelectorAll('.label');
+            labels.forEach(label => {
+                label.style.fontWeight = 'bold';
+                label.style.color = '#000000';
+                label.style.fontFamily = 'Arial, sans-serif';
+                label.style.fontSize = '1rem';
+                label.style.marginRight = '0.3rem';
+            });
         });
         
         // If there's a signature, copy it properly
