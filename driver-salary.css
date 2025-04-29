@@ -251,10 +251,10 @@ textarea {
 .receipt-preview {
     background: white;
     position: relative;
-    font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif !important;
     max-width: 800px;
     margin: 0 auto;
-    color: #000000;
+    color: #000000 !important;
     padding: 30px;
     line-height: 1.6;
 }
@@ -279,11 +279,12 @@ textarea {
 }
 
 .receipt-preview h2 {
-    text-align: center;
-    font-size: 1.4rem;
-    margin-bottom: 2rem;
-    color: #000000;
-    font-weight: 600;
+    text-align: center !important;
+    font-size: 1.4rem !important;
+    margin-bottom: 2rem !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+    font-family: Arial, sans-serif !important;
 }
 
 .receipt-date {
@@ -293,10 +294,12 @@ textarea {
 }
 
 .main-text {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-    text-align: justify;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 2rem !important;
+    text-align: justify !important;
+    font-family: Arial, sans-serif !important;
+    color: #000000 !important;
 }
 
 .main-text .label {
@@ -305,10 +308,12 @@ textarea {
 }
 
 .additional-text {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-    text-align: justify;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 2rem !important;
+    text-align: justify !important;
+    font-family: Arial, sans-serif !important;
+    color: #000000 !important;
 }
 
 .details-grid {
@@ -326,15 +331,17 @@ textarea {
 }
 
 .detail-row .label {
-    font-weight: bold;
-    color: #000000;
-    font-size: 1rem;
-    margin-right: 0.3rem;
+    font-weight: bold !important;
+    color: #000000 !important;
+    font-size: 1rem !important;
+    margin-right: 0.3rem !important;
+    font-family: Arial, sans-serif !important;
 }
 
 .detail-row span {
-    color: #000000;
-    font-size: 1rem;
+    color: #000000 !important;
+    font-size: 1rem !important;
+    font-family: Arial, sans-serif !important;
 }
 
 .main-text span,
